@@ -1,0 +1,2221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>코사인 개발자인력관리</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#f5f7fb;--bg4:#ebeef5;--bg5:#e2e6f0;--border:#dde2ee;--border2:#c8cfdf;--text:#1a2240;--text2:#4a5578;--text3:#8e9ab8;--accent:#4f86f7;--accent2:#3a6de0;--green:#18a96e;--orange:#e08a20;--red:#e03f3f;--purple:#7c52e0;--cyan:#1aa8d4;--yellow:#c8a800;--pink:#d43077;--r:10px;--sh:0 4px 20px rgba(80,100,160,.10);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;}
+body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;}
+/* LOGIN */
+#LP{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);position:relative;overflow:hidden;}
+#LP::before{content:"";position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(79,134,247,.1) 0%,transparent 65%);top:-200px;left:-200px;pointer-events:none;}
+#LP::after{content:"";position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(157,114,245,.07) 0%,transparent 65%);bottom:-150px;right:-150px;pointer-events:none;}
+.lbox{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:44px 46px;width:420px;box-shadow:var(--sh);position:relative;z-index:1;animation:fu .4s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.llogo{text-align:center;margin-bottom:30px;}
+.lico{width:58px;height:58px;background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:16px;display:inline-flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:14px;box-shadow:0 8px 24px rgba(79,134,247,.3);}
+.len{font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;font-weight:600;}
+.lko{font-size:20px;font-weight:800;margin-top:4px;}.lsub{font-size:12px;color:var(--text3);margin-top:3px;}
+.lform{display:flex;flex-direction:column;gap:14px;}
+.lg{display:flex;flex-direction:column;gap:6px;}
+.lg label{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+.li{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:11px 14px;color:var(--text);font-size:14px;font-family:"Noto Sans KR",sans-serif;outline:none;transition:border-color .15s,box-shadow .15s;width:100%;}
+.li:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,134,247,.14);}
+.lerr{background:rgba(240,92,92,.08);border:1px solid rgba(240,92,92,.25);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--red);display:none;}
+.lerr.show{display:block;}
+.lbtn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:9px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:"Noto Sans KR",sans-serif;box-shadow:0 4px 16px rgba(79,134,247,.28);transition:opacity .15s;}
+.lbtn:hover{opacity:.92;}
+.lhint{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:14px 16px;margin-top:4px;}
+.lht{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+.lhr{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.lhr:last-child{border-bottom:none;}
+.lhr strong{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--text);}
+/* MAIN */
+#MA{display:none;height:100vh;flex-direction:column;}
+.layout{display:flex;flex:1;overflow:hidden;}
+.topheader{height:52px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;}.th-brand{display:flex;align-items:center;gap:10px;}.th-ico{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0;}.th-name{font-size:14px;font-weight:800;color:var(--text);}.th-sub{font-size:10px;color:var(--text3);margin-top:1px;letter-spacing:.3px;}.th-user{display:flex;align-items:center;gap:10px;}.page-head-bar{padding:20px 24px 14px;display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0;}.sidebar{width:210px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;height:100%;}
+.sblogo{padding:20px 18px 14px;border-bottom:1px solid var(--border);}
+.sblogo-en{font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;font-weight:600;}
+.sblogo-ko{font-size:14px;font-weight:800;margin-top:2px;}
+.sblogo-dt{font-size:10px;color:var(--text3);margin-top:3px;font-family:"JetBrains Mono",monospace;}
+.sbuser{margin:10px;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:10px 12px;display:flex;align-items:center;gap:9px;}
+.sbav{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;}
+.sbuname{font-size:12px;font-weight:700;}.sburole{font-size:10px;color:var(--text3);}
+.sbout{margin-left:auto;cursor:pointer;color:var(--text3);font-size:14px;transition:color .12s;}.sbout:hover{color:var(--red);}
+.nav{padding:8px;flex:1;overflow-y:auto;}
+.navl{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:1.5px;padding:8px 10px 4px;text-transform:uppercase;}
+.navi{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;cursor:pointer;color:var(--text2);font-size:13px;font-weight:500;transition:all .12s;margin-bottom:1px;user-select:none;}.navdiv{height:1px;background:var(--border);margin:6px 8px;}.nav-admin{background:var(--bg3);border-radius:0;padding:4px;border:none;}
+.navi:hover{background:var(--bg3);color:var(--text);}
+.navi.active{background:rgba(79,134,247,.15);color:var(--accent);}
+.navc{margin-left:auto;background:var(--bg4);border-radius:10px;padding:1px 7px;font-size:10px;font-family:"JetBrains Mono",monospace;color:var(--text3);}
+.navi.active .navc{background:rgba(79,134,247,.2);color:var(--accent);}
+.sum-tbl{width:100%;border-collapse:collapse;}.sum-tbl th{padding:9px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border2);background:var(--bg3);white-space:nowrap;}.sum-tbl th.tc{text-align:center;}.sum-tbl td{padding:10px 14px;font-size:12px;color:var(--text2);border-bottom:0.5px solid var(--border);vertical-align:middle;}.sum-tbl td.tc{text-align:center;}.sum-tbl .co-cell{background:var(--bg3);border-right:1px solid var(--border);border-left:3px solid var(--accent);vertical-align:middle;font-size:13px;font-weight:700;color:var(--text);}.sum-tbl tr.grp-mid td{border-bottom:0.5px dashed var(--border);}.sum-tbl tr.grp-end td{border-bottom:1px solid var(--border2);}.sum-tbl tr.grp-sub td{background:var(--bg3);}.sum-tbl tr.grp-sub .co-cell{background:var(--bg3);}.sum-tbl tr.sum-total td{background:var(--bg3);font-weight:700;font-size:13px;border-top:2px solid var(--border2);}.ref-date-wrap{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border2);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap;}.ref-date-wrap input[type=date]{background:none;border:none;outline:none;font-size:12px;color:var(--text);font-family:"Noto Sans KR",sans-serif;cursor:pointer;}.sbfoot{padding:10px;border-top:1px solid var(--border);}
+.synbtn{width:100%;padding:9px;background:rgba(47,201,138,.07);border:1px solid rgba(47,201,138,.18);border-radius:8px;color:var(--green);font-size:12px;font-weight:600;cursor:pointer;font-family:"Noto Sans KR",sans-serif;transition:background .12s;display:flex;align-items:center;justify-content:center;gap:7px;}
+.synbtn:hover{background:rgba(47,201,138,.14);}
+.main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+.topbar{display:none;}
+.ttl{font-size:20px;font-weight:800;}.sub{font-size:12px;color:var(--text3);margin-top:4px;font-weight:400;}
+.tbr{display:flex;align-items:center;gap:9px;}
+.pill{border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700;font-family:"JetBrains Mono",monospace;}.pill-blue{background:rgba(79,134,247,.12);color:var(--accent);border:1px solid rgba(79,134,247,.2);}.pill-amber{background:rgba(224,138,32,.12);color:var(--orange);border:1px solid rgba(224,138,32,.2);}.pill-green{background:rgba(24,169,110,.12);color:var(--green);border:1px solid rgba(24,169,110,.2);}
+.content{flex:1;overflow-y:auto;padding:0 0 20px;}
+.page{display:none;}.page.active{display:block;padding:0 24px;}
+/* STATS */
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.sc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:15px 17px;position:relative;overflow:hidden;}
+.sc::after{content:"";position:absolute;top:0;left:0;right:0;height:3px;}
+.sc.c1::after{background:var(--accent);}.sc.c2::after{background:var(--green);}.sc.c3::after{background:var(--orange);}.sc.c4::after{background:var(--purple);}.sc.c5::after{background:var(--cyan);}
+.scl{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.scn{font-size:26px;font-weight:700;font-family:"JetBrains Mono",monospace;margin:5px 0 3px;}
+.sc.c1 .scn{color:var(--accent);}.sc.c2 .scn{color:var(--green);}.sc.c3 .scn{color:var(--orange);}.sc.c4 .scn{color:var(--purple);}.sc.c5 .scn{color:var(--cyan);}
+.scd{font-size:11px;color:var(--text3);}
+/* CHARTS */
+.cr{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.sh{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.sht{font-size:13px;font-weight:700;}.sp{padding:14px 16px;}
+.bi{margin-bottom:9px;}.bm{display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px;}
+.bv{font-weight:700;font-family:"JetBrains Mono",monospace;}
+.bt{height:6px;background:var(--bg4);border-radius:4px;overflow:hidden;}
+.bf{height:100%;border-radius:4px;transition:width .5s ease;}
+/* CONTROLS */
+.cb{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.srch{display:flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--border2);border-radius:8px;padding:7px 11px;}
+.srch input{background:none;border:none;outline:none;color:var(--text);font-size:13px;width:190px;font-family:"Noto Sans KR",sans-serif;}
+.srch input::placeholder{color:var(--text3);}
+select{background:#fff;border:1px solid var(--border2);border-radius:8px;padding:7px 10px;color:var(--text);font-size:12px;outline:none;cursor:pointer;font-family:"Noto Sans KR",sans-serif;}
+select:focus{border-color:var(--accent);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:"Noto Sans KR",sans-serif;transition:all .12s;white-space:nowrap;}
+.btnp{background:var(--accent);color:#fff;}.btnp:hover{background:var(--accent2);}
+.btng{background:transparent;color:var(--text2);border:1px solid var(--border2);}.btng:hover{background:var(--bg3);color:var(--text);}
+.btnd{background:rgba(240,92,92,.09);color:var(--red);border:1px solid rgba(240,92,92,.2);}.btnd:hover{background:rgba(240,92,92,.18);}
+.btnsm{padding:4px 9px;font-size:11px;border-radius:6px;}
+/* TABLE */
+.ox{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--bg3);padding:9px 13px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.8px;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;}
+th:hover{color:var(--text2);}
+td{padding:10px 13px;border-bottom:1px solid var(--border);font-size:12px;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.015);}
+.mono{font-family:"JetBrains Mono",monospace;font-size:11px;}
+/* TAGS */
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap;}
+.t-정규직원{background:rgba(47,201,138,.12);color:var(--green);}
+.t-파견{background:rgba(245,157,63,.12);color:var(--orange);}
+.t-파견준비{background:rgba(157,114,245,.12);color:var(--purple);}
+.t-인턴{background:rgba(56,196,240,.12);color:var(--cyan);}
+.t-한국파견{background:rgba(245,208,56,.1);color:var(--yellow);}
+.t-직책{background:rgba(79,134,247,.1);color:var(--accent);}
+.t-grade{background:rgba(240,75,138,.1);color:var(--pink);font-family:"JetBrains Mono",monospace;}
+/* AVATAR */
+.av{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.avM{background:rgba(79,134,247,.16);color:var(--accent);border:1px solid rgba(79,134,247,.28);}
+.avF{background:rgba(240,75,138,.1);color:var(--pink);border:1px solid rgba(240,75,138,.22);}
+.av_{background:var(--bg4);color:var(--text3);border:1px solid var(--border);}
+.nc{display:flex;align-items:center;gap:8px;}
+.n1{font-weight:700;}.n2{font-size:10px;color:var(--text3);}
+/* ORG */
+.ow{display:flex;flex-direction:column;gap:12px;}
+.oc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.och{padding:12px 16px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.ochn{font-size:13px;font-weight:800;}
+.obu{padding:12px 16px;border-bottom:1px solid var(--border);}
+.obu:last-child{border-bottom:none;}
+.obun{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px;}
+.otm{margin-bottom:10px;padding-left:12px;}.otm:last-child{margin-bottom:0;}
+.otmn{font-size:11px;color:var(--text3);margin-bottom:6px;}
+.ocs{display:flex;flex-wrap:wrap;gap:5px;}
+.ochp{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:5px 10px;display:flex;align-items:center;gap:6px;font-size:11px;cursor:pointer;transition:border-color .12s;}
+.ochp:hover{border-color:var(--accent);}
+/* DETAIL */
+.dov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:150;display:flex;justify-content:flex-end;}
+.dpanel{width:400px;background:var(--bg2);border-left:1px solid var(--border2);height:100%;overflow-y:auto;padding:22px;display:flex;flex-direction:column;}
+.dclose{align-self:flex-end;cursor:pointer;color:var(--text3);font-size:18px;margin-bottom:10px;}
+.dclose:hover{color:var(--text);}
+.dhdr{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+.davlg{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;flex-shrink:0;}
+.dname{font-size:19px;font-weight:800;}.dsub{font-size:12px;color:var(--text3);margin-top:2px;}
+.dsec{margin-bottom:16px;}
+.dsect{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text3);text-transform:uppercase;margin-bottom:7px;border-bottom:1px solid var(--border);padding-bottom:5px;}
+.drow{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.03);align-items:flex-start;gap:8px;}
+.drow:last-child{border-bottom:none;}.dk{font-size:11px;color:var(--text3);white-space:nowrap;flex-shrink:0;}
+.dv{font-size:12px;font-weight:500;text-align:right;}
+.dnote{font-size:12px;color:var(--orange);line-height:1.6;}
+.dact{display:flex;gap:8px;margin-top:8px;}
+/* MODAL */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:24px;width:660px;max-width:96vw;box-shadow:var(--sh);max-height:92vh;overflow-y:auto;}
+.mt{font-size:16px;font-weight:800;margin-bottom:18px;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.flab{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+.fi{background:#fff;border:1px solid var(--border2);border-radius:7px;padding:8px 10px;color:var(--text);font-size:12px;outline:none;font-family:"Noto Sans KR",sans-serif;width:100%;transition:border-color .12s;}
+.fi:focus{border-color:var(--accent);}
+.fgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.s2{grid-column:span 2;}.s3{grid-column:span 3;}
+.mfoot{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;border-top:1px solid var(--border);padding-top:14px;}
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:500;z-index:999;box-shadow:var(--sh);transform:translateY(70px);transition:transform .25s;pointer-events:none;}
+.toast.show{transform:translateY(0);}
+.toast.ok{border-left:3px solid var(--green);}.toast.err{border-left:3px solid var(--red);}
+.empty{padding:40px;text-align:center;color:var(--text3);}
+
+/* ─── 조직도 차트뷰 ─── */
+.och-wrap{font-family:'Noto Sans KR',sans-serif;padding:4px 0;width:100%;box-sizing:border-box;}
+.och-title-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.och-title{font-size:clamp(13px,1.4vw,17px);font-weight:900;color:var(--text1);}
+.och-total-num{font-size:clamp(15px,1.6vw,20px);font-weight:900;color:var(--accent);}
+.och-date{font-size:10px;color:var(--text3);}
+
+/* 경영진 체인 */
+.och-exec-chain{display:flex;flex-direction:column;align-items:center;gap:0;}
+.och-vline{width:2px;height:16px;background:var(--border);margin:0 auto;}
+.och-hline{width:min(90%,860px);height:2px;background:var(--border);margin:0 auto;}
+
+/* 센터 행 */
+.och-centers{display:flex;gap:clamp(6px,1vw,12px);align-items:stretch;width:100%;box-sizing:border-box;}
+.och-box{
+  flex:1 1 0;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  background:var(--bg2);
+  border:1.5px solid var(--border);
+  border-top:3px solid var(--ac,#888);
+  border-radius:10px;
+  overflow:hidden;
+}
+.och-head{
+  padding:clamp(8px,1vw,14px) clamp(8px,1vw,12px) clamp(6px,.8vw,10px);
+  background:var(--bg3);
+  border-bottom:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  flex-shrink:0;
+}
+.och-cname{font-weight:800;font-size:clamp(11px,1vw,13px);color:var(--text1);text-align:center;word-break:keep-all;}
+.och-mgr{font-size:clamp(9px,.85vw,11px);color:var(--text3);min-height:14px;}
+.och-total{font-size:clamp(22px,2.2vw,34px);font-weight:900;line-height:1.1;}
+.och-subs{
+  padding:clamp(6px,.8vw,10px) clamp(6px,.8vw,10px);
+  display:flex;flex-direction:column;gap:2px;
+  flex:1;
+}
+.och-row{display:flex;justify-content:space-between;align-items:center;gap:4px;padding:1px 0;}
+.och-key{font-size:clamp(9px,.85vw,11px);color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.och-val{font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--text1);white-space:nowrap;flex-shrink:0;}
+
+/* 직원 검색 드롭다운 스크롤바 */
+#uf-emp-dropdown::-webkit-scrollbar{width:4px;}
+#uf-emp-dropdown::-webkit-scrollbar-track{background:transparent;}
+#uf-emp-dropdown::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+#uf-emp-dropdown > div:last-child{border-bottom:none;}
+
+/* 경영진 박스 반응형 */
+.och-exec-chain{display:flex;flex-direction:column;align-items:center;}
+.och-exec-box{
+  border-radius:10px;
+  padding:clamp(8px,.9vw,14px) clamp(16px,2vw,32px);
+  text-align:center;
+  min-width:clamp(90px,12vw,160px);
+}
+.och-exec-first{
+  background:rgba(99,102,241,.18);
+  border:2px solid #818cf8;
+}
+.och-exec-sub{
+  background:rgba(148,163,184,.12);
+  border:2px solid #64748b;
+}
+.och-exec-name{
+  font-weight:900;
+  font-size:clamp(11px,1.1vw,15px);
+  color:var(--text1);
+}
+.och-exec-title{
+  font-size:clamp(9px,.85vw,12px);
+  color:var(--text3);
+  margin-top:2px;
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="LP">
+  <div class="lbox">
+    <div class="llogo">
+      <div class="lico">👥</div>
+      <div class="len">Cosine Cambodia</div>
+      <div class="lko">개발자인력관리</div>
+      <div class="lsub">2026년 개발자인력관리</div>
+    </div>
+    <div class="lform">
+      <div class="lg"><label>아이디</label>
+        <input class="li" id="lid" type="text" placeholder="아이디 입력" autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('lpw').focus()">
+      </div>
+      <div class="lg"><label>비밀번호</label>
+        <input class="li" id="lpw" type="password" placeholder="비밀번호 입력" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div class="lerr" id="lerr">아이디 또는 비밀번호가 올바르지 않습니다.</div>
+      <button class="lbtn" onclick="doLogin()">로그인</button>
+
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="MA">
+  <!-- 상단 헤더 -->
+  <div class="topheader">
+    <div class="th-brand">
+      <div class="th-ico">C</div>
+      <div>
+        <div class="th-name">Cosine Cambodia</div>
+        <div class="th-sub">개발자인력관리 시스템</div>
+      </div>
+    </div>
+    <div class="th-user">
+      <div class="sbav" id="sbAv">A</div>
+      <div><div class="sbuname" id="sbNm">-</div><div class="sburole" id="sbRl">-</div></div>
+      <span class="sbout" title="로그아웃" onclick="doLogout()">⏻</span>
+    </div>
+  </div>
+  <!-- 바디 -->
+  <div class="layout">
+    <aside class="sidebar">
+      <nav class="nav" style="display:flex;flex-direction:column;height:100%;">
+        <div style="flex:1;overflow-y:auto;">
+          <div class="navi active" id="nav-dashboard" onclick="showPage('dashboard')"><span>📊</span>대시보드</div>
+          <div class="navdiv"></div>
+          <div class="navi" id="nav-list" onclick="showPage('list')"><span>👥</span>전체 인력</div>
+          <div class="navi" id="nav-outsourcing" onclick="showPage('outsourcing')"><span>🏢</span>아웃소싱 인력</div>
+          <div class="navi" id="nav-dispatch" onclick="showPage('dispatch')"><span>✈️</span>파견 인력</div>
+          <div class="navi" id="nav-rnd" onclick="showPage('rnd')"><span>🔬</span>R&D지원 인력</div>
+          <div class="navdiv"></div>
+          <div class="navi" id="nav-summary" onclick="showPage('summary')"><span>📋</span>고객사별 인력현황</div>
+        </div>
+        <div id="adminNav" style="border-top:1px solid var(--border);padding:6px 4px;">
+          <div class="navl" style="padding:6px 8px 4px;font-size:10px">관리자</div>
+          <div class="navi" id="nav-settings-org" onclick="showPage('settings-org')"><span>🏗️</span>조직 관리</div>
+          <div class="navi" id="nav-settings-users" onclick="showPage('settings-users')"><span>👤</span>사용자 관리</div>
+        </div>
+      </nav>
+    </aside>
+    <main class="main">
+      <div class="content">
+      <div class="page-head-bar">
+        <div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <div class="ttl" id="ptitle">대시보드</div>
+            <span class="pill pill-blue" id="tpill"></span>
+          </div>
+          <div class="sub" id="psub">2026년 개발자 인력 현황</div>
+        </div>
+        <div class="tbr">
+          <div id="dispatch-head-alert" style="display:none;align-items:center;gap:6px;background:rgba(224,63,63,.1);border:1px solid rgba(224,63,63,.3);border-radius:8px;padding:5px 12px;font-size:11px;color:var(--red)">
+            <span>⚠️</span><span id="dispatch-head-txt"></span>
+          </div>
+        </div>
+      </div>
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div id="dash-alert" style="display:none;background:rgba(224,138,32,.12);border:1px solid rgba(224,138,32,.35);border-radius:8px;padding:10px 16px;margin-bottom:12px;align-items:center;gap:10px;font-size:12px;color:var(--orange)">
+          <span style="font-size:16px">⚠️</span>
+          <span id="dash-alert-txt"></span>
+          <span style="margin-left:auto;cursor:pointer;text-decoration:underline;color:var(--orange)" onclick="showPage('dispatch')">파견 관리로 이동 →</span>
+        </div>
+        <div class="sg" id="sg"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+          <div class="section" style="grid-row:span 2;display:flex;flex-direction:column;"><div class="sh" style="flex-shrink:0"><span class="sht">아웃소싱/파견 현황</span></div><div class="sp" id="ch-wonka" style="flex:1;padding:16px 18px;overflow-y:auto;"></div></div>
+          <div class="section"><div class="sh"><span class="sht">보유기술 현황</span></div><div class="sp" id="ch-type"></div></div>
+
+        </div>
+      </div>
+      <!-- LIST -->
+      <div class="page" id="page-list">
+        <!-- 검색조건: 표 밖 -->
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <div class="ref-date-wrap">
+            <span style="font-size:11px;color:var(--text3);font-weight:700;letter-spacing:.3px">기준일자</span>
+            <input type="date" id="refDate" onchange="rl()" style="width:130px">
+          </div>
+          <div class="srch"><span>🔍</span><input id="sq" placeholder="이름, 호칭, 직무, 비고..." oninput="rl()"></div>
+          <select id="fc" onchange="rl()"><option value="">전체 센터</option></select>
+          <select id="fb" onchange="rl()"><option value="">전체 부/실</option></select>
+          <select id="fw" onchange="rl()"><option value="">전체 원가부서</option></select>
+          <select id="ft" onchange="rl()"><option value="">전체 고용형태</option></select>
+          <select id="fp" onchange="rl()"><option value="">전체 직책</option></select>
+          <button class="btn btng" onclick="exportExcel()" style="background:rgba(24,169,110,.08);border-color:rgba(24,169,110,.25);color:var(--green)">📥 Excel</button>
+        </div>
+        <!-- 테이블만 섹션 카드 안에 -->
+        <div class="section">
+          <div class="ox"><table id="etbl"></table></div>
+          <div id="ee" class="empty" style="display:none">🔍 검색 결과 없음</div>
+          <div id="ecnt" style="padding:8px 16px;font-size:11px;color:var(--text3);border-top:1px solid var(--border)"></div>
+        </div>
+      </div>
+
+      <!-- DISPATCH PAGE -->
+      <div class="page" id="page-dispatch">
+        <!-- 필터 (표 밖) -->
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <div class="ref-date-wrap">
+            <span style="font-size:11px;color:var(--text3);font-weight:700;letter-spacing:.3px">기준일자</span>
+            <input type="date" id="dsp-refDate" onchange="renderDispatchTable()" style="width:130px">
+          </div>
+          <select id="dsp-filter-city" onchange="renderDispatchTable()"><option value="">전체 도시</option><option>서울</option><option>부산</option></select>
+          <select id="dsp-filter-client" onchange="renderDispatchTable()"><option value="">전체 고객사</option></select>
+          <select id="dsp-filter-days" onchange="renderDispatchTable()">
+            <option value="">전체</option>
+            <option value="30">D-30 이내</option>
+            <option value="60">D-60 이내</option>
+          </select>
+        </div>
+        <!-- 파견 테이블 -->
+        <div class="section">
+          <div class="ox"><table id="dispatch-tbl" width="100%"></table></div>
+          <div id="dispatch-empty" class="empty" style="display:none">해당하는 파견 인원이 없습니다</div>
+        </div>
+        <!-- 파견준비 -->
+        <div class="section" style="margin-top:14px">
+          <div class="sh"><span class="sht">🕐 파견준비 인원</span></div>
+          <div class="ox"><table id="dispatch-prep-tbl" width="100%"></table></div>
+          <div id="dispatch-prep-empty" class="empty" style="display:none">파견준비 인원이 없습니다</div>
+        </div>
+      </div>
+      <!-- SUMMARY -->
+      <div class="page" id="page-summary">
+        <div id="summary-body"></div>
+      </div>
+
+      <!-- SETTINGS ORG -->
+      <div class="page" id="page-settings-org">
+        <div style="display:grid;grid-template-columns:320px 1fr;gap:14px;height:calc(100vh - 140px)">
+          <!-- 트리 패널 -->
+          <div class="section" style="display:flex;flex-direction:column;overflow:hidden">
+            <div class="sh" style="flex-shrink:0">
+              <span class="sht">🏗️ 조직 구조</span>
+              <div style="display:flex;gap:6px;align-items:center">
+                <span id="org-save-msg" style="font-size:11px;color:var(--green)"></span>
+                <button class="btn btnp btnsm" onclick="addCenterPrompt()">＋ 센터</button>
+              </div>
+            </div>
+            <div style="flex:1;overflow-y:auto;padding:12px" id="org-tree"></div>
+          </div>
+          <!-- 편집 패널 -->
+          <div class="section" style="display:flex;flex-direction:column;overflow:hidden">
+            <div class="sh" style="flex-shrink:0"><span class="sht" id="org-edit-title">항목을 클릭하세요</span></div>
+            <div style="flex:1;overflow-y:auto;padding:16px" id="org-edit-body">
+              <div style="color:var(--text3);font-size:13px;text-align:center;padding:60px 0">
+                ← 왼쪽 트리에서 센터 / 부/실 / 팀을 클릭하면<br>수정·삭제·소속인원을 확인할 수 있어요
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS USERS -->
+      <div class="page" id="page-settings-users">
+        <div class="section" style="margin-bottom:10px">
+          <div class="sh" style="justify-content:space-between">
+            <span class="sht">⚙️ 표시 설정</span>
+          </div>
+          <div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-size:13px;font-weight:600">비개발 직군 표시</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px">인사/관리·회계·영업 등 15명 (숨김 상태)</div>
+            </div>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+              <input type="checkbox" id="toggle-non-dev" onchange="toggleNonDev(this.checked)"
+                style="width:16px;height:16px;accent-color:var(--accent)">
+              <span style="font-size:12px" id="toggle-non-dev-lbl">숨김</span>
+            </label>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 420px;gap:14px">
+          <!-- 사용자 목록 -->
+          <div class="section">
+            <div class="sh"><span class="sht">👤 사용자 목록</span></div>
+            <div id="users-table"></div>
+          </div>
+          <!-- 추가/수정 폼 -->
+          <div class="section">
+            <div class="sh"><span class="sht" id="uform-title">＋ 사용자 추가</span></div>
+            <div style="padding:18px" id="uform-body">
+              <!-- 직원 유형 라디오 -->
+              <div style="display:flex;gap:16px;margin-bottom:16px;padding:12px;background:var(--bg3);border-radius:8px;border:1px solid var(--border)">
+                <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;font-weight:600">
+                  <input type="radio" name="utype" value="emp" id="utype-emp" onchange="toggleUserType()" checked
+                    style="accent-color:var(--accent);width:15px;height:15px"> 직원
+                </label>
+                <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;font-weight:600">
+                  <input type="radio" name="utype" value="ext" id="utype-ext" onchange="toggleUserType()"
+                    style="accent-color:var(--accent);width:15px;height:15px"> 직원 외
+                </label>
+              </div>
+              <!-- 직원 선택 (직원인 경우만) -->
+              <div id="emp-select-wrap" style="margin-bottom:14px">
+                <div class="flab" style="margin-bottom:6px">인력 선택</div>
+                <div style="position:relative" id="emp-search-container">
+                  <input class="fi" id="uf-emp-search" type="text"
+                    placeholder="이름·호칭·초성 검색 (예: 나리, ㄴㄹ)"
+                    autocomplete="off"
+                    oninput="filterEmpList()"
+                    onfocus="showEmpList()"
+                    style="width:100%;box-sizing:border-box;padding-right:32px">
+                  <span id="uf-emp-clear" onclick="clearEmpSearch()"
+                    style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text3);font-size:14px">✕</span>
+                  <div id="uf-emp-dropdown"
+                    style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;
+                    background:var(--bg3);border:1px solid var(--accent);border-radius:8px;
+                    max-height:220px;overflow-y:auto;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.4)">
+                  </div>
+                </div>
+                <div id="uf-emp-info" style="margin-top:8px;font-size:11px;color:var(--text3);min-height:16px"></div>
+              </div>
+              <!-- 공통 입력 -->
+              <div class="fg" style="margin-bottom:12px">
+                <div class="flab">아이디 *</div>
+                <input class="fi" id="uf-id" placeholder="로그인 아이디">
+              </div>
+              <div class="fg" style="margin-bottom:12px">
+                <div class="flab">비밀번호 *</div>
+                <input class="fi" id="uf-pw" type="password" placeholder="비밀번호">
+              </div>
+              <div class="fg" style="margin-bottom:12px" id="uf-name-wrap">
+                <div class="flab">이름</div>
+                <input class="fi" id="uf-name" placeholder="이름 (직원 외인 경우)">
+              </div>
+              <div class="fg" style="margin-bottom:16px">
+                <div class="flab">권한</div>
+                <select class="fi" id="uf-role">
+                  <option value="최고관리자">최고관리자</option>
+                  <option value="매니저" selected>매니저</option>
+                  <option value="조회전용">조회전용</option>
+                </select>
+              </div>
+              <input type="hidden" id="uf-edit-idx" value="">
+              <div style="display:flex;gap:8px">
+                <button class="btn btnp" style="flex:1;text-align:center" onclick="saveUser()">저장</button>
+                <button class="btn btng" onclick="resetUserForm()">취소</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</div>
+
+<!-- Detail Panel -->
+<div class="dov" id="dov" style="display:none" onclick="if(event.target===this)closeDet()">
+  <div class="dpanel"><div id="dc"></div></div>
+</div>
+
+<!-- Modal -->
+<div class="mov" id="mov" style="display:none">
+<div class="modal">
+  <div class="mt" id="mtitle">직원 추가</div>
+  <input type="hidden" id="eidx">
+  <div class="fgrid">
+    <div class="fg"><div class="flab">호칭(English)</div><input class="fi" id="fnick" placeholder="NARY(나리)"></div>
+    <div class="fg s2"><div class="flab">본명</div><input class="fi" id="fname" placeholder="Moul Nary(몰 나리)"></div>
+    <div class="fg"><div class="flab">부문</div><select class="fi" id="fbumun"><option>캄보디아</option><option>한국</option></select></div>
+    <div class="fg"><div class="flab">본부/센터</div>
+      <select class="fi" id="fcenterI" onchange="populateFbu();populateFteam()">
+        <option value="">-- 선택 --</option>
+      </select>
+    </div>
+    <div class="fg"><div class="flab">부/실</div>
+      <select class="fi" id="fbuI" onchange="populateFteam()">
+        <option value="">-- 없음/선택 --</option>
+      </select>
+    </div>
+    <div class="fg"><div class="flab">팀</div>
+      <select class="fi" id="fteamI">
+        <option value="">-- 선택 --</option>
+      </select>
+    </div>
+    <div class="fg"><div class="flab">등급</div><input class="fi" id="fgrade" placeholder="T2_M1"></div>
+    <div class="fg"><div class="flab">K등급</div><input class="fi" id="fkg"></div>
+    <div class="fg"><div class="flab">직책</div>
+      <select class="fi" id="fjikchak"><option value="">선택</option><option>팀원</option><option>리더</option><option>팀장</option><option>부장</option><option>센터장</option><option>임원</option><option>CEO</option></select>
+    </div>
+    <div class="fg"><div class="flab">직무</div><input class="fi" id="fjikmu" list="dlj" placeholder="JEX"><datalist id="dlj"></datalist></div>
+    <div class="fg"><div class="flab">성별</div><select class="fi" id="fgender"><option value="M">M</option><option value="F">F</option></select></div>
+    <div class="fg"><div class="flab">입사일자</div><input class="fi" id="fjoin" type="date" oninput="updateYeonDisplay()"></div>
+
+    <div class="fg"><div class="flab">고용형태</div>
+      <select class="fi" id="ftypeI" onchange="toggleDispatchFields()"><option>정규직원</option><option>파견</option><option>파견준비</option><option>파견검토</option><option>인턴</option><option>한국파견</option></select>
+    </div>
+    <div class="fg"><div class="flab">원가부서</div><select class="fi" id="fwonkaI"><option value="">-- 선택 --</option></select></div>
+    <div class="fg"><div class="flab">근무지</div><input class="fi" id="fwp"></div>
+    <div id="dispatch-fields" style="display:none;grid-column:span 3;display:contents">
+      <div class="fg"><div class="flab">파견 시작일</div><input class="fi" id="fdispatchStart" type="date"></div>
+      <div class="fg"><div class="flab">파견 종료일</div><input class="fi" id="fdispatchEnd" type="date"></div>
+      <div class="fg"><div class="flab">파견 도시</div><input class="fi" id="fdispatchCity" placeholder="서울/부산"></div>
+      <div class="fg"><div class="flab">파견 고객사</div><input class="fi" id="fdispatchClient" placeholder="웹케시/쿠콘..."></div>
+      <div class="fg"><div class="flab">연장 가능</div>
+        <select class="fi" id="fdispatchExtendable"><option value="false">미정</option><option value="true">가능</option></select>
+      </div>
+    </div>
+    <div class="fg"><div class="flab">현지매니저</div><input class="fi" id="flocalMgr"></div>
+    <div class="fg"><div class="flab">업무지시자</div><input class="fi" id="fdirector"></div>
+    <div class="fg"><div class="flab">부서장</div><input class="fi" id="fdeptHead"></div>
+    <div class="fg s3"><div class="flab">비고</div><input class="fi" id="fnote" placeholder="파견 기간, 배치 변경, 퇴사예정 등..."></div>
+  </div>
+  <div class="mfoot">
+    <button class="btn btng" onclick="closeModal()">취소</button>
+    <button class="btn btnp" onclick="saveEmp()">저장</button>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const ACCS={admin:{pw:"admin1234",name:"설욱환",role:"최고관리자",canEdit:true},manager:{pw:"mgr1234",name:"최기종",role:"매니저",canEdit:true},viewer:{pw:"view1234",name:"조회자",role:"조회전용",canEdit:false}};
+let CU=null;
+const SK="cosine_hr_v21";
+const COLORS=["var(--accent)","var(--green)","var(--orange)","var(--purple)","var(--cyan)","var(--yellow)","var(--pink)","var(--red)"];
+
+// EMBEDDED DATA - 140명 전원
+const BASE_DATA = [{"empId":"EMP-002","bumun":"한국","center":"아웃소싱/파견센터","bu":"웹케시","team":"경리나라팀","nick":"(홍현석)","name":"(Hong Hun Seok)","grade":"","kgrade":"","jikchak":"부장","jikmu":"","join":"","gender":"","localMgr":"최기종","director":"설욱환","deptHead":"(최기종)","type":"한국파견","wonka":"웹케시","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"한국파견","date":"","note":"입사"}]},{"empId":"EMP-003","bumun":"한국","center":"아웃소싱/파견센터","bu":"웹케시","team":"경리나라팀","nick":"(정인성)","name":"(Jeong In Sung)","grade":"","kgrade":"","jikchak":"팀장","jikmu":"JEX","join":"","gender":"","localMgr":"홍현석","director":"최기종","deptHead":"정성훈","type":"한국파견","wonka":"웹케시","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"한국파견","date":"","note":"입사"}]},{"empId":"EMP-004","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"웹케시","team":"경리나라팀","nick":"LEON(레온)","name":"Seat Sokhy(쌎 쏘키)","grade":"T2_M1","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2019-09-23","gender":"M","localMgr":"정인성","director":"홍현석","deptHead":"정성훈","type":"정규직원","wonka":"경리나라","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2019-09-23","note":"입사"}]},{"empId":"EMP-005","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"웹케시","team":"경리나라팀","nick":"NARY(나리)","name":"Moul Nary(몰 나리)","grade":"T2_M1","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2021-09-13","gender":"F","localMgr":"정인성","director":"홍현석","deptHead":"정성훈","type":"정규직원","wonka":"경리나라","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2021-09-13","note":"입사"}]},{"empId":"EMP-006","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"웹케시","team":"경리나라팀","nick":"VEEZY(비지)","name":"Sen Vysal(세엔 위사알)","grade":"T2_B2","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2022-08-17","gender":"M","localMgr":"정인성","director":"홍현석","deptHead":"정성훈","type":"정규직원","wonka":"경리나라","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2022-08-17","note":"입사"}]},{"empId":"EMP-007","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"웹케시","team":"경리나라팀","nick":"ZELL(젤)","name":"Ear Piseth(이어 삐셋)","grade":"T2_B2","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2023-01-02","gender":"M","localMgr":"정인성","director":"홍현석","deptHead":"정성훈","type":"정규직원","wonka":"경리나라","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2023-01-02","note":"입사"}]},{"empId":"EMP-008","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"웹케시","team":"경리나라팀","nick":"ETHAN(이든)","name":"Saut Sokreach(쏫 쏙리앶)","grade":"T2_B2","kgrade":"","jikchak":"리더","jikmu":"JEX","join":"2023-08-14","gender":"M","localMgr":"정인성","director":"홍현석","deptHead":"정성훈","type":"정규직원","wonka":"경리나라","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2023-08-14","note":"입사"}]},{"empId":"EMP-009","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"웹케시","team":"경리나라팀","nick":"LUCY(루시)","name":"Hout VouyIm(호웃 워우임)","grade":"T2_B2","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2024-01-01","gender":"F","localMgr":"정인성","director":"홍현석","deptHead":"정성훈","type":"정규직원","wonka":"경리나라","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-010","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"웹케시","team":"경리나라팀","nick":"CHERRY(체리)","name":"Roeun Chhorvy(르은 처위)","grade":"T2_B2","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2024-01-01","gender":"F","localMgr":"정인성","director":"홍현석","deptHead":"정성훈","type":"정규직원","wonka":"경리나라","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-011","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"웹케시","team":"경리나라팀","nick":"RONNIE(로니)","name":"Seung Phearun(써응 피어론)","grade":"T2_B2","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2024-01-01","gender":"M","localMgr":"정인성","director":"홍현석","deptHead":"정성훈","type":"정규직원","wonka":"경리나라","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-012","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"웹케시","team":"경리나라팀","nick":"LUKEY(루키)","name":"Soeng Channach(씨응 짠나앚)","grade":"T2_B2","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2024-01-01","gender":"F","localMgr":"정인성","director":"홍현석","deptHead":"정성훈","type":"정규직원","wonka":"경리나라","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-013","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"웹케시","team":"경리나라팀","nick":"ANDY(앤디)","name":"Vun Sophann(워운 쏘판)","grade":"T2_B2","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2024-01-01","gender":"M","localMgr":"정인성","director":"홍현석","deptHead":"정성훈","type":"정규직원","wonka":"경리나라","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-014","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"웹케시","team":"경리나라팀","nick":"MONITA(모니타)","name":"Chea Ratmonita(찌아 롯모니타)","grade":"T2_M2","kgrade":"","jikchak":"팀원","jikmu":"QA","join":"2019-03-01","gender":"F","localMgr":"정인성","director":"홍현석","deptHead":"정성훈","type":"정규직원","wonka":"경리나라","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2019-03-01","note":"입사"}]},{"empId":"EMP-015","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"웹케시","team":"와북팀","nick":"ROTHNAK(롯낙)","name":"Somang Rothnak(썸앙 롯낙)","grade":"T2_M2","kgrade":"","jikchak":"팀장","jikmu":"JEX","join":"2019-02-25","gender":"M","localMgr":"최기종","director":"설욱환","deptHead":"정성훈","type":"정규직원","wonka":"경리나라","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2019-02-25","note":"입사"}]},{"empId":"EMP-016","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"웹케시","team":"와북팀","nick":"TOMAS(토마스)","name":"Orl Tokata(오얼 또옥까따)","grade":"T2_B2","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2022-08-17","gender":"M","localMgr":"롯낙","director":"최기종","deptHead":"정성훈","type":"정규직원","wonka":"경리나라","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2022-08-17","note":"입사"}]},{"empId":"EMP-017","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"웹케시","team":"와북팀","nick":"RIO(리오)","name":"Khy Seangorn(키 씨엥온)","grade":"T2_B2","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2024-01-01","gender":"M","localMgr":"롯낙","director":"최기종","deptHead":"정성훈","type":"정규직원","wonka":"경리나라","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-018","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"웹케시","team":"와북팀","nick":"SOTHY(소티)","name":"Rous Sothy(루어 소티)","grade":"T2_M2","kgrade":"","jikchak":"팀원","jikmu":"QA","join":"2015-03-10","gender":"F","localMgr":"롯낙","director":"최기종","deptHead":"정성훈","type":"정규직원","wonka":"경리나라","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2015-03-10","note":"입사"}]},{"empId":"EMP-019","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"스크래핑팀","nick":"SOCHEA(소치아)","name":"Ly Sochea(리 소찌아)","grade":"T3_M2","kgrade":"","jikchak":"부장","jikmu":"Coocon Data","join":"2014-03-01","gender":"M","localMgr":"최기종","director":"설욱환","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2014-03-01","note":"입사"}]},{"empId":"EMP-020","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"스크래핑팀","nick":"VANTHA(반타)","name":"Ken Vantha(겐 완타)","grade":"T3_M2","kgrade":"","jikchak":"팀원","jikmu":"Coocon Data","join":"2015-03-02","gender":"M","localMgr":"리 소찌아","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2015-03-02","note":"입사"}]},{"empId":"EMP-021","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"스크래핑팀","nick":"BONA(보나)","name":"Yean Bona(얀 보나)","grade":"T3_M1","kgrade":"","jikchak":"팀원","jikmu":"Coocon Data","join":"2019-09-23","gender":"M","localMgr":"리 소찌아","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2019-09-23","note":"입사"}]},{"empId":"EMP-022","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"스크래핑팀","nick":"RITH(리스)","name":"Dien Sereyrith(디은 쎄이리로엇)","grade":"T3_M1","kgrade":"","jikchak":"팀원","jikmu":"Coocon Data","join":"2020-10-01","gender":"M","localMgr":"리 소찌아","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2020-10-01","note":"입사"}]},{"empId":"EMP-023","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"스크래핑팀","nick":"PHEAP(피압)","name":"Bit Sopheap(빈 소피압)","grade":"T3_M1","kgrade":"","jikchak":"팀원","jikmu":"Coocon Data","join":"2020-10-01","gender":"M","localMgr":"리 소찌아","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2020-10-01","note":"입사"}]},{"empId":"EMP-024","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"스크래핑팀","nick":"SREYNICH(쓰레이닉)","name":"Morm Sreynich(머언 쓰레이닟)","grade":"T3_M1","kgrade":"","jikchak":"팀원","jikmu":"Coocon Data","join":"2021-03-09","gender":"F","localMgr":"리 소찌아","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2021-03-09","note":"입사"}]},{"empId":"EMP-025","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"스크래핑팀","nick":"CHANTHA(짠타)","name":"Pork Chantha(빠욱 짠타)","grade":"T3_M1","kgrade":"","jikchak":"팀원","jikmu":"Coocon Data","join":"2021-09-13","gender":"M","localMgr":"리 소찌아","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2021-09-13","note":"입사"}]},{"empId":"EMP-026","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"스크래핑팀","nick":"SOKKRY(속크리)","name":"Yob Sokkry(요업 썩크리)","grade":"T3_M1","kgrade":"","jikchak":"팀원","jikmu":"Coocon Data","join":"2021-09-13","gender":"M","localMgr":"리 소찌아","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2021-09-13","note":"입사"}]},{"empId":"EMP-027","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"스크래핑팀","nick":"LIMA(리마)","name":"Sang Solima(쌍 소리마)","grade":"T3_B2","kgrade":"","jikchak":"팀원","jikmu":"Coocon Data","join":"2023-01-01","gender":"F","localMgr":"리 소찌아","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2023-01-01","note":"입사"}]},{"empId":"EMP-028","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"스크래핑팀","nick":"SOCHEAT(소챗)","name":"Mann Socheat(만 쏘찌잇)","grade":"T3_B2","kgrade":"","jikchak":"팀원","jikmu":"Coocon Data","join":"2024-01-01","gender":"M","localMgr":"리 소찌아","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-029","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"스크래핑팀","nick":"SODARAVANN(소다라완)","name":"Taing Sodaravann(땅 쏘다라완)","grade":"T3_B2","kgrade":"","jikchak":"팀원","jikmu":"Coocon Data","join":"2024-01-01","gender":"M","localMgr":"리 소찌아","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-030","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"스크래핑팀","nick":"NICK(닉)","name":"Sam Rathanak(섬 로앗따낙)","grade":"T3_B1","kgrade":"","jikchak":"팀원","jikmu":"Coocon Data","join":"2024-08-12","gender":"M","localMgr":"리 소찌아","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-08-12","note":"입사"}]},{"empId":"EMP-031","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"스크래핑팀","nick":"THANA(타나)","name":"An Sovathna(언 소워따나)","grade":"T3_B1","kgrade":"","jikchak":"팀원","jikmu":"Coocon Data","join":"2025-01-13","gender":"M","localMgr":"리 소찌아","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2025-01-13","note":"입사"}]},{"empId":"EMP-032","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"스크래핑팀","nick":"PISEY(피세이)","name":"Sorn Pisey(썬 삐세이)","grade":"T3_B1","kgrade":"","jikchak":"팀원","jikmu":"Coocon Data","join":"2025-01-13","gender":"M","localMgr":"리 소찌아","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2025-01-13","note":"입사"}]},{"empId":"EMP-033","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"기술연구소","nick":"LOGAN(로건)","name":"Long Bunna(롱 분나)","grade":"T3_M2","kgrade":"","jikchak":"부장","jikmu":"Coocon Web","join":"2014-03-01","gender":"M","localMgr":"최기종","director":"설욱환","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2014-03-01","note":"입사"}]},{"empId":"EMP-034","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"기술연구소","nick":"KOSAL(코살)","name":"E Kosal(이 코쌀)","grade":"PJ_M2","kgrade":"B","jikchak":"팀원","jikmu":"Coocon Web","join":"2015-03-02","gender":"M","localMgr":"롱 분나","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"3/16 파견복귀","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2015-03-02","note":"입사"}]},{"empId":"EMP-035","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"기술연구소","nick":"JUPITER(주피터)","name":"Veth Sam Oeun(웻 썸은)","grade":"T3_M1","kgrade":"","jikchak":"팀원","jikmu":"Coocon Web","join":"2019-09-23","gender":"M","localMgr":"롱 분나","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2019-09-23","note":"입사"}]},{"empId":"EMP-036","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"기술연구소","nick":"METRA(메트라)","name":"Yim Metra(여음 메트라)","grade":"T3_M1","kgrade":"","jikchak":"팀원","jikmu":"Coocon Web","join":"2020-03-10","gender":"M","localMgr":"롱 분나","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"파견취소","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2020-03-10","note":"입사"}]},{"empId":"EMP-037","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"기술연구소","nick":"TAEKUANG(태광)","name":"Chang Techkuang(자앙 떽꼬웅)","grade":"T3_M1","kgrade":"","jikchak":"팀원","jikmu":"Coocon Web","join":"2021-03-09","gender":"M","localMgr":"롱 분나","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"파견취소","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2021-03-09","note":"입사"}]},{"empId":"EMP-038","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"기술연구소","nick":"DARA(다라)","name":"Lon Dara(로온 따라)","grade":"PJ_M1","kgrade":"","jikchak":"팀원","jikmu":"Coocon Web","join":"2021-03-09","gender":"M","localMgr":"롱 분나","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"3/16 파견복귀","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2021-03-09","note":"입사"}]},{"empId":"EMP-039","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"기술연구소","nick":"MIRA(미라)","name":"Un Sopheak(온 쏘피악)","grade":"T3_M1","kgrade":"","jikchak":"팀원","jikmu":"Coocon Web","join":"2021-09-13","gender":"F","localMgr":"롱 분나","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2021-09-13","note":"입사"}]},{"empId":"EMP-040","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"기술연구소","nick":"A-NA(에이나)","name":"Pann Voleak(빤 불레악)","grade":"T3_B2","kgrade":"","jikchak":"팀원","jikmu":"Coocon Web","join":"2023-01-01","gender":"F","localMgr":"롱 분나","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2023-01-01","note":"입사"}]},{"empId":"EMP-041","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"기술연구소","nick":"CHOUMY(추미)","name":"Heng Choumy(헹 쭘니)","grade":"T3_B2","kgrade":"","jikchak":"팀원","jikmu":"Coocon Web","join":"2023-01-01","gender":"M","localMgr":"롱 분나","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"파견취소","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2023-01-01","note":"입사"}]},{"empId":"EMP-042","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"기술연구소","nick":"NEO(네오)","name":"Nuon Vakhim(노운 와킴)","grade":"T3_B2","kgrade":"","jikchak":"팀원","jikmu":"Coocon Web","join":"2024-01-01","gender":"M","localMgr":"롱 분나","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-043","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"기술연구소","nick":"E-AN(이안)","name":"Long Sreyly(롱 스레이리)","grade":"T3_B1","kgrade":"","jikchak":"팀원","jikmu":"Coocon Web","join":"2024-08-12","gender":"F","localMgr":"롱 분나","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-08-12","note":"입사"}]},{"empId":"EMP-044","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"기술연구소","nick":"PANHA(판하)","name":"Chamreun Odompanha(점라은 우덤빤냐)","grade":"T3_B1","kgrade":"","jikchak":"팀원","jikmu":"Coocon Web","join":"2024-08-12","gender":"M","localMgr":"롱 분나","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"3/01 로컬상품 → 기술연구소 배치","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-08-12","note":"입사"}]},{"empId":"EMP-045","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"기술연구소","nick":"TOLA(톨라)","name":"Soy Tola(서이 또라)","grade":"T3_B1","kgrade":"","jikchak":"팀원","jikmu":"Coocon Web","join":"2025-01-13","gender":"M","localMgr":"롱 분나","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2025-01-13","note":"입사"}]},{"empId":"EMP-046","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"기술연구소","nick":"KC(케이씨)","name":"Sry Kimchhun(쓰리 킴춘)","grade":"T3_B1","kgrade":"","jikchak":"팀원","jikmu":"Coocon Web","join":"2025-02-18","gender":"M","localMgr":"롱 분나","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"2026.4.20 퇴사예정(AMK은행)","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2025-02-18","note":"입사"}]},{"empId":"EMP-047","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"쿠콘웹팀","nick":"PHEEYAH(피야)","name":"Math Rorpheeyaha(맏 르어피야스)","grade":"T1_M1","kgrade":"","jikchak":"팀원","jikmu":"AOS","join":"2020-03-10","gender":"M","localMgr":"사카리","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2020-03-10","note":"입사"}]},{"empId":"EMP-048","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"쿠콘웹팀","nick":"NANA(나나)","name":"Tang Mouycheng(땅 무이쨍)","grade":"T1_B2","kgrade":"","jikchak":"팀원","jikmu":"iOS","join":"2023-01-02","gender":"F","localMgr":"챙우덤","director":"최기종","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2023-01-02","note":"입사"}]},{"empId":"EMP-049","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"쿠콘 퍼블리싱","nick":"CHANTHY(찬티)","name":"Neo Chanthy(너으 짠티)","grade":"T4_M2","kgrade":"","jikchak":"팀장","jikmu":"Publishing","join":"2018-02-01","gender":"M","localMgr":"녀음 짠보레이","director":"설욱환","deptHead":"이철우","type":"정규직원","wonka":"쿠콘","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2018-02-01","note":"입사"}]},{"empId":"EMP-050","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"AOS팀","nick":"KARY(카리)","name":"Yen Sakary(사카리)","grade":"T1_M2","kgrade":"","jikchak":"부장","jikmu":"AOS","join":"2014-03-01","gender":"M","localMgr":"최기종","director":"설욱환","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2014-03-01","note":"입사"}]},{"empId":"EMP-051","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"AOS팀","nick":"VIRUN(비런)","name":"Ly Chaoverun(리 자우위론)","grade":"T1_M1","kgrade":"","jikchak":"팀원","jikmu":"AOS","join":"2019-09-23","gender":"M","localMgr":"사카리","director":"최기종","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"3/28 비즈플레이(세이마)퇴사자 충원","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2019-09-23","note":"입사"}]},{"empId":"EMP-052","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"AOS팀","nick":"PHYPHY(피피)","name":"Thoy Sophy(토오이 소옥피)","grade":"T1_B2","kgrade":"","jikchak":"팀원","jikmu":"AOS","join":"2022-08-17","gender":"F","localMgr":"사카리","director":"최기종","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"4/17 퇴사예정","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2022-08-17","note":"입사"}]},{"empId":"EMP-053","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"AOS팀","nick":"ELVIS(엘비스)","name":"Thea Oudom(티아 우덤)","grade":"T1_B1","kgrade":"","jikchak":"팀원","jikmu":"AOS","join":"2025-01-13","gender":"M","localMgr":"사카리","director":"최기종","deptHead":"","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"4/17 비즈플레이(소피)퇴사자 충원","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2025-01-13","note":"입사"}]},{"empId":"EMP-054","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"AOS팀","nick":"SNA(스나)","name":"Thorn Veasna(턴 위어 쓰나)","grade":"T1_B2","kgrade":"","jikchak":"팀원","jikmu":"AOS","join":"2023-01-02","gender":"M","localMgr":"사카리","director":"최기종","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2023-01-02","note":"입사"}]},{"empId":"EMP-055","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"AOS팀","nick":"KENA(케나)","name":"Thol Keolakena(터올 까우리악케나)","grade":"T1_B2","kgrade":"","jikchak":"팀원","jikmu":"AOS","join":"2024-01-01","gender":"F","localMgr":"사카리","director":"최기종","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-056","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"IOS팀","nick":"DOM(돔)","name":"Chheng Udam(챙우덤)","grade":"T1_M2","kgrade":"","jikchak":"부장","jikmu":"iOS","join":"2015-03-02","gender":"M","localMgr":"최기종","director":"설욱환","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2015-03-02","note":"입사"}]},{"empId":"EMP-057","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"IOS팀","nick":"THIAGO(티아고)","name":"Nem Sothea(냄 쏘티아)","grade":"T1_M2","kgrade":"","jikchak":"팀원","jikmu":"iOS","join":"2017-03-01","gender":"M","localMgr":"챙우덤","director":"최기종","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2017-03-01","note":"입사"}]},{"empId":"EMP-058","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"IOS팀","nick":"NAVY(나비)","name":"Sen Navy(센 나위)","grade":"T1_M1","kgrade":"","jikchak":"팀원","jikmu":"iOS","join":"2020-03-10","gender":"M","localMgr":"챙우덤","director":"최기종","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2020-03-10","note":"입사"}]},{"empId":"EMP-059","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"IOS팀","nick":"JOSEPH(요셉)","name":"Sam Sophanna(써엄 소판나)","grade":"T1_B2","kgrade":"","jikchak":"팀원","jikmu":"iOS","join":"2022-03-01","gender":"M","localMgr":"챙우덤","director":"최기종","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2022-03-01","note":"입사"}]},{"empId":"EMP-060","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"IOS팀","nick":"LEGO(레고)","name":"Sokun Sonamheng(소쿤 소남행)","grade":"T1_B2","kgrade":"","jikchak":"팀원","jikmu":"iOS","join":"2024-01-01","gender":"M","localMgr":"챙우덤","director":"최기종","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-061","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"B2B 웹","nick":"RATHA(라타)","name":"Chheang Ratha(치응 랏타)","grade":"T2_M2","kgrade":"","jikchak":"부장","jikmu":"JEX","join":"2014-03-01","gender":"M","localMgr":"최기종","director":"설욱환","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2014-03-01","note":"입사"}]},{"empId":"EMP-062","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"B2B 웹","nick":"MARINA(마리나)","name":"Meas Marina(마이 마리나)","grade":"T2_M2","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2018-09-17","gender":"F","localMgr":"치응 랏타","director":"최기종","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2018-09-17","note":"입사"}]},{"empId":"EMP-063","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"B2B 웹","nick":"VIMEAN(비민)","name":"Lay Chanvimean(라이 짠위미은)","grade":"T2_M1","kgrade":"C","jikchak":"팀원","jikmu":"JEX","join":"2020-10-01","gender":"F","localMgr":"치응 랏타","director":"최기종","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2020-10-01","note":"입사"}]},{"empId":"EMP-064","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"B2B 웹","nick":"PARKER(파커)","name":"Ek Sarayuth(엑 사라욧)","grade":"T2_B2","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2022-08-17","gender":"M","localMgr":"치응 랏타","director":"최기종","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"4/13 쿠콘웹팀으로 이동","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2022-08-17","note":"입사"}]},{"empId":"EMP-065","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"B2B 웹","nick":"MIKAZA(미카자)","name":"Kong Rady(꽁 라디)","grade":"T2_B2","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2024-01-01","gender":"F","localMgr":"치응 랏타","director":"최기종","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"3월 파견예정","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-066","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"B2B 웹","nick":"SAMBATH(샘바스)","name":"Leng Sambath(렝 섬팟)","grade":"T2_B1","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2025-01-13","gender":"M","localMgr":"치응 랏타","director":"최기종","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2025-01-13","note":"입사"}]},{"empId":"EMP-067","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"B2B 웹","nick":"PANHA(팬하)","name":"Leng Panha(렝 빤냐)","grade":"T2_B1","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2025-01-13","gender":"F","localMgr":"치응 랏타","director":"최기종","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2025-01-13","note":"입사"}]},{"empId":"EMP-068","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"B2B 웹","nick":"NITA(니타)","name":"Ly Nita(리 니타)","grade":"T2_B1","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2025-04-21","gender":"F","localMgr":"치응 랏타","director":"최기종","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2025-04-21","note":"입사"}]},{"empId":"EMP-069","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"B2B 웹","nick":"CHHORVY(초비)","name":"Chhorm Chhorvy(처엄 처위)","grade":"T4_M2","kgrade":"","jikchak":"팀원","jikmu":"Publishing","join":"2015-03-02","gender":"F","localMgr":"녀음 짠보레이","director":"최기종","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2015-03-02","note":"입사"}]},{"empId":"EMP-070","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"B2B 웹","nick":"KIMHEANG(김행)","name":"Sim Kimheang(씸 김히응)","grade":"T4_M1","kgrade":"","jikchak":"팀원","jikmu":"Publishing","join":"2021-12-01","gender":"M","localMgr":"녀음 짠보레이","director":"최기종","deptHead":"박태혁","type":"정규직원","wonka":"비즈플레이","workplace":"","note":"1/19 예정","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2021-12-01","note":"입사"}]},{"empId":"EMP-071","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비플페이","team":"비플페이","nick":"DAON(다온)","name":"Bo Sreinin(보 쓰레이 닌)","grade":"T1_M2","kgrade":"","jikchak":"팀원","jikmu":"iOS","join":"2018-03-01","gender":"F","localMgr":"챙우덤","director":"최기종","deptHead":"(김호웅)","type":"정규직원","wonka":"비플페이","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2018-03-01","note":"입사"}]},{"empId":"EMP-072","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비플페이","team":"비플페이","nick":"MORRE(모르)","name":"Nin Srey Nuth(닌 쓰레이놋)","grade":"T1_B2","kgrade":"","jikchak":"팀원","jikmu":"iOS","join":"2024-01-01","gender":"F","localMgr":"챙우덤","director":"최기종","deptHead":"(김호웅)","type":"정규직원","wonka":"비플페이","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-073","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비플페이","team":"비플페이","nick":"NIAH(니아)","name":"Thou Vanneat(투 완니엣)","grade":"T1_B2","kgrade":"","jikchak":"팀원","jikmu":"AOS","join":"2024-01-01","gender":"F","localMgr":"사카리","director":"최기종","deptHead":"(김호웅)","type":"정규직원","wonka":"비플페이","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-074","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비플페이","team":"비플페이","nick":"NIRANG(니랑)","name":"Kong Thary(꽁 타리)","grade":"T1_B2","kgrade":"","jikchak":"팀원","jikmu":"AOS","join":"2024-01-01","gender":"F","localMgr":"사카리","director":"최기종","deptHead":"(김호웅)","type":"정규직원","wonka":"비플페이","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-075","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비플페이","team":"비플페이","nick":"G-RANN(지란)","name":"Eath Chanry(앗 짠리)","grade":"T1_B2","kgrade":"C","jikchak":"팀원","jikmu":"AOS","join":"2022-03-01","gender":"F","localMgr":"사카리","director":"최기종","deptHead":"(김호웅)","type":"정규직원","wonka":"비플페이","workplace":"","note":"1/12 R&D → 비플페이 배치","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2022-03-01","note":"입사"}]},{"empId":"EMP-076","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"웹케시","team":"경리나라팀","nick":"TIMO(티모)","name":"Sum Taimo(쑴 따이모)","grade":"PJ_B2","kgrade":"","jikchak":"팀원","jikmu":"UX/UI","join":"2023-07-10","gender":"M","localMgr":"","director":"","deptHead":"정성훈","type":"파견","wonka":"경리나라","workplace":"","note":"서울 (25.08.03 ~26.06.30)","status":"재직","dispatchStart":"2025-08-03","dispatchEnd":"2026-06-30","dispatchCity":"서울","dispatchClient":"경리나라","dispatchExtendable":false,"statusHistory":[{"type":"파견","date":"2023-07-10","note":"입사"}]},{"empId":"EMP-077","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"웹케시","team":"rERP사업부","nick":"PETER(피터)","name":"Thach Parinhnha(타앚 빠리냐)","grade":"PJ_M1","kgrade":"C","jikchak":"팀원","jikmu":"AOS","join":"2021-09-13","gender":"M","localMgr":"","director":"","deptHead":"허남수","type":"파견","wonka":"웹케시","workplace":"","note":"부산(24.08.10~26.08.11)","status":"재직","dispatchStart":"2024-08-10","dispatchEnd":"2026-08-11","dispatchCity":"부산","dispatchClient":"웹케시","dispatchExtendable":false,"statusHistory":[{"type":"파견","date":"2021-09-13","note":"입사"}]},{"empId":"EMP-078","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"기술연구소","nick":"SOCHEAT(소챗-파견)","name":"Hun Socheat(혼 쏘억찌엇)","grade":"PJ_M1","kgrade":"C","jikchak":"팀원","jikmu":"Coocon Web","join":"2020-10-01","gender":"M","localMgr":"","director":"","deptHead":"이철우","type":"파견","wonka":"쿠콘","workplace":"","note":"부산 (24.09.01~26.05.30)","status":"재직","dispatchStart":"2024-09-01","dispatchEnd":"2026-05-30","dispatchCity":"부산","dispatchClient":"쿠콘","dispatchExtendable":false,"statusHistory":[{"type":"파견","date":"2020-10-01","note":"입사"}]},{"empId":"EMP-079","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"기술연구소","nick":"NEAT(닛)","name":"Hak Sreyneat(학 스레이니읃)","grade":"PJ_B2","kgrade":"B","jikchak":"팀원","jikmu":"Coocon Web","join":"2023-01-01","gender":"F","localMgr":"","director":"","deptHead":"이철우","type":"파견","wonka":"쿠콘","workplace":"","note":"부산 (24.09.01~26.05.30) 연장준비","status":"재직","dispatchStart":"2024-09-01","dispatchEnd":"2026-05-30","dispatchCity":"부산","dispatchClient":"쿠콘","dispatchExtendable":true,"statusHistory":[{"type":"파견","date":"2023-01-01","note":"입사"}]},{"empId":"EMP-080","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"스크래핑팀","nick":"KONG(콩)","name":"Svay Kong(쓰와이 꽁)","grade":"PJ_M1","kgrade":"C","jikchak":"팀원","jikmu":"Coocon Data","join":"2020-10-01","gender":"M","localMgr":"","director":"","deptHead":"이철우","type":"파견","wonka":"쿠콘","workplace":"","note":"부산(25.08.23~26.07.31)","status":"재직","dispatchStart":"2025-08-23","dispatchEnd":"2026-07-31","dispatchCity":"부산","dispatchClient":"쿠콘","dispatchExtendable":false,"statusHistory":[{"type":"파견","date":"2020-10-01","note":"입사"}]},{"empId":"EMP-081","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"스크래핑팀","nick":"VARAK(바락)","name":"In Thythavarak(언 디다워라억)","grade":"PJ_M1","kgrade":"C","jikchak":"팀원","jikmu":"Coocon Data","join":"2020-10-01","gender":"M","localMgr":"","director":"","deptHead":"이철우","type":"파견","wonka":"쿠콘","workplace":"","note":"부산(25.08.23~26.07.31)","status":"재직","dispatchStart":"2025-08-23","dispatchEnd":"2026-07-31","dispatchCity":"부산","dispatchClient":"쿠콘","dispatchExtendable":false,"statusHistory":[{"type":"파견","date":"2020-10-01","note":"입사"}]},{"empId":"EMP-082","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"스크래핑팀","nick":"SINA(시나)","name":"Sem Sina(싸엠 씨나)","grade":"PJ_B2","kgrade":"B","jikchak":"팀원","jikmu":"Coocon Data","join":"2024-01-01","gender":"F","localMgr":"","director":"","deptHead":"정희진","type":"파견","wonka":"쿠콘","workplace":"","note":"서울(25.08.23~26.07.31)","status":"재직","dispatchStart":"2025-08-23","dispatchEnd":"2026-07-31","dispatchCity":"서울","dispatchClient":"쿠콘","dispatchExtendable":false,"statusHistory":[{"type":"파견","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-083","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"시스템운영부","nick":"KAJI(카지)","name":"Morm Sophen(머엄 쏘펜)","grade":"PJ_B2","kgrade":"","jikchak":"팀원","jikmu":"DevOps","join":"2022-03-07","gender":"M","localMgr":"","director":"","deptHead":"박태혁","type":"파견","wonka":"쿠콘","workplace":"","note":"서울(25.09.06~26.08.25)","status":"재직","dispatchStart":"2025-09-06","dispatchEnd":"2026-08-25","dispatchCity":"서울","dispatchClient":"쿠콘","dispatchExtendable":false,"statusHistory":[{"type":"파견","date":"2022-03-07","note":"입사"}]},{"empId":"EMP-084","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"쿠콘","team":"시스템운영부","nick":"JULIAN(줄리안)","name":"Poret Rithynea(뽀럣 리티니아)","grade":"PJ_B2","kgrade":"","jikchak":"팀원","jikmu":"DevOps","join":"2023-01-02","gender":"M","localMgr":"","director":"","deptHead":"박태혁","type":"파견","wonka":"쿠콘","workplace":"","note":"서울(25.09.06~26.08.25)","status":"재직","dispatchStart":"2025-09-06","dispatchEnd":"2026-08-25","dispatchCity":"서울","dispatchClient":"쿠콘","dispatchExtendable":false,"statusHistory":[{"type":"파견","date":"2023-01-02","note":"입사"}]},{"empId":"EMP-085","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"바우처개발부","nick":"TERRY(테리)","name":"Thoeun Thira Vuthin(트은 티라워우틴)","grade":"PJ_B2","kgrade":"","jikchak":"팀원","jikmu":"WEB","join":"2023-08-14","gender":"M","localMgr":"","director":"","deptHead":"권오광","type":"파견","wonka":"비즈플레이","workplace":"","note":"서울(25.10.27~26.09.30)?","status":"재직","dispatchStart":"2025-10-27","dispatchEnd":"2026-09-30","dispatchCity":"서울","dispatchClient":"비즈플레이","dispatchExtendable":false,"statusHistory":[{"type":"파견","date":"2023-08-14","note":"입사"}]},{"empId":"EMP-086","bumun":"캄보디아","center":"아웃소싱/파견센터","bu":"비즈플레이","team":"바우처개발부","nick":"HENRY(핸리)","name":"Hen Heang(히엔 히엉)","grade":"PJ_B2","kgrade":"","jikchak":"팀원","jikmu":"WEB","join":"2024-01-01","gender":"M","localMgr":"","director":"","deptHead":"권오광","type":"파견","wonka":"비즈플레이","workplace":"","note":"서울(25.10.27~26.09.30)?","status":"재직","dispatchStart":"2025-10-27","dispatchEnd":"2026-09-30","dispatchCity":"서울","dispatchClient":"비즈플레이","dispatchExtendable":false,"statusHistory":[{"type":"파견","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-087","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"로컬상품","nick":"(Channa)(짠나)","name":"(Neng Channa)(넹 짠나)","grade":"T3_M2","kgrade":"","jikchak":"부장","jikmu":"WEB","join":"2014-03-01","gender":"M","localMgr":"설욱환","director":"설욱환","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2014-03-01","note":"입사"}]},{"empId":"EMP-088","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"로컬상품","nick":"SEYHA(세이하)","name":"Phan Seyha(파안 쎄이하)","grade":"T3_M1","kgrade":"","jikchak":"팀원","jikmu":"WEB","join":"2021-03-09","gender":"M","localMgr":"넹 짠나","director":"넹 짠나","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2021-03-09","note":"입사"}]},{"empId":"EMP-089","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"로컬상품","nick":"JOTTI(조티)","name":"Hen Ty(헨 띠)","grade":"T3_B2","kgrade":"","jikchak":"팀원","jikmu":"WEB","join":"2024-01-01","gender":"M","localMgr":"넹 짠나","director":"넹 짠나","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"1/01 비즈플레이 B2B웹팀 → 로컬상품팀 배치","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-090","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"로컬상품","nick":"Y맹스아","name":"Y Mengsea(Y 맹스아)","grade":"T2_B1","kgrade":"","jikchak":"인턴","jikmu":"WEB","join":"2026-02-01","gender":"M","localMgr":"넹 짠나","director":"최기종","deptHead":"","type":"인턴","wonka":"코사인_로컬비즈","workplace":"","note":"2/01 입사","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"인턴","date":"2026-02-01","note":"입사"}]},{"empId":"EMP-091","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"로컬상품","nick":"소체트라","name":"Norn So chetra(노른 소 체트라)","grade":"T2_B1","kgrade":"","jikchak":"인턴","jikmu":"WEB","join":"2026-02-01","gender":"M","localMgr":"넹 짠나","director":"최기종","deptHead":"","type":"인턴","wonka":"코사인_로컬비즈","workplace":"","note":"2/01 입사","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"인턴","date":"2026-02-01","note":"입사"}]},{"empId":"EMP-092","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"로컬상품","nick":"김레앙","name":"Keo Kimleang(카오 김리응)","grade":"T2_B1","kgrade":"","jikchak":"인턴","jikmu":"WEB","join":"2026-02-01","gender":"M","localMgr":"넹 짠나","director":"최기종","deptHead":"","type":"인턴","wonka":"코사인_로컬비즈","workplace":"","note":"2/01 입사","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"인턴","date":"2026-02-01","note":"입사"}]},{"empId":"EMP-093","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"로컬상품","nick":"소마니","name":"Hoeurn Somany(흔 소마니)","grade":"T2_B1","kgrade":"","jikchak":"인턴","jikmu":"WEB","join":"2026-02-01","gender":"M","localMgr":"넹 짠나","director":"최기종","deptHead":"","type":"인턴","wonka":"코사인_로컬비즈","workplace":"","note":"2/01 입사","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"인턴","date":"2026-02-01","note":"입사"}]},{"empId":"EMP-094","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"IT인프라","nick":"CHHON(처언)","name":"Chhaeuy Chhon(츠이 처언)","grade":"","kgrade":"","jikchak":"부장","jikmu":"IT Infra","join":"2013-03-01","gender":"M","localMgr":"설욱환","director":"설욱환","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2013-03-01","note":"입사"}]},{"empId":"EMP-095","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"IT인프라","nick":"DETH(데스)","name":"Korng Lydeth(꽁 리뎃)","grade":"","kgrade":"","jikchak":"팀원","jikmu":"IT Infra","join":"2014-03-01","gender":"M","localMgr":"츠이 처언","director":"넹 짠나","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2014-03-01","note":"입사"}]},{"empId":"EMP-096","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"IT인프라","nick":"KARL(칼)","name":"Tham Sanfann(탐 산환)","grade":"","kgrade":"","jikchak":"팀원","jikmu":"Network","join":"2022-03-01","gender":"M","localMgr":"츠이 처언","director":"넹 짠나","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2022-03-01","note":"입사"}]},{"empId":"EMP-097","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"IT인프라","nick":"PUOYY(포우이)","name":"Try Puoyy(뜨리 뽀우이)","grade":"","kgrade":"","jikchak":"팀원","jikmu":"DevOps","join":"2023-01-02","gender":"M","localMgr":"츠이 처언","director":"넹 짠나","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2023-01-02","note":"입사"}]},{"empId":"EMP-098","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"IT인프라","nick":"SORA(소라)","name":"Penh Sokra(펜 쏙라)","grade":"","kgrade":"","jikchak":"팀원","jikmu":"","join":"2025-09-08","gender":"M","localMgr":"츠이 처언","director":"넹 짠나","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"1/12 R&D → IT인프라 배치","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2025-09-08","note":"입사"}]},{"empId":"EMP-099","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"사업기획","nick":"Borey(보레이)","name":"Nhim Chanborey(녀음 짠보레이)","grade":"T4_M2","kgrade":"","jikchak":"부장","jikmu":"DESIGN","join":"2017-04-01","gender":"M","localMgr":"최기종","director":"설욱환","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2017-04-01","note":"입사"}]},{"empId":"EMP-100","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"사업기획","nick":"ANGIE(앤지)","name":"Vin AnGie(빈 엔지)","grade":"T4_B1","kgrade":"","jikchak":"팀원","jikmu":"DESIGN","join":"2025-02-03","gender":"F","localMgr":"녀음 짠보레이","director":"최기종","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"로컬상품팀 지원","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2025-02-03","note":"입사"}]},{"empId":"EMP-101","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"사업기획","nick":"NIKA(니카)","name":"Soush Monika(쑤어스 모니까)","grade":"T4_B2","kgrade":"","jikchak":"팀원","jikmu":"DESIGN","join":"2022-03-01","gender":"F","localMgr":"녀음 짠보레이","director":"최기종","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"로컬상품팀 지원","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2022-03-01","note":"입사"}]},{"empId":"EMP-102","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"사업기획","nick":"SCOTT(스콧)","name":"Chrek Sophanith(츠륵 쏘파늣)","grade":"T4_M1","kgrade":"","jikchak":"팀원","jikmu":"Publishing","join":"2021-03-09","gender":"M","localMgr":"녀음 짠보레이","director":"최기종","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"로컬상품팀 지원","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2021-03-09","note":"입사"}]},{"empId":"EMP-103","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"사업기획","nick":"SEAK(시크)","name":"Pheak Seangseak(페익 쎄잉쎄악)","grade":"T4_M1","kgrade":"","jikchak":"팀원","jikmu":"Publishing","join":"2020-10-07","gender":"F","localMgr":"녀음 짠보레이","director":"최기종","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2020-10-07","note":"입사"}]},{"empId":"EMP-104","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"사업기획","nick":"CHHAIYA(차이야)","name":"It Chhaiya(잇 차이야)","grade":"T4_B1","kgrade":"","jikchak":"팀원","jikmu":"Publishing","join":"2024-09-16","gender":"F","localMgr":"녀음 짠보레이","director":"최기종","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"로컬상품팀 지원","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-09-16","note":"입사"}]},{"empId":"EMP-105","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"글로벌상품","nick":"RYAN(라이안)","name":"Song Chan Moni(써엉 짠모니)","grade":"T2_B2","kgrade":"","jikchak":"팀장","jikmu":"JEX","join":"2022-03-01","gender":"M","localMgr":"최기종","director":"최기종","deptHead":"정민철","type":"파견준비","wonka":"웹케시글로벌","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"웹케시글로벌","dispatchExtendable":false,"statusHistory":[{"type":"파견준비","date":"2022-03-01","note":"입사"}]},{"empId":"EMP-106","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"글로벌상품","nick":"MAX(맥스)","name":"Hourt Vongsa(훗 워웅사)","grade":"T2_B2","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2022-03-01","gender":"M","localMgr":"최기종","director":"최기종","deptHead":"정민철","type":"정규직원","wonka":"웹케시글로벌","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2022-03-01","note":"입사"}]},{"empId":"EMP-107","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"글로벌상품","nick":"DAVID(데이비드)","name":"Chheang Mengchhun(치엥 맹촌)","grade":"T2_B2","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2024-01-01","gender":"M","localMgr":"최기종","director":"최기종","deptHead":"정민철","type":"정규직원","wonka":"웹케시글로벌","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-108","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"글로벌상품","nick":"SIMON(시몬)","name":"Pho Somnang(포 썸나앙)","grade":"T2_B2","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2024-01-01","gender":"M","localMgr":"최기종","director":"최기종","deptHead":"정민철","type":"정규직원","wonka":"웹케시글로벌","workplace":"","note":"1/01 배치 (퇴사자 대체)","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-109","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"글로벌상품","nick":"SONNY(소니)","name":"Ran Sokny(러언 썩니)","grade":"T2_M1","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2021-09-13","gender":"M","localMgr":"최기종","director":"최기종","deptHead":"정민철","type":"정규직원","wonka":"웹케시글로벌","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2021-09-13","note":"입사"}]},{"empId":"EMP-110","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"글로벌상품","nick":"ARTHUR(아서)","name":"Tith Ouddom(띳 우덤)","grade":"T2_B2","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2024-01-01","gender":"M","localMgr":"최기종","director":"최기종","deptHead":"정민철","type":"정규직원","wonka":"웹케시글로벌","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-111","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"R&D인력","nick":"JICKY(지키)","name":"Chan Youvita(짠 유위따)","grade":"T4_M1","kgrade":"","jikchak":"팀원","jikmu":"QA","join":"2021-04-01","gender":"M","localMgr":"최기종","director":"최기종","deptHead":"","type":"정규직원","wonka":"R&D","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2021-04-01","note":"입사"}]},{"empId":"EMP-112","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"R&D인력","nick":"ALEX(알렉스)","name":"Bong Kokkheang(빠엉 꺽키앙)","grade":"T1_B2","kgrade":"C","jikchak":"팀원","jikmu":"iOS","join":"2022-03-01","gender":"M","localMgr":"챙우덤","director":"최기종","deptHead":"","type":"정규직원","wonka":"R&D","workplace":"","note":"비플페이 지원","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2022-03-01","note":"입사"}]},{"empId":"EMP-113","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"R&D인력","nick":"SAO(사오)","name":"Sao Nang(싸으 낭)","grade":"T4_B2","kgrade":"","jikchak":"팀원","jikmu":"Publishing","join":"2023-05-01","gender":"M","localMgr":"녀음 짠보레이","director":"최기종","deptHead":"","type":"정규직원","wonka":"R&D","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2023-05-01","note":"입사"}]},{"empId":"EMP-114","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"R&D인력","nick":"THOEURN(토이언)","name":"Khouth Bunthoeurn(콧 분튼)","grade":"T4_B1","kgrade":"","jikchak":"팀원","jikmu":"Publishing","join":"2024-10-16","gender":"M","localMgr":"녀음 짠보레이","director":"최기종","deptHead":"","type":"파견준비","wonka":"R&D","workplace":"","note":"7월 쿠콘 파견 예정","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"R&D","dispatchExtendable":false,"statusHistory":[{"type":"파견준비","date":"2024-10-16","note":"입사"}]},{"empId":"EMP-115","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"R&D인력","nick":"REX(렉스)","name":"Vong Pichdaraboth(워옹 삦다라봇)","grade":"T2_B2","kgrade":"C","jikchak":"팀원","jikmu":"JEX","join":"2022-08-17","gender":"M","localMgr":"치응 랏타","director":"최기종","deptHead":"","type":"파견준비","wonka":"R&D","workplace":"","note":"4월 마드라스체크 파견 예정","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"R&D","dispatchExtendable":false,"statusHistory":[{"type":"파견준비","date":"2022-08-17","note":"입사"}]},{"empId":"EMP-116","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"R&D인력","nick":"VANDA(완다)","name":"Phat Vanda(파앗 완다)","grade":"T2_B2","kgrade":"C","jikchak":"팀원","jikmu":"JEX","join":"2022-08-17","gender":"F","localMgr":"치응 랏타","director":"최기종","deptHead":"","type":"파견준비","wonka":"R&D","workplace":"","note":"4월 마드라스체크 파견 예정","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"R&D","dispatchExtendable":false,"statusHistory":[{"type":"파견준비","date":"2022-08-17","note":"입사"}]},{"empId":"EMP-117","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"R&D인력","nick":"NOLAN(놀란)","name":"Mean Khaw(미은 가워)","grade":"T2_M1","kgrade":"B","jikchak":"팀원","jikmu":"JEX","join":"2020-10-01","gender":"M","localMgr":"치응 랏타","director":"최기종","deptHead":"","type":"정규직원","wonka":"R&D","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2020-10-01","note":"입사"}]},{"empId":"EMP-118","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"R&D인력","nick":"SOVITA(소비타)","name":"Dara Sovita(다라 소위따)","grade":"T2_B2","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2023-09-01","gender":"M","localMgr":"","director":"최기종","deptHead":"","type":"정규직원","wonka":"R&D","workplace":"","note":"4/1 파견복귀 → 비즈플레이 B2B웹팀 이동","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2023-09-01","note":"입사"}]},{"empId":"EMP-119","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"R&D인력","nick":"MONIROIT(모니로잇)","name":"Morn Moniroit(머언 모니로앗)","grade":"T2_B2","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2024-01-01","gender":"M","localMgr":"","director":"최기종","deptHead":"","type":"정규직원","wonka":"R&D","workplace":"","note":"4/1 파견복귀 → 4/13 쿠콘웹팀 이동","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-01-01","note":"입사"}]},{"empId":"EMP-120","bumun":"캄보디아","center":"R&D 지원센터","bu":"","team":"R&D인력","nick":"MANNY(마니)","name":"Morng Many(마니)","grade":"T1_B1","kgrade":"","jikchak":"인턴","jikmu":"AOS","join":"2026-02-01","gender":"F","localMgr":"사카리","director":"최기종","deptHead":"","type":"인턴","wonka":"R&D","workplace":"","note":"2/01 입사","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"인턴","date":"2026-02-01","note":"입사"}]},{"empId":"EMP-121","bumun":"캄보디아","center":"로컬비즈니스센터","bu":"","team":"영업/CX","nick":"VITOU(뷔두)","name":"Lay Bunnavitou(라이 본나위뚜)","grade":"","kgrade":"","jikchak":"부장","jikmu":"Business","join":"2014-03-01","gender":"M","localMgr":"설욱환","director":"설욱환","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2014-03-01","note":"입사"}]},{"empId":"EMP-122","bumun":"캄보디아","center":"로컬비즈니스센터","bu":"","team":"영업/CX","nick":"NUT(넛)","name":"Un Lyranut(운 라놋)","grade":"","kgrade":"","jikchak":"팀원","jikmu":"Design, Media","join":"2024-03-01","gender":"F","localMgr":"라이 본나위뚜","director":"라이 본나위뚜","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-03-01","note":"입사"}]},{"empId":"EMP-123","bumun":"캄보디아","center":"로컬비즈니스센터","bu":"","team":"영업/CX","nick":"BOPHA(보파)","name":"Sovann Sokunbopha(소반 소쿤보파)","grade":"","kgrade":"","jikchak":"팀원","jikmu":"Business","join":"2024-08-12","gender":"M","localMgr":"라이 본나위뚜","director":"라이 본나위뚜","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-08-12","note":"입사"}]},{"empId":"EMP-124","bumun":"캄보디아","center":"로컬비즈니스센터","bu":"","team":"영업/CX","nick":"LIMCHHORNG(림청)","name":"Veng Lim Chhorng(웨잉 림청)","grade":"T4_B2","kgrade":"","jikchak":"팀원","jikmu":"Publishing","join":"2023-06-19","gender":"M","localMgr":"뷔두","director":"설욱환","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"1/16 R&D → 영업/CX 배치","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2023-06-19","note":"입사"}]},{"empId":"EMP-125","bumun":"캄보디아","center":"로컬비즈니스센터","bu":"","team":"영업/CX","nick":"MIN(민)","name":"Heng Hap(헹 합)","grade":"","kgrade":"","jikchak":"팀원","jikmu":"CX","join":"2014-01-01","gender":"M","localMgr":"라이 본나위뚜","director":"라이 본나위뚜","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2014-01-01","note":"입사"}]},{"empId":"EMP-126","bumun":"캄보디아","center":"로컬비즈니스센터","bu":"","team":"영업/CX","nick":"NAB(납)","name":"Kol Chamnab(껄 쩜납)","grade":"","kgrade":"","jikchak":"팀원","jikmu":"CX","join":"2014-03-01","gender":"M","localMgr":"라이 본나위뚜","director":"라이 본나위뚜","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2014-03-01","note":"입사"}]},{"empId":"EMP-127","bumun":"캄보디아","center":"로컬비즈니스센터","bu":"","team":"로컬아웃소싱","nick":"YAN(얀)","name":"Suon Yanchhuong(쑤언 얀충)","grade":"","kgrade":"","jikchak":"부장","jikmu":"CX","join":"2013-03-01","gender":"M","localMgr":"설욱환","director":"설욱환","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2013-03-01","note":"입사"}]},{"empId":"EMP-128","bumun":"캄보디아","center":"로컬비즈니스센터","bu":"","team":"로컬아웃소싱","nick":"PHATH(팟)","name":"San Phath(써언 팟)","grade":"T3_M1","kgrade":"","jikchak":"팀원","jikmu":"WEB","join":"2014-03-01","gender":"M","localMgr":"쑤언 얀충","director":"넹 짠나","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"신한은행 파견 중","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2014-03-01","note":"입사"}]},{"empId":"EMP-129","bumun":"캄보디아","center":"로컬비즈니스센터","bu":"","team":"로컬아웃소싱","nick":"YUOS(유어스)","name":"Yon Yuos(욘 유어)","grade":"T3_M1","kgrade":"","jikchak":"팀원","jikmu":"WEB","join":"2018-09-17","gender":"M","localMgr":"쑤언 얀충","director":"넹 짠나","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"PPCBank 파견 중","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2018-09-17","note":"입사"}]},{"empId":"EMP-130","bumun":"캄보디아","center":"로컬비즈니스센터","bu":"","team":"로컬아웃소싱","nick":"RAN(란)","name":"Kol Boran(껄 보란)","grade":"","kgrade":"","jikchak":"팀원","jikmu":"WEB","join":"2014-01-01","gender":"M","localMgr":"쑤언 얀충","director":"넹 짠나","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2014-01-01","note":"입사"}]},{"empId":"EMP-131","bumun":"캄보디아","center":"로컬비즈니스센터","bu":"","team":"로컬아웃소싱","nick":"PHANIT(파닛)","name":"Soeuk Sophanit(스윽 소파닛)","grade":"T3_B1","kgrade":"","jikchak":"팀원","jikmu":"WEB","join":"2024-08-12","gender":"M","localMgr":"쑤언 얀충","director":"넹 짠나","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2024-08-12","note":"입사"}]},{"empId":"EMP-132","bumun":"캄보디아","center":"로컬비즈니스센터","bu":"","team":"로컬아웃소싱","nick":"MESSI-KH(메시KH)","name":"Pao Chinda(바워 진따)","grade":"T3_M1","kgrade":"","jikchak":"팀원","jikmu":"JEX","join":"2020-10-01","gender":"M","localMgr":"쑤언 얀충","director":"넹 짠나","deptHead":"","type":"정규직원","wonka":"코사인_로컬비즈","workplace":"","note":"1/05 R&D → 로컬아웃소싱 배치","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2020-10-01","note":"입사"}]},{"empId":"EMP-133","bumun":"캄보디아","center":"경영지원센터","bu":"","team":"인사/관리","nick":"JANE(제인)","name":"(Dy Sovannvoleak)(디 소완볼레악)","grade":"","kgrade":"","jikchak":"부장","jikmu":"GM","join":"2013-03-01","gender":"F","localMgr":"설욱환","director":"설욱환","deptHead":"","type":"정규직원","wonka":"코사인_공통","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2013-03-01","note":"입사"}]},{"empId":"EMP-134","bumun":"캄보디아","center":"경영지원센터","bu":"","team":"인사/관리","nick":"TYNA(티나)","name":"Chum Savry(쫌 싸워리)","grade":"","kgrade":"","jikchak":"팀원","jikmu":"GM","join":"2014-11-13","gender":"F","localMgr":"디 소완볼레악","director":"디 소완볼레악","deptHead":"","type":"정규직원","wonka":"코사인_공통","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2014-11-13","note":"입사"}]},{"empId":"EMP-135","bumun":"캄보디아","center":"경영지원센터","bu":"","team":"인사/관리","nick":"Dok Thavy","name":"Dok Thavy (도옥 타위)","grade":"","kgrade":"","jikchak":"팀원","jikmu":"GM","join":"2025-10-08","gender":"F","localMgr":"디 소완볼레악","director":"디 소완볼레악","deptHead":"","type":"정규직원","wonka":"코사인_공통","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2025-10-08","note":"입사"}]},{"empId":"EMP-136","bumun":"캄보디아","center":"경영지원센터","bu":"","team":"인사/관리","nick":"ROTHA(로타)","name":"Heang Rotha(히응 로왓타)","grade":"","kgrade":"","jikchak":"팀원","jikmu":"GA","join":"2014-07-01","gender":"M","localMgr":"디 소완볼레악","director":"디 소완볼레악","deptHead":"","type":"정규직원","wonka":"코사인_공통","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2014-07-01","note":"입사"}]},{"empId":"EMP-137","bumun":"캄보디아","center":"경영지원센터","bu":"","team":"인사/관리","nick":"SYTHA(시타)","name":"Moeun Sytha(무은 시타)","grade":"","kgrade":"","jikchak":"팀원","jikmu":"GA","join":"2015-03-10","gender":"M","localMgr":"디 소완볼레악","director":"디 소완볼레악","deptHead":"","type":"정규직원","wonka":"코사인_공통","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2015-03-10","note":"입사"}]},{"empId":"EMP-138","bumun":"캄보디아","center":"경영지원센터","bu":"","team":"인사/관리","nick":"CHANNY(채니)","name":"Min Channy(먼 짠니)","grade":"","kgrade":"","jikchak":"팀원","jikmu":"GA","join":"2013-08-06","gender":"M","localMgr":"디 소완볼레악","director":"디 소완볼레악","deptHead":"","type":"정규직원","wonka":"코사인_공통","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2013-08-06","note":"입사"}]},{"empId":"EMP-139","bumun":"캄보디아","center":"경영지원센터","bu":"","team":"인사/관리","nick":"KOSAL(코살)","name":"Khun Kosal(쿤 꼬쌀)","grade":"","kgrade":"","jikchak":"팀원","jikmu":"GA","join":"2023-03-01","gender":"M","localMgr":"디 소완볼레악","director":"디 소완볼레악","deptHead":"","type":"정규직원","wonka":"코사인_공통","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2023-03-01","note":"입사"}]},{"empId":"EMP-140","bumun":"캄보디아","center":"경영지원센터","bu":"","team":"회계","nick":"RANY(라니)","name":"Pum Rany(뽐 라니)","grade":"","kgrade":"","jikchak":"부장","jikmu":"Account","join":"2013-03-01","gender":"F","localMgr":"설욱환","director":"설욱환","deptHead":"","type":"정규직원","wonka":"코사인_공통","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2013-03-01","note":"입사"}]},{"empId":"EMP-141","bumun":"캄보디아","center":"경영지원센터","bu":"","team":"회계","nick":"ALICE(엘리스)","name":"Sann Puthy(산 뿓티)","grade":"","kgrade":"","jikchak":"팀원","jikmu":"Account","join":"2013-06-17","gender":"F","localMgr":"뽐 라니","director":"뽐 라니","deptHead":"","type":"정규직원","wonka":"코사인_공통","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2013-06-17","note":"입사"}]},{"empId":"EMP-142","bumun":"캄보디아","center":"경영지원센터","bu":"","team":"회계","nick":"LILY(릴리)","name":"Ly Sreylin(리 쓰레이린)","grade":"","kgrade":"","jikchak":"팀원","jikmu":"Account","join":"2021-03-29","gender":"F","localMgr":"뽐 라니","director":"뽐 라니","deptHead":"","type":"정규직원","wonka":"코사인_공통","workplace":"","note":"","status":"재직","dispatchStart":"","dispatchEnd":"","dispatchCity":"","dispatchClient":"","dispatchExtendable":false,"statusHistory":[{"type":"정규직원","date":"2021-03-29","note":"입사"}]}];
+
+let emps=[];
+
+function getTodayStr(){
+  const t=new Date();
+  const p=n=>String(n).padStart(2,"0");
+  return t.getFullYear()+"-"+p(t.getMonth()+1)+"-"+p(t.getDate());
+}
+function setRefDate(id){
+  const el=document.getElementById(id);
+  if(el) el.value=getTodayStr();
+}
+
+function calcYeon(joinStr){
+  if(!joinStr) return 0;
+  try{
+    const jd=new Date(joinStr);
+    const rdEl=document.getElementById('refDate');
+    const base=rdEl&&rdEl.value?new Date(rdEl.value):new Date();
+    return Math.max(0, Math.floor((base-jd)/(365.25*24*3600*1000)));
+  }catch(e){return 0;}
+}
+
+function toggleDispatchFields(){
+  const t=document.getElementById('ftypeI').value;
+  const isDisp=['파견','파견준비','파견검토'].includes(t);
+  const isPaegen = t==='파견';
+  ['fdispatchStart','fdispatchEnd','fdispatchCity','fdispatchClient','fdispatchExtendable'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.closest('.fg').style.display=isDisp?'':'none';
+  });
+  // 파견이면 현지매니저 비활성
+  const lmEl=document.getElementById('flocalMgr');
+  if(lmEl){
+    lmEl.disabled=isPaegen;
+    lmEl.style.opacity=isPaegen?'0.4':'';
+    lmEl.style.cursor=isPaegen?'not-allowed':'';
+    lmEl.title=isPaegen?'파견 직원은 현지매니저를 지정하지 않습니다':'';
+    if(isPaegen) lmEl.value='';
+  }
+}
+function updateYeonDisplay(){
+  const join=document.getElementById('fjoin')?.value;
+  const el=document.getElementById('fyeon');
+  if(el&&join) el.value=calcYeon(join)+'년';
+  else if(el) el.value='';
+}
+
+// ── 개발자 인력 필터 ──
+const NON_DEV_JIKMU = ['GM','GA','Account','Business','CX'];
+let SHOW_NON_DEV = false;  // 설정에서 토글 가능
+function isDevStaff(e){
+  if(!SHOW_NON_DEV && NON_DEV_JIKMU.includes(e.jikmu)) return false;
+  return true;
+}
+function devEmps(){ return emps.filter(isDevStaff); }
+function loadEmps(){
+  const r=localStorage.getItem(SK);
+  if(r){emps=JSON.parse(r);return;}
+  // First run: use embedded data
+  emps=JSON.parse(JSON.stringify(BASE_DATA));
+  localStorage.setItem(SK,JSON.stringify(emps));
+}
+function saveEmps(){localStorage.setItem(SK,JSON.stringify(emps));}
+
+function doLogin(){
+  const id=document.getElementById("lid").value.trim();
+  const pw=document.getElementById("lpw").value;
+  // localStorage 사용자 목록 우선 조회, 없으면 기본 ACCS fallback
+  const lsUsers=loadUsers();
+  const lsUser=lsUsers.find(u=>u.id===id&&u.pw===pw);
+  const acc=lsUser||ACCS[id];
+  if(!acc||(!lsUser&&acc.pw!==pw)){
+    document.getElementById("lerr").classList.add("show");
+    document.getElementById("lpw").value="";
+    document.getElementById("lpw").focus();
+    return;
+  }
+  document.getElementById("lerr").classList.remove("show");
+  CU={id, name:acc.name, role:acc.role, canEdit:acc.canEdit};
+  sessionStorage.setItem("cos_s",JSON.stringify(CU));
+  startApp();
+}
+function doLogout(){
+  sessionStorage.removeItem("cos_s");CU=null;
+  document.getElementById("MA").style.display="none";
+  document.getElementById("LP").style.display="flex";
+  document.getElementById("lid").value="";document.getElementById("lpw").value="";
+}
+function startApp(){
+  document.getElementById("LP").style.display="none";
+  document.getElementById("MA").style.display="flex";
+  document.getElementById("sbAv").textContent=CU.name[0];
+  document.getElementById("sbNm").textContent=CU.name;
+  document.getElementById("sbRl").textContent=CU.role;
+  const an=document.getElementById('adminNav');
+  if(an)an.style.display=CU.canEdit?'':'none';
+  const today=new Date();const pad=n=>String(n).padStart(2,"0");const todayStr=today.getFullYear()+"-"+pad(today.getMonth()+1)+"-"+pad(today.getDate());const rdEl=document.getElementById("refDate");if(rdEl)rdEl.value=todayStr;  loadEmps();updateAll();setTimeout(()=>setPill("dashboard"), 80);setTimeout(()=>{const d30=emps.filter(e=>e.type==="파견"&&(()=>{const d=calcDday(e.dispatchEnd);return d!==null&&d<=30;})());if(d30.length){const al=document.getElementById("dash-alert");if(al){al.style.display="flex";document.getElementById("dash-alert-txt").textContent=`파견 계약 만료 30일 이내: ${d30.map(e=>e.nick||e.name).join(" · ")} — ${d30.length}명`;}}},100);
+  toast("✅ "+CU.name+"님 환영합니다 ("+devEmps().filter(e=>e.type!=="한국파견").length+"명 개발자 인력)","ok");
+}
+
+const PM={dashboard:{t:"대시보드",s:"2026년 개발자 인력 현황"},list:{t:"전체 인력",s:"전체 직원 검색 및 관리"},outsourcing:{t:"아웃소싱 인력",s:"아웃소싱/파견센터 재직 인력"},dispatch:{t:"파견 인력",s:"한국 파견 현황 및 D-Day 관리"},rnd:{t:"R&D지원 인력",s:"R&D 지원센터 소속 인력"},summary:{t:"고객사별 인력현황",s:"고객사별 아웃소싱/파견 인력 현황"},"settings-org":{t:"조직 관리",s:"센터/부/실/팀 구조 편집"},"settings-users":{t:"사용자 관리",s:"계정 및 권한 관리"}};
+// 가상 페이지: 리스트 페이지를 센터 필터로 표시
+
+function setPill(id, cnt){
+  const el = document.getElementById('tpill');
+  if(!el) return;
+  const cfg = {
+    dashboard:   {cls:'pill-blue',  pre:'총 '},
+    list:        {cls:'pill-blue',  pre:'총 '},
+    outsourcing: {cls:'pill-blue',  pre:''},
+    dispatch:    {cls:'pill-amber', pre:''},
+    rnd:         {cls:'pill-green', pre:''},
+    summary:     {cls:'pill-blue',  pre:''}
+  };
+  const c = cfg[id];
+  if(!c){ el.style.display='none'; return; }
+  el.style.display = '';
+  el.className = 'pill ' + c.cls;
+  if(cnt !== undefined){
+    el.textContent = c.pre + cnt + '명';
+  } else {
+    const d = devEmps().filter(e => e.type !== '한국파견');
+    const n = id==='outsourcing' ? d.filter(e=>e.center==='아웃소싱/파견센터'&&e.type!=='파견').length
+            : id==='dispatch'    ? emps.filter(e=>e.type==='파견').length
+            : id==='rnd'         ? d.filter(e=>e.center==='R&D 지원센터').length
+            : d.length;
+    el.textContent = c.pre + n + '명';
+  }
+}
+const VPAGE={outsourcing:{real:'list',center:'아웃소싱/파견센터'},rnd:{real:'list',center:'R&D 지원센터'}};
+function showPage(id){
+  const vp=VPAGE[id];
+  const realId=vp?vp.real:id;
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".navi").forEach(n=>n.classList.remove("active"));
+  const pg=document.getElementById("page-"+realId);
+  if(pg)pg.classList.add("active");
+  const info=PM[id]||{t:id,s:''};
+  document.getElementById("ptitle").textContent=info.t;
+  document.getElementById("psub").textContent=info.s;
+  if(realId==="dashboard")rd();
+  if(realId==="list"){
+    // 기준일자 항상 오늘로 리셋
+    setRefDate('refDate');
+    // 전체인력: 항상 센터 필터 초기화
+    const fcEl=document.getElementById('fc');
+    if(!vp && fcEl) fcEl.value='';
+    // 센터 필터 표시 제어: 가상페이지(아웃소싱/R&D)는 센터 선택 숨김
+    if(fcEl) fcEl.style.display=vp?'none':'';
+    pf();rl();
+    if(vp&&vp.center){
+      if(fcEl) fcEl.value=vp.center;
+      rl();
+    }
+  }
+  if(id==="summary"){renderSummaryPage();}
+  if(id==="settings-org")renderSettingsOrg();
+  if(id==="settings-users"){renderSettingsUsers();resetUserForm();toggleUserType();}
+  if(id==="dispatch")renderDispatchPage();
+  // nav 활성화
+  const navEl=document.getElementById('nav-'+id);
+  if(navEl)navEl.classList.add('active');
+  setTimeout(()=>setPill(id), 50);
+  // 파견 외 페이지로 이동 시 경고 알림 숨김
+  if(id!=='dispatch'){
+    const ha=document.getElementById('dispatch-head-alert');
+    if(ha) ha.style.display='none';
+  }
+}
+function qf(t){showPage("list");document.getElementById("ft").value=t;rl();}
+function updateAll(){uc();rd();}
+function uc(){
+  const nonKR=devEmps().filter(e=>e.type!=="한국파견");
+  const t=nonKR.length;
+}
+
+function rd(){
+  const nk=devEmps().filter(e=>e.type!=="한국파견");
+  const t=nk.length,r=nk.filter(e=>e.type==="정규직원").length,p=nk.filter(e=>e.type==="파견").length,pp=nk.filter(e=>e.type==="파견준비").length,i=nk.filter(e=>e.type==="인턴").length;
+  const os=nk.filter(e=>e.center==="아웃소싱/파견센터"&&e.type!=="파견"&&e.type!=="파견준비"&&e.type!=="파견검토").length;
+  const rd=nk.filter(e=>e.center==="R&D 지원센터").length;
+  document.getElementById("sg").innerHTML=`
+    <div class="sc c1" style="cursor:pointer" onclick="showPage('list')"><div class="scl">개발인력</div><div class="scn">${t}</div><div class="scd">전체 관리 인원</div></div>
+    <div class="sc c2" style="cursor:pointer" onclick="showPage('list');document.getElementById('fc').value='아웃소싱/파견센터';rl()"><div class="scl">아웃소싱</div><div class="scn">${os}</div><div class="scd">아웃소싱/파견센터</div></div>
+    <div class="sc c3" style="cursor:pointer" onclick="showPage('dispatch')"><div class="scl">파견</div><div class="scn">${p}</div><div class="scd">현재 한국 파견 중</div></div>
+    <div class="sc c4" style="cursor:pointer" onclick="showPage('list');document.getElementById('fc').value='R&D 지원센터';rl()"><div class="scl">R&D지원</div><div class="scn">${rd}</div><div class="scd">R&D 지원센터</div></div>`;
+  const cb=(k)=>{const m={};nk.forEach(e=>{const v=e[k]||"미기재";m[v]=(m[v]||0)+1;});return Object.entries(m).sort((a,b)=>b[1]-a[1]);};
+  const rb=(id,en)=>{const mx=Math.max(...en.map(([,v])=>v),1);document.getElementById(id).innerHTML=en.map(([k,v],i)=>`<div class="bi"><div class="bm"><span>${k}</span><span class="bv" style="color:${COLORS[i%COLORS.length]}">${v}명</span></div><div class="bt"><div class="bf" style="width:${(v/mx*100).toFixed(0)}%;background:${COLORS[i%COLORS.length]}"></div></div></div>`).join("");};
+  // 아웃소싱/파견 현황 차트 (A안: 도넛 2개)
+  (function(){
+    const osNk=nk.filter(e=>e.center==="아웃소싱/파견센터");
+    const osReg=osNk.filter(e=>e.type!=="파견");
+    const osDisp=osNk.filter(e=>e.type==="파견");
+    const toMap=(arr)=>{const m={};arr.forEach(e=>{const v=e.wonka||"미기재";m[v]=(m[v]||0)+1;});return Object.entries(m).sort((a,b)=>b[1]-a[1]);};
+    const osEn=toMap(osReg), dpEn=toMap(osDisp);
+    const osTotal=osReg.length, dpTotal=osDisp.length;
+    const blueC=["#185FA5","#378ADD","#85B7EB","#B5D4F4","#E6F1FB"];
+    const ambrC=["#854F0B","#BA7517","#EF9F27","#FAC775","#FAEEDA"];
+    function mkDonut(en,total,colors){
+      const cx=130,cy=130,R=104,ri=64;
+      let ang=-Math.PI/2,slices="",pctL="",legend="";
+      en.forEach(([k,v],i)=>{
+        const pct=v/total,a=pct*2*Math.PI;
+        const x1=cx+R*Math.cos(ang),y1=cy+R*Math.sin(ang);
+        const x2=cx+R*Math.cos(ang+a),y2=cy+R*Math.sin(ang+a);
+        const xi=cx+ri*Math.cos(ang),yi=cy+ri*Math.sin(ang);
+        const xi2=cx+ri*Math.cos(ang+a),yi2=cy+ri*Math.sin(ang+a);
+        const large=a>Math.PI?1:0;
+        const fill=colors[i%colors.length];
+        slices+=`<path d="M${cx},${cy} L${x1.toFixed(2)},${y1.toFixed(2)} A${R},${R} 0 ${large},1 ${x2.toFixed(2)},${y2.toFixed(2)} L${xi2.toFixed(2)},${yi2.toFixed(2)} A${ri},${ri} 0 ${large},0 ${xi.toFixed(2)},${yi.toFixed(2)} Z" fill="${fill}" opacity="0.9" style="cursor:pointer;transition:opacity .15s" onmouseenter="this.setAttribute('opacity','1')" onmouseleave="this.setAttribute('opacity','0.9')"><title>${k}: ${v}명 (${(pct*100).toFixed(1)}%)</title></path>`;
+        if(pct>=0.06){const ma=ang+a/2,mr=(R+ri)/2;pctL+=`<text x="${(cx+mr*Math.cos(ma)).toFixed(1)}" y="${(cy+mr*Math.sin(ma)).toFixed(1)}" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="10" font-weight="700" font-family="JetBrains Mono,monospace" pointer-events="none">${(pct*100).toFixed(0)}%</text>`;}
+        legend+=`<div style="display:flex;align-items:center;gap:7px;padding:4px 0;font-size:12px;border-bottom:1px solid var(--border)"><div style="width:10px;height:10px;border-radius:2px;background:${fill};flex-shrink:0"></div><span style="color:var(--text2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${k}</span><span style="color:${fill};font-weight:700;font-family:JetBrains Mono,monospace">${v}명</span><span style="color:var(--text3);font-family:JetBrains Mono,monospace;font-size:11px;margin-left:4px">${(pct*100).toFixed(1)}%</span></div>`;
+        ang+=a;
+      });
+      return {slices,pctL,legend,cx,cy};
+    }
+    const os=mkDonut(osEn,osTotal,blueC);
+    const dp=mkDonut(dpEn,dpTotal,ambrC);
+    function panel(label,total,badgeStyle,d,en){
+      return `<div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:12px;font-weight:700;color:var(--text)">${label}</span>
+          <span style="padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;${badgeStyle}">${total}명</span>
+        </div>
+        <svg width="100%" viewBox="0 0 260 260" style="display:block">
+          ${d.slices}${d.pctL}
+          <text x="${d.cx}" y="${d.cy-10}" text-anchor="middle" fill="var(--text)" font-size="30" font-weight="800" font-family="JetBrains Mono,monospace">${total}</text>
+          <text x="${d.cx}" y="${d.cy+14}" text-anchor="middle" fill="var(--text3)" font-size="11" font-family="Noto Sans KR,sans-serif">명</text>
+        </svg>
+        <div>${d.legend}</div>
+      </div>`;
+    }
+    document.getElementById("ch-wonka").innerHTML=`
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;align-items:start">
+        ${panel("아웃소싱",osTotal,"background:rgba(79,134,247,.12);color:var(--accent)",os,osEn)}
+        ${panel("파견",dpTotal,"background:rgba(224,138,32,.12);color:var(--orange)",dp,dpEn)}
+      </div>`;
+  })();
+  rb("ch-type",cb("jikmu"));
+}
+
+function pf(){
+  const fill=(id,arr,lbl)=>{const s=document.getElementById(id);const cv=s.value;s.innerHTML=`<option value="">${lbl}</option>`+arr.map(v=>`<option ${v===cv?"selected":""}>${v}</option>`).join("");};
+  fill("fc",[...new Set(devEmps().map(e=>e.center).filter(Boolean))].sort(),"전체 센터");
+  fill("fb",[...new Set(devEmps().map(e=>e.bu).filter(Boolean))].sort(),"전체 부/실");
+  fill("fw",[...new Set(devEmps().map(e=>e.wonka).filter(Boolean))].sort(),"전체 원가부서");
+  populateFcenter();
+  fill("ft",[...new Set(devEmps().map(e=>e.type).filter(Boolean))],"전체 고용형태");
+  fill("fp",[...new Set(devEmps().map(e=>e.jikchak).filter(Boolean))].sort(),"전체 직책");
+  const dl=(id,arr)=>{const d=document.getElementById(id);if(d)d.innerHTML=arr.map(v=>`<option value="${v}">`).join("");};
+  dl("dlc",[...new Set(emps.map(e=>e.center).filter(Boolean))]);
+  dl("dlb",[...new Set(emps.map(e=>e.bu).filter(Boolean))]);
+  dl("dlt",[...new Set(emps.map(e=>e.team).filter(Boolean))]);
+  dl("dlj",[...new Set(emps.map(e=>e.jikmu).filter(Boolean))]);
+}
+
+// SD: 0=없음, 1=오름차순, -1=내림차순
+let SK2="",SD=0;
+function sb(k){
+  if(SK2!==k){SK2=k;SD=1;}          // 새 컬럼 클릭 → 오름차순
+  else if(SD===1){SD=-1;}            // 같은 컬럼 두번째 → 내림차순
+  else{SK2="";SD=0;}                 // 같은 컬럼 세번째 → 정렬해제
+  rl();
+}
+
+function rl(){
+  const q=(document.getElementById("sq")?.value||"").toLowerCase();
+  const fc=document.getElementById("fc")?.value||"";
+  const fb=document.getElementById("fb")?.value||"";
+  const fw=document.getElementById("fw")?.value||"";
+  const ft=document.getElementById("ft")?.value||"";
+  const fp=document.getElementById("fp")?.value||"";
+  let list=devEmps().filter(e=>{
+    const ok=!q||[e.nick,e.name,e.jikmu,e.team,e.bu,e.center,e.wonka,e.note,e.localMgr,e.director,e.deptHead,e.dispatchCity,e.dispatchClient].some(s=>(s||"").toLowerCase().includes(q));
+    return ok&&(!fc||e.center===fc)&&(!fb||e.bu===fb)&&(!fw||e.wonka===fw)&&(!ft||e.type===ft)&&(!fp||e.jikchak===fp);
+  });
+  if(SK2&&SD!==0)list=[...list].sort((a,b)=>{const av=a[SK2]||"",bv=b[SK2]||"";return av<bv?-SD:av>bv?SD:0;});
+  const tbl=document.getElementById("etbl"),ee=document.getElementById("ee");
+  document.getElementById("ecnt").textContent=list.length+"명 / 전체 "+devEmps().filter(e=>e.type!=="한국파견").length+"명";
+  if(!list.length){tbl.innerHTML="";ee.style.display="";return;}
+  ee.style.display="none";
+  const ce=CU?.canEdit;
+  // 정렬 아이콘: 오름차순▲, 내림차순▼, 해제시 빈값
+  const ar=k=>SK2===k?(SD===1?" ▲":SD===-1?" ▼":""):"";
+  const _pp=document.getElementById('tpill');if(_pp&&_pp.style.display!=='none')_pp.textContent=(_pp.textContent.replace(/\d+명$/,''))+list.length+'명';
+  tbl.innerHTML=`<thead><tr>
+    <th onclick="sb('center')">센터${ar("center")}</th>
+    <th onclick="sb('bu')">부/실 › 팀${ar("bu")}</th>
+    <th onclick="sb('nick')">호칭/본명${ar("nick")}</th>
+    <th onclick="sb('grade')">등급${ar("grade")}</th>
+    <th onclick="sb('jikchak')">직책${ar("jikchak")}</th>
+    <th onclick="sb('jikmu')">직무${ar("jikmu")}</th>
+    <th onclick="sb('type')">고용형태${ar("type")}</th>
+    <th onclick="sb('wonka')">원가부서${ar("wonka")}</th>
+    <th onclick="sb('yeon')">연차${ar("yeon")}</th>
+    <th>비고</th>
+  </tr></thead><tbody>${list.map(e=>{
+    const idx=emps.indexOf(e);const ini=(e.nick||e.name||"?")[0];
+    return `<tr>
+      <td style="font-size:11px;color:var(--text3)">${e.center||"-"}</td>
+      <td style="font-size:11px">${[e.bu,e.team].filter(Boolean).join(" › ")||"-"}</td>
+      <td style="cursor:pointer;min-width:150px" onclick="openDet(${idx})">
+        <div class="nc"><div class="av av${e.gender||"_"}">${ini}</div>
+        <div><div class="n1">${e.nick||"-"}</div><div class="n2">${e.name||""}</div></div></div>
+      </td>
+      <td>${e.grade?`<span class="tag t-grade">${e.grade}</span>`:"-"}</td>
+      <td>${e.jikchak?`<span class="tag t-직책">${e.jikchak}</span>`:"-"}</td>
+      <td style="font-size:11px;color:var(--text2)">${e.jikmu||"-"}</td>
+      <td><span class="tag t-${(e.type||"").replace(/\s/g,"")}">${e.type||"-"}</span></td>
+      <td style="font-size:11px">${e.wonka||"-"}</td>
+      <td class="mono" style="color:var(--text3)">${e.join?calcYeon(e.join)+"년":"-"}</td>
+      <td style="font-size:11px;color:${e.note?"var(--orange)":"var(--text3)"};max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${e.note||""}">${e.note||"-"}</td>
+
+    </tr>`;
+  }).join("")}</tbody>`;
+}
+
+function ro(){
+  const tree={};
+  devEmps().forEach(e=>{
+    const c=e.center||"(미지정)",b=e.bu||"(미지정)",t=e.team||"(팀 미지정)";
+    if(!tree[c])tree[c]={};if(!tree[c][b])tree[c][b]={};if(!tree[c][b][t])tree[c][b][t]=[];
+    tree[c][b][t].push(e);
+  });
+  let h="";
+  for(const [c,bs] of Object.entries(tree)){
+    const ct=emps.filter(e=>(e.center||"(미지정)")===c).length;
+    h+=`<div class="oc"><div class="och"><span class="ochn">🏢 ${c}</span><span class="pill">${ct}명</span></div>`;
+    for(const [b,ts] of Object.entries(bs)){
+      if(b==='_mgr')continue;
+      const bt=Object.values(ts).flat().length;
+      h+=`<div class="obu"><div class="obun">📂 ${b} <span style="color:var(--text3);font-weight:400">(${bt}명)</span></div>`;
+      for(const [t,ms] of Object.entries(ts)){
+        h+=`<div class="otm"><div class="otmn">📋 ${t} (${ms.length}명)</div><div class="ocs">`;
+        ms.forEach(m=>{
+          const idx=emps.indexOf(m);
+          h+=`<div class="ochp" onclick="openDet(${idx})">
+            <div class="av av${m.gender||"_"}" style="width:22px;height:22px;font-size:10px">${(m.nick||m.name||"?")[0]}</div>
+            <span>${m.nick||m.name}</span>
+            ${m.jikchak?`<span class="tag t-직책" style="padding:1px 5px;font-size:10px">${m.jikchak}</span>`:""}
+            ${(m.type&&m.type!=="정규직원")?`<span class="tag t-${(m.type||"").replace(/\s/g,"")}" style="padding:1px 5px;font-size:10px">${m.type}</span>`:""}
+          </div>`;
+        });
+        h+=`</div></div>`;
+      }
+      h+=`</div>`;
+    }
+    h+=`</div>`;
+  }
+  document.getElementById("ow").innerHTML=h;
+}
+
+let orgViewMode = 'chart';
+function setOrgView(mode){
+  orgViewMode = mode;
+  document.getElementById('org-btn-card').className = 'btn ' + (mode==='card'?'btna':'btng');
+  document.getElementById('org-btn-chart').className = 'btn ' + (mode==='chart'?'btna':'btng');
+  document.getElementById('ow').style.display = mode==='card'?'':'none';
+  document.getElementById('ow-chart').style.display = mode==='chart'?'':'none';
+  if(mode==='chart') renderOrgChart();
+}
+
+function renderOrgChart(){
+  const filtered = devEmps().filter(e=>e.type!=='한국파견');
+  const total = filtered.length;
+  const centers = ['아웃소싱센터','파견센터','로컬비즈니스센터','R&D Cost센터','경영지원센터'];
+
+  function getCenterData(center){
+    const list = filtered.filter(e=>e.center===center);
+    const sub = {};
+    list.forEach(e=>{ const key=e.wonka||e.team||'기타'; sub[key]=(sub[key]||0)+1; });
+    return {total:list.length, sub};
+  }
+  const cdata = {};
+  centers.forEach(cn=>{ cdata[cn]=getCenterData(cn); });
+
+  const defaultMgrs = {
+    '아웃소싱센터':'최기종','파견센터':'황정원/최승운',
+    '로컬비즈니스센터':'뵈두','R&D Cost센터':'보레이','경영지원센터':'볼레악'
+  };
+  const mgrs = {};
+  centers.forEach(cn=>{
+    mgrs[cn]=(orgData&&orgData[cn]&&orgData[cn]._mgr)||defaultMgrs[cn]||'';
+  });
+
+  const centerAccent = {
+    '아웃소싱센터':'#f97316','파견센터':'#22c55e',
+    '로컬비즈니스센터':'#3b82f6','R&D Cost센터':'#a855f7','경영지원센터':'#10b981'
+  };
+
+  // execData에서 법인장/부법인장 동적으로 읽기
+  const execs = execData && execData.length ? execData : [{name:'설욱환',title:'법인장'},{name:'최기종',title:'부법인장'}];
+
+  function subRows(center){
+    const {sub}=cdata[center];
+    return Object.entries(sub).map(([k,v])=>
+      `<div class="och-row"><span class="och-key">[${k}]</span><span class="och-val">${v}명</span></div>`
+    ).join('');
+  }
+
+  function execBox(ex, isFirst){
+    const cls = isFirst ? 'och-exec-box och-exec-first' : 'och-exec-box och-exec-sub';
+    return `<div class="${cls}">
+      <div class="och-exec-name">${ex.name}</div>
+      <div class="och-exec-title">${ex.title}</div>
+    </div>`;
+  }
+
+  function centerBox(center){
+    const {total:ct}=cdata[center];
+    const mgr=mgrs[center]||'';
+    const ac=centerAccent[center]||'#888';
+    return `<div class="och-box" style="--ac:${ac}">
+      <div class="och-head" style="border-bottom:2px solid ${ac}">
+        <div class="och-cname">${center}</div>
+        <div class="och-mgr">${mgr?'👤 '+mgr:''}</div>
+        <div class="och-total" style="color:${ac}">${ct}</div>
+      </div>
+      <div class="och-subs">${subRows(center)}</div>
+    </div>`;
+  }
+
+  // 경영진 연결선 HTML
+  function execChain(){
+    let h = `<div class="och-exec-chain">`;
+    execs.forEach((ex,i)=>{
+      h += execBox(ex, i===0);
+      if(i < execs.length-1) h += `<div class="och-vline"></div>`;
+    });
+    h += `</div>`;
+    return h;
+  }
+
+  const h = `<div class="och-wrap">
+    <div class="och-title-row">
+      <div class="och-title">캄보디아 KOSIGN 조직도</div>
+      <div style="text-align:right">
+        <div class="och-total-num">${total}명</div>
+        <div class="och-date">${new Date().toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit'})} 기준</div>
+      </div>
+    </div>
+    ${execChain()}
+    <div class="och-vline"></div>
+    <div class="och-hline"></div>
+    <div class="och-vline" style="margin-bottom:8px"></div>
+    <div class="och-centers">
+      ${centers.map(cn=>centerBox(cn)).join('')}
+    </div>
+  </div>`;
+
+  document.getElementById('ow-chart').innerHTML = h;
+}
+
+function openDet(idx){
+  const e=emps[idx];if(!e)return;
+  window._detIdx=idx;
+  renderDetTab(e,'basic');
+  document.getElementById("dov").style.display="flex";
+}
+function renderDetTab(e,tab){
+  const dr=(k,v)=>`<div class="drow"><span class="dk">${k}</span><span class="dv">${v||"-"}</span></div>`;
+  const tt=`<span class="tag t-${(e.type||"").replace(/\s/g,"")}">${e.type||"-"}</span>`;
+  const ce=CU?.canEdit;
+  const idx=emps.indexOf(e);
+  const tabs=`<div style="display:flex;gap:0;margin-bottom:14px;border-bottom:1px solid var(--border)">
+    ${['basic','dispatch','history'].map((t,i)=>{
+      const lbl=['기본정보','파견정보','변경이력'][i];
+      const active=t===tab;
+      return `<div onclick="renderDetTab(emps[${idx}],'${t}')" style="padding:7px 14px;font-size:12px;cursor:pointer;font-weight:${active?700:500};color:${active?'var(--accent)':'var(--text2)'};border-bottom:${active?'2px solid var(--accent)':'2px solid transparent'};margin-bottom:-1px">${lbl}</div>`;
+    }).join('')}
+  </div>`;
+
+  let body='';
+  if(tab==='basic'){
+    body=`
+    <div class="dhdr">
+      <div class="davlg av${e.gender||"_"}">${(e.nick||e.name||"?")[0]}</div>
+      <div>
+        <div class="dname">${e.nick||"-"}</div>
+        <div class="dsub">${e.name||""} ${e.jikchak?"· "+e.jikchak:""}</div>
+        <div style="margin-top:4px;font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace">${e.empId||""}</div>
+      </div>
+    </div>
+    <div class="dsec"><div class="dsect">조직</div>${dr("부문",e.bumun)}${dr("센터",e.center)}${dr("부/실",e.bu)}${dr("팀",e.team)}</div>
+    <div class="dsec"><div class="dsect">직급/직무</div>${dr("등급",e.grade)}${dr("K등급",e.kgrade)}${dr("직책",e.jikchak)}${dr("직무",e.jikmu)}</div>
+    <div class="dsec"><div class="dsect">인적 정보</div>${dr("성별",e.gender==="F"?"여성":"남성")}${dr("입사일자",e.join)}${dr("연차",e.join?calcYeon(e.join)+"년":"")}</div>
+    <div class="dsec"><div class="dsect">매니저</div>${dr("현지매니저",e.localMgr)}${dr("업무지시자",e.director)}${dr("부서장",e.deptHead)}</div>
+    <div class="dsec"><div class="dsect">고용/소속</div>
+      <div class="drow"><span class="dk">고용형태</span><span class="dv">${tt}</span></div>
+      ${dr("원가부서",e.wonka)}${dr("재직상태",e.status||"재직")}
+    </div>
+    ${e.note?`<div class="dsec"><div class="dsect">비고</div><div class="dnote">${e.note}</div></div>`:""}
+    ${ce?`<div class="dact">
+      <button class="btn btng" onclick="closeDet();openEdit(${idx})">✏️ 수정</button>
+      <button class="btn btnd" onclick="closeDet();delEmp(${idx})">삭제</button>
+    </div>`:""}`;
+  } else if(tab==='dispatch'){
+    const dday=(end)=>{
+      if(!end)return "-";
+      const d=Math.ceil((new Date(end)-new Date())/86400000);
+      const c=d<=30?"var(--red)":d<=60?"var(--orange)":"var(--green)";
+      return `<span style="color:${c};font-weight:700;font-family:'JetBrains Mono',monospace">${d>0?"D-"+d:"만료"}</span>`;
+    };
+    body=`
+    <div class="dhdr">
+      <div class="davlg av${e.gender||"_"}">${(e.nick||e.name||"?")[0]}</div>
+      <div><div class="dname">${e.nick||"-"}</div><div class="dsub">${e.type||"-"}</div></div>
+    </div>
+    ${(e.dispatchStart||e.dispatchEnd||e.dispatchCity)?`
+    <div class="dsec"><div class="dsect">파견 정보</div>
+      ${dr("파견 고객사",e.dispatchClient)}
+      ${dr("파견 도시",e.dispatchCity)}
+      ${dr("파견 시작",e.dispatchStart)}
+      ${dr("파견 종료",e.dispatchEnd)}
+      <div class="drow"><span class="dk">D-Day</span><span class="dv">${dday(e.dispatchEnd)}</span></div>
+      ${dr("연장 가능",e.dispatchExtendable?"가능":"미정")}
+    </div>`:`<div style="color:var(--text3);font-size:12px;padding:20px 0;text-align:center">파견 정보가 없습니다</div>`}
+    ${ce&&['파견','파견준비'].includes(e.type)?`
+    <div class="dsec"><div class="dsect">상태 변경</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+        ${e.type==='파견준비'?`<button class="btn btnp btnsm" onclick="changeDispatchStatus(${idx},'파견')">✈️ 파견 시작</button>`:""}
+        ${e.type==='파견'?`<button class="btn btnsm" style="background:rgba(24,169,110,.1);color:var(--green);border-color:rgba(24,169,110,.3)" onclick="changeDispatchStatus(${idx},'복귀')">🏠 복귀 처리</button>`:""}
+        ${e.type==='파견'?`<button class="btn btnsm" style="background:rgba(79,134,247,.1);color:var(--accent);border-color:rgba(79,134,247,.3)" onclick="extendDispatch(${idx})">🔄 연장 처리</button>`:""}
+      </div>
+    </div>`:""}`;
+  } else {
+    const hist=(e.statusHistory||[]).slice().reverse();
+    body=`
+    <div class="dhdr">
+      <div class="davlg av${e.gender||"_"}">${(e.nick||e.name||"?")[0]}</div>
+      <div><div class="dname">${e.nick||"-"}</div><div class="dsub">변경 이력</div></div>
+    </div>
+    <div class="dsec">
+      ${hist.length?hist.map((h,i)=>`
+        <div style="display:flex;gap:10px;padding:8px 0;border-bottom:${i<hist.length-1?'1px solid var(--border)':'none'}">
+          <div style="width:10px;height:10px;border-radius:50%;background:${i===0?'var(--accent)':'var(--border2)'};margin-top:4px;flex-shrink:0"></div>
+          <div>
+            <div style="font-size:12px;font-weight:700">${h.type||"-"}</div>
+            <div style="font-size:11px;color:var(--text3)">${h.date||""} ${h.note?'· '+h.note:""}</div>
+          </div>
+        </div>`).join('')
+      :'<div style="color:var(--text3);font-size:12px;padding:20px 0;text-align:center">이력이 없습니다</div>'}
+    </div>`;
+  }
+  document.getElementById("dc").innerHTML=tabs+body;
+  document.getElementById("dov").style.display="flex";
+}
+function closeDet(){document.getElementById("dov").style.display="none";}
+
+function populateFwonka(cur){
+  const sel=document.getElementById('fwonkaI');
+  if(!sel) return;
+  const vals=[...new Set(emps.map(e=>e.wonka).filter(Boolean))].sort();
+  sel.innerHTML='<option value="">-- 선택 --</option>'+vals.map(v=>`<option value="${v}"${v===cur?' selected':''}>${v}</option>`).join('');
+}
+
+function openAdd(){
+  if(!CU?.canEdit){toast("조회 전용 계정입니다","err");return;}
+  document.getElementById("mtitle").textContent="직원 추가";
+  document.getElementById("eidx").value="";
+  ["fnick","fname","fcenterI","fbuI","fteamI","fgrade","fkg","fjoin","flocalMgr","fdirector","fdeptHead","fwp","fnote","fjikmu","fwonkaI","fdispatchStart","fdispatchEnd","fdispatchCity","fdispatchClient"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});toggleDispatchFields();
+  document.getElementById("fbumun").value="캄보디아";populateFcenter();
+  document.getElementById("fjikchak").value="";
+  document.getElementById("fgender").value="M";
+  document.getElementById("ftypeI").value="정규직원";
+  populateFwonka('');
+  document.getElementById("mov").style.display="flex";
+}
+function openEdit(idx){
+  if(!CU?.canEdit){toast("조회 전용 계정입니다","err");return;}
+  const e=emps[idx];
+  document.getElementById("mtitle").textContent="직원 수정";
+  document.getElementById("eidx").value=idx;
+  document.getElementById("fnick").value=e.nick||"";document.getElementById("fname").value=e.name||"";
+  document.getElementById("fbumun").value=e.bumun||"캄보디아";populateFcenter();document.getElementById("fcenterI").value=e.center||"";populateFbu(e.center||"");document.getElementById("fbuI").value=e.bu||"";populateFteam(e.center||"",e.bu||"");document.getElementById("fteamI").value=e.team||"";
+  
+  document.getElementById("fgrade").value=e.grade||"";document.getElementById("fkg").value=e.kgrade||"";
+  document.getElementById("fjikchak").value=e.jikchak||"";document.getElementById("fjikmu").value=e.jikmu||"";
+  document.getElementById("fgender").value=e.gender||"M";document.getElementById("fjoin").value=e.join||"";
+  document.getElementById("ftypeI").value=e.type||"정규직원";
+  populateFwonka(e.wonka||"");document.getElementById("fwp").value=e.workplace||"";
+  document.getElementById("flocalMgr").value=e.localMgr||"";document.getElementById("fdirector").value=e.director||"";
+  document.getElementById("fdeptHead").value=e.deptHead||"";document.getElementById("fnote").value=e.note||"";
+  document.getElementById("fdispatchStart").value=e.dispatchStart||"";
+  document.getElementById("fdispatchEnd").value=e.dispatchEnd||"";
+  document.getElementById("fdispatchCity").value=e.dispatchCity||"";
+  document.getElementById("fdispatchClient").value=e.dispatchClient||"";
+  document.getElementById("fdispatchExtendable").value=e.dispatchExtendable?"true":"false";
+  updateYeonDisplay();toggleDispatchFields();
+  document.getElementById("mov").style.display="flex";
+}
+function saveEmp(){
+  const nick=document.getElementById("fnick").value.trim();
+  const name=document.getElementById("fname").value.trim();
+  if(!nick&&!name){toast("호칭 또는 본명을 입력하세요","err");return;}
+  const joinVal=document.getElementById("fjoin").value;
+  const typeVal=document.getElementById("ftypeI").value;
+  const isDisp=['파견','파견준비','파견검토'].includes(typeVal);
+  const data={nick,name,
+    bumun:document.getElementById("fbumun").value,center:document.getElementById("fcenterI").value.trim(),
+    bu:document.getElementById("fbuI").value.trim(),team:document.getElementById("fteamI").value.trim(),
+    grade:document.getElementById("fgrade").value.trim(),kgrade:document.getElementById("fkg").value.trim(),
+    jikchak:document.getElementById("fjikchak").value,jikmu:document.getElementById("fjikmu").value.trim(),
+    gender:document.getElementById("fgender").value,join:joinVal,
+    type:typeVal,
+    wonka:document.getElementById("fwonkaI").value.trim(),workplace:document.getElementById("fwp").value.trim(),
+    localMgr:document.getElementById("flocalMgr").value.trim(),
+    director:document.getElementById("fdirector").value.trim(),
+    deptHead:document.getElementById("fdeptHead").value.trim(),
+    note:document.getElementById("fnote").value.trim(),
+    status:"재직",
+    dispatchStart:isDisp?document.getElementById("fdispatchStart").value:"",
+    dispatchEnd:isDisp?document.getElementById("fdispatchEnd").value:"",
+    dispatchCity:isDisp?document.getElementById("fdispatchCity").value.trim():"",
+    dispatchClient:isDisp?document.getElementById("fdispatchClient").value.trim():"",
+    dispatchExtendable:isDisp?(document.getElementById("fdispatchExtendable").value==="true"):false};
+  const idx=document.getElementById("eidx").value;
+  if(idx!==""){emps[parseInt(idx)]={...emps[parseInt(idx)],...data};toast("수정되었습니다");}
+  else{emps.push(data);toast("추가되었습니다");}
+  saveEmps();closeModal();uc();pf();rl();
+  // 조직관리 팀 패널이 열려있으면 갱신
+  if(orgSel.team){renderTeamPanel(orgSel.center,orgSel.bu,orgSel.team);}
+}
+function delEmp(idx){
+  if(!CU?.canEdit){toast("조회 전용 계정입니다","err");return;}
+  const e=emps[idx];
+  if(!confirm(`"${e?.nick||e?.name||"해당 직원"}"을(를) 삭제하시겠습니까?`))return;
+  emps.splice(idx,1);saveEmps();uc();pf();rl();toast("삭제되었습니다");
+}
+function closeModal(){document.getElementById("mov").style.display="none";}
+
+// ═══════════════════════════════════════════════════
+// 조직 관리
+// ═══════════════════════════════════════════════════
+const DEFAULT_ORG={
+  "아웃소싱/파견센터":{
+    "웹케시":["경리나라팀","와북팀","rERP사업부"],
+    "쿠콘":["스크래핑팀","기술연구소","쿠콘웹팀","쿠콘 퍼블리싱","시스템운영부"],
+    "비즈플레이":["AOS팀","IOS팀","B2B 웹","바우처개발부"],
+    "비플페이":["비플페이"]
+  },
+  "R&D 지원센터":{
+    "":["로컬상품","IT인프라","사업기획","글로벌상품","R&D인력"]
+  },
+  "로컬비즈니스센터":{
+    "":["영업/CX","로컬아웃소싱"]
+  },
+  "경영지원센터":{
+    "":["인사/관리","회계"]
+  }
+};
+const ORG_SK2="cosine_org_v3";
+const EXEC_SK="cosine_exec_v1";
+const DEFAULT_EXECS=[
+  {id:"exec-1",name:"설욱환",title:"법인장"},
+  {id:"exec-2",name:"최기종",title:"부법인장"}
+];
+function loadExecs(){
+  const r=localStorage.getItem(EXEC_SK);
+  return r?JSON.parse(r):DEFAULT_EXECS.map(e=>({...e}));
+}
+function saveExecs(execs){localStorage.setItem(EXEC_SK,JSON.stringify(execs));}
+let execData=null;
+function buildOrgFromEmps(){
+  // emps 실제 데이터 기반으로 orgData 생성
+  const org={};
+  // DEFAULT_ORG 구조 먼저 복사 (빈 센터 포함)
+  for(const[c,bus]of Object.entries(DEFAULT_ORG)){
+    org[c]={};
+    for(const[b,teams]of Object.entries(bus)){
+      org[c][b]=[...teams];
+    }
+  }
+  // emps에서 실제 데이터 병합
+  emps.forEach(e=>{
+    const c=e.center||'',b=e.bu||'',t=e.team||'';
+    if(!c)return;
+    if(!org[c])org[c]={};
+    if(b){
+      if(!org[c][b])org[c][b]=[];
+      if(t&&!org[c][b].includes(t))org[c][b].push(t);
+    }
+  });
+  return org;
+}
+function loadOrg(){
+  const r=localStorage.getItem(ORG_SK2);
+  if(r){
+    // 저장된 데이터에 emps 신규 항목 병합
+    const saved=JSON.parse(r);
+    emps.forEach(e=>{
+      const c=e.center||'',b=e.bu||'',t=e.team||'';
+      if(!c)return;
+      if(!saved[c])saved[c]={};
+      if(b){
+        if(!saved[c][b])saved[c][b]=[];
+        if(t&&!saved[c][b].includes(t))saved[c][b].push(t);
+      }
+    });
+    return saved;
+  }
+  return buildOrgFromEmps();
+}
+function saveOrg(org){localStorage.setItem(ORG_SK2,JSON.stringify(org));}
+
+let orgData=null;
+let orgSel={center:null,bu:null,team:null,execId:null};
+
+function renderSettingsOrg(){
+  // 항상 최신 emps 기반으로 orgData 재구성
+  execData=loadExecs();
+  orgData=loadOrg();
+  saveOrg(orgData);
+  renderOrgTree();
+}
+
+function renderOrgTree(){
+  // orgData가 null이면 강제 초기화
+  if(!orgData){orgData=buildOrgFromEmps();saveOrg(orgData);}
+  const tree=document.getElementById('org-tree');
+  if(!tree)return;
+  if(!orgData||Object.keys(orgData).length===0){
+    tree.innerHTML='<div style="color:var(--text3);padding:20px;text-align:center">조직 데이터 없음</div>';return;
+  }
+  // 경영진 섹션 (트리 상단 고정)
+  let h='';
+  if(execData&&execData.length>0){
+    h+=`<div style="margin-bottom:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:linear-gradient(135deg,rgba(99,102,241,.18),rgba(99,102,241,.08));border-radius:8px;border:1px solid rgba(99,102,241,.35);margin-bottom:4px">
+        <span style="font-weight:800;font-size:13px">👑 경영진</span>
+        ${(typeof CU!=='undefined'&&CU&&CU.canEdit)?`<button class="btn btng btnsm" style="font-size:10px;padding:2px 7px" onclick="event.stopPropagation();addExecPrompt()">＋ 추가</button>`:''}
+      </div>`;
+    execData.forEach(ex=>{
+      const isSel=orgSel.execId===ex.id;
+      h+=`<div onclick="selExec('${ex.id}')" style="margin-left:16px;margin-top:4px;display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg3);border-radius:7px;cursor:pointer;border:1px solid ${isSel?'var(--accent)':'var(--border)'}">
+        <span style="font-size:14px">👤</span>
+        <span style="font-size:13px;font-weight:700;flex:1">${ex.name}</span>
+        <span style="font-size:11px;color:var(--text3);background:var(--bg4);padding:2px 8px;border-radius:10px">${ex.title}</span>
+      </div>`;
+    });
+    h+=`</div>`;
+  }
+  for(const [center,bus] of Object.entries(orgData)){
+    const isCsel=orgSel.center===center&&!orgSel.bu;
+    h+=`<div style="margin-bottom:8px">
+      <div onclick="selOrg('${esc(center)}',null,null)" style="display:flex;align-items:center;gap:7px;padding:8px 10px;background:var(--bg3);border-radius:8px;cursor:pointer;border:1px solid ${isCsel?'var(--accent)':'var(--border)'}">
+        <span style="font-size:13px">🏢</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;font-size:13px">${center}</div>
+          ${(bus._mgr)?`<div style="font-size:10px;color:var(--text3);margin-top:1px">👤 ${bus._mgr}</div>`:''}
+        </div>
+        ${cntCos(center)>0?`<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;white-space:nowrap;background:#E6F1FB;color:#185FA5;">${cntCos(center)}</span>`:""}${cntCdp(center)>0?`<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;white-space:nowrap;background:#FAEEDA;color:#854F0B;" style="margin-left:3px">${cntCdp(center)}✈</span>`:""}
+        <button class="btn btng btnsm" style="font-size:10px;padding:2px 7px" onclick="event.stopPropagation();addBuPrompt('${esc(center)}')">+부/실</button>
+      </div>`;
+    for(const [bu,teams] of Object.entries(bus)){
+      if(bu==='_mgr')continue;
+      // bu가 빈 문자열이면 팀을 센터 바로 아래에 표시 (부/실 레이어 생략)
+      if(bu===''){
+        for(const team of (teams||[])){
+          const isTsel=orgSel.center===center&&orgSel.bu===bu&&orgSel.team===team;
+          h+=`<div onclick="selOrg('${esc(center)}','','${esc(team)}')" style="margin-left:16px;margin-top:3px;display:flex;align-items:center;gap:7px;padding:5px 10px;background:var(--bg);border-radius:6px;cursor:pointer;border:1px solid ${isTsel?'var(--accent)':'rgba(255,255,255,.04)'}">
+            <span style="font-size:11px;color:var(--text3)">📋</span>
+            <span style="font-size:12px;flex:1">${team}</span>
+            ${cntTos(center,bu,team)>0?`<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;white-space:nowrap;background:#E6F1FB;color:#185FA5;">${cntTos(center,bu,team)}</span>`:""}${cntTdp(center,bu,team)>0?`<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;white-space:nowrap;background:#FAEEDA;color:#854F0B;" style="margin-left:3px">${cntTdp(center,bu,team)}✈</span>`:""}
+          </div>`;
+        }
+        continue;
+      }
+      const isBsel=orgSel.center===center&&orgSel.bu===bu&&!orgSel.team;
+      h+=`<div style="margin-left:16px;margin-top:4px">
+        <div onclick="selOrg('${esc(center)}','${esc(bu)}',null)" style="display:flex;align-items:center;gap:7px;padding:6px 10px;background:var(--bg4);border-radius:7px;cursor:pointer;border:1px solid ${isBsel?'var(--accent)':'var(--border)'}">
+          <span style="font-size:12px">📂</span>
+          <span style="font-size:12px;flex:1">${bu}</span>
+          ${cntBos(center,bu)>0?`<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;white-space:nowrap;background:#E6F1FB;color:#185FA5;">${cntBos(center,bu)}</span>`:""}${cntBdp(center,bu)>0?`<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;white-space:nowrap;background:#FAEEDA;color:#854F0B;" style="margin-left:3px">${cntBdp(center,bu)}✈</span>`:""}
+          <button class="btn btng btnsm" style="font-size:10px;padding:2px 7px" onclick="event.stopPropagation();addTeamPrompt('${esc(center)}','${esc(bu)}')">+팀</button>
+        </div>`;
+      for(const team of (teams||[])){
+        const isTsel=orgSel.center===center&&orgSel.bu===bu&&orgSel.team===team;
+        h+=`<div onclick="selOrg('${esc(center)}','${esc(bu)}','${esc(team)}')" style="margin-left:16px;margin-top:3px;display:flex;align-items:center;gap:7px;padding:5px 10px;background:var(--bg);border-radius:6px;cursor:pointer;border:1px solid ${isTsel?'var(--accent)':'rgba(255,255,255,.04)'}">
+          <span style="font-size:11px;color:var(--text3)">📋</span>
+          <span style="font-size:12px;flex:1">${team}</span>
+          ${cntTos(center,bu,team)>0?`<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;white-space:nowrap;background:#E6F1FB;color:#185FA5;">${cntTos(center,bu,team)}</span>`:""}${cntTdp(center,bu,team)>0?`<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;white-space:nowrap;background:#FAEEDA;color:#854F0B;" style="margin-left:3px">${cntTdp(center,bu,team)}✈</span>`:""}
+        </div>`;
+      }
+      h+=`</div>`;
+    }
+    h+=`</div>`;
+  }
+  tree.innerHTML=h;
+}
+
+
+function populateFcenter(){
+  const sel=document.getElementById('fcenterI');
+  if(!sel)return;
+  const cur=sel.value;
+  sel.innerHTML='<option value="">-- 선택 --</option>';
+  Object.keys(orgData||{}).forEach(c=>{
+    const o=document.createElement('option');
+    o.value=c; o.textContent=c;
+    if(c===cur)o.selected=true;
+    sel.appendChild(o);
+  });
+  populateFbu(cur);
+}
+function populateFbu(center){
+  const cSel=document.getElementById('fcenterI');
+  const c=center||cSel?.value||'';
+  const sel=document.getElementById('fbuI');
+  if(!sel)return;
+  const cur=sel.value;
+  sel.innerHTML='<option value="">-- 없음/선택 --</option>';
+  const bus=orgData?.[c]||{};
+  Object.keys(bus).filter(b=>b!=='_mgr').forEach(b=>{
+    if(b==='')return; // 빈 부/실은 목록에 표시 안함
+    const o=document.createElement('option');
+    o.value=b; o.textContent=b;
+    if(b===cur)o.selected=true;
+    sel.appendChild(o);
+  });
+  populateFteam(c, cur);
+}
+function populateFteam(center, bu){
+  const c=center||document.getElementById('fcenterI')?.value||'';
+  const b=bu!==undefined?bu:(document.getElementById('fbuI')?.value||'');
+  const sel=document.getElementById('fteamI');
+  if(!sel)return;
+  const cur=sel.value;
+  sel.innerHTML='<option value="">-- 선택 --</option>';
+  const teams=(orgData?.[c]?.[b])||[];
+  // bu='' 인 경우 (R&D지원센터 등) 빈 bu 키의 팀 목록
+  const teamsNoBu=(b===''&&orgData?.[c]?.[''])||[];
+  const allTeams=[...new Set([...teams,...teamsNoBu])];
+  allTeams.forEach(t=>{
+    const o=document.createElement('option');
+    o.value=t; o.textContent=t;
+    if(t===cur)o.selected=true;
+    sel.appendChild(o);
+  });
+}
+function esc(s){return(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
+function cntC(c){return devEmps().filter(e=>e.center===c&&e.type!=='한국파견').length;}
+function cntCos(c){return devEmps().filter(e=>e.center===c&&e.type!=='파견'&&e.type!=='한국파견').length;}
+function cntCdp(c){return devEmps().filter(e=>e.center===c&&e.type==='파견').length;}
+function cntB(c,b){return devEmps().filter(e=>e.center===c&&e.bu===b).length;}
+function cntBos(c,b){return devEmps().filter(e=>e.center===c&&e.bu===b&&e.type!=='파견'&&e.type!=='한국파견').length;}
+function cntBdp(c,b){return devEmps().filter(e=>e.center===c&&e.bu===b&&e.type==='파견').length;}
+function cntT(c,b,t){return devEmps().filter(e=>e.center===c&&e.bu===b&&e.team===t).length;}
+function cntTos(c,b,t){return devEmps().filter(e=>e.center===c&&e.bu===b&&e.team===t&&e.type!=='파견'&&e.type!=='한국파견').length;}
+function cntTdp(c,b,t){return devEmps().filter(e=>e.center===c&&e.bu===b&&e.team===t&&e.type==='파견').length;}
+
+function selExec(id){
+  orgSel={center:null,bu:null,team:null,execId:id};
+  renderOrgTree();
+  const ex=execData.find(e=>e.id===id);
+  if(!ex)return;
+  const body=document.getElementById('org-edit-body');
+  const title=document.getElementById('org-edit-title');
+  title.textContent=`👤 ${ex.name}`;
+  const canEdit=typeof CU!=='undefined'&&CU&&CU.canEdit;
+  body.innerHTML=`
+    <div class="fg" style="margin-bottom:10px">
+      <div class="flab">이름</div>
+      <input class="fi" id="oe-exec-name" value="${ex.name}" ${canEdit?'':'disabled'}>
+    </div>
+    <div class="fg" style="margin-bottom:18px">
+      <div class="flab">직책</div>
+      <input class="fi" id="oe-exec-title" value="${ex.title}" ${canEdit?'':'disabled'}>
+    </div>
+    ${canEdit?`<div style="display:flex;gap:8px;margin-bottom:18px">
+      <button class="btn btnp" onclick="saveExec('${id}')">저장</button>
+      <button class="btn btnd" onclick="deleteExec('${id}')">삭제</button>
+    </div>`:'<div style="color:var(--text3);font-size:12px">조회 전용 권한입니다</div>'}
+    <div style="font-size:11px;color:var(--text3);padding:14px;background:var(--bg3);border-radius:8px;line-height:1.8">
+      💡 법인장·부법인장은 인력 목록과 별개로 관리됩니다.<br>
+      조직도 차트뷰에서 최상위 노드로 표시됩니다.
+    </div>`;
+}
+
+function addExecPrompt(){
+  const name=prompt('이름을 입력하세요');
+  if(!name||!name.trim())return;
+  const title=prompt('직책을 입력하세요 (예: 법인장, 부법인장, 이사)');
+  if(!title||!title.trim())return;
+  const newEx={id:'exec-'+Date.now(),name:name.trim(),title:title.trim()};
+  execData.push(newEx);
+  saveExecs(execData);
+  renderOrgTree();
+  showOrgMsg('추가됨');
+}
+
+function saveExec(id){
+  const ex=execData.find(e=>e.id===id);
+  if(!ex)return;
+  const name=document.getElementById('oe-exec-name').value.trim();
+  const title=document.getElementById('oe-exec-title').value.trim();
+  if(!name||!title){alert('이름과 직책을 모두 입력하세요');return;}
+  ex.name=name; ex.title=title;
+  saveExecs(execData);
+  renderOrgTree();
+  showOrgMsg('저장됨');
+  // 편집 패널 제목 갱신
+  document.getElementById('org-edit-title').textContent=`👤 ${name}`;
+}
+
+function deleteExec(id){
+  const ex=execData.find(e=>e.id===id);
+  if(!ex)return;
+  if(!confirm(`'${ex.name} (${ex.title})'을 삭제하시겠습니까?`))return;
+  execData=execData.filter(e=>e.id!==id);
+  saveExecs(execData);
+  orgSel.execId=null;
+  document.getElementById('org-edit-title').textContent='항목을 클릭하세요';
+  document.getElementById('org-edit-body').innerHTML='<div style="color:var(--text3);font-size:13px;text-align:center;padding:60px 0">← 왼쪽 트리에서 항목을 클릭하세요</div>';
+  renderOrgTree();
+  showOrgMsg('삭제됨');
+}
+
+function showOrgMsg(msg){
+  const el=document.getElementById('org-save-msg');
+  if(!el)return;
+  el.textContent='✅ '+msg;
+  setTimeout(()=>{el.textContent='';},2000);
+}
+
+
+function renderSummaryPage(){
+  const osEmps = devEmps().filter(e => e.center === '아웃소싱/파견센터' && e.type !== '한국파견');
+
+  // 고객사 순서 고정
+  const wonkaOrder = ['쿠콘','비즈플레이','경리나라','비플페이','웹케시'];
+  const allWonkas = [...new Set(osEmps.map(e => e.wonka||'미지정'))];
+  const ordered = [...wonkaOrder.filter(w => allWonkas.includes(w)),
+                   ...allWonkas.filter(w => !wonkaOrder.includes(w))];
+
+  // 고객사별 → 부서장별 그룹핑
+  const groups = {};
+  ordered.forEach(wonka => {
+    const members = osEmps.filter(e => (e.wonka||'미지정') === wonka);
+    // 부서장 + 업무지시자 조합별 서브그룹
+    const deptMap = {};
+    members.forEach(e => {
+      const key = (e.deptHead||'-') + '|' + (e.director||'-');
+      if(!deptMap[key]) deptMap[key] = {deptHead: e.deptHead||'-', director: e.director||'-', members:[], localMgrs:new Set()};
+      deptMap[key].members.push(e);
+      if(e.localMgr && e.type!=='파견') deptMap[key].localMgrs.add(e.localMgr);
+    });
+    groups[wonka] = Object.values(deptMap).sort((a,b) => b.members.length - a.members.length);
+  });
+
+  let totOs=0, totDp=0;
+  let rows = '';
+
+  ordered.forEach(wonka => {
+    const subs = groups[wonka];
+    if(!subs || !subs.length) return;
+    const rowspan = subs.length;
+    const totalWonka = subs.reduce((s,g) => s + g.members.length, 0);
+
+    subs.forEach((g, i) => {
+      const os = g.members.filter(e => e.type !== '파견').length;
+      const dp = g.members.filter(e => e.type === '파견').length;
+      totOs += os; totDp += dp;
+      const lm = [...g.localMgrs].filter(Boolean).join(', ') || '-';
+      const dir = g.director || '-';
+      const dh = g.deptHead || '-';
+      const isLast = i === subs.length - 1;
+      const grpCls = subs.length > 1 ? (isLast ? 'grp-end' + (i>0?' grp-sub':'') : 'grp-mid') : 'grp-end';
+
+      const coCell = i === 0
+        ? `<td class="co-cell" rowspan="${rowspan}">${wonka}</td>`
+        : '';
+
+      rows += `<tr class="${grpCls}">
+        ${coCell}
+        <td class="tc">${g.members.length}</td>
+        <td class="tc">${os > 0 ? '<span class="b-os">'+os+'</span>' : '<span class="b-none">-</span>'}</td>
+        <td class="tc">${dp > 0 ? '<span class="b-dp">'+dp+'</span>' : '<span class="b-none">-</span>'}</td>
+        <td>${lm}</td>
+        <td>${dir}</td>
+        <td>${dh}</td>
+      </tr>`;
+    });
+  });
+
+  // 합계
+  rows += `<tr class="sum-total">
+    <td>합계</td>
+    <td class="tc" style="font-family:'JetBrains Mono',monospace">${totOs+totDp}</td>
+    <td class="tc"><span class="b-os">${totOs}</span></td>
+    <td class="tc"><span class="b-dp">${totDp}</span></td>
+    <td colspan="3"></td>
+  </tr>`;
+
+  document.getElementById('summary-body').innerHTML = `
+    <div class="section">
+      <table class="sum-tbl">
+        <thead><tr>
+          <th style="width:110px">고객사</th>
+          <th class="tc">총원</th>
+          <th class="tc">아웃소싱</th>
+          <th class="tc">파견</th>
+          <th>현지매니저</th>
+          <th>업무지시자</th>
+          <th>부서장(KR)</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+
+  // 뱃지 업데이트
+  const pill = document.getElementById('tpill');
+  if(pill){ pill.textContent=(totOs+totDp)+'명'; pill.className='pill pill-blue'; pill.style.display=''; }
+}
+
+function applyTeamManagers(center, bu, team){
+  if(!CU?.canEdit){toast('조회 전용 계정입니다','err');return;}
+  const lm=document.getElementById('oe-localmgr')?.value.trim()||'';
+  const dir=document.getElementById('oe-director')?.value.trim()||'';
+  const dh=document.getElementById('oe-depthead')?.value.trim()||'';
+  let cnt=0;
+  emps.forEach(e=>{
+    if(e.center===center&&(bu?e.bu===bu:true)&&e.team===team){
+      if(lm && e.type!=='파견') e.localMgr=lm;  // 파견 직원은 현지매니저 미적용
+      if(dir) e.director=dir;
+      if(dh) e.deptHead=dh;
+      cnt++;
+    }
+  });
+  saveEmps();
+  toast(cnt+'명에 담당자 정보가 적용되었습니다','ok');
+  renderTeamPanel(center,bu,team);
+}
+
+function renderTeamPanel(center,bu,team){
+  const body=document.getElementById('org-edit-body');
+  const mbs=emps.filter(e=>e.center===center&&(bu?e.bu===bu:true)&&e.team===team);
+  const ce=CU?.canEdit;
+  const ar=(k)=>`<span style="color:var(--text3);font-size:10px">▲</span>`;
+  body.innerHTML=`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <div class="fg" style="flex:1;min-width:140px;margin:0">
+        <div class="flab" style="margin-bottom:4px">팀명</div>
+        <input class="fi" id="oe-v" value="${team}" style="margin:0">
+      </div>
+      <div style="display:flex;gap:6px;align-self:flex-end">
+        <button class="btn btnp btnsm" onclick="saveTeamName('${esc(center)}','${esc(bu)}','${esc(team)}')">팀명 저장</button>
+        <button class="btn btnd btnsm" onclick="deleteTeam('${esc(center)}','${esc(bu)}','${esc(team)}')">팀 삭제</button>
+        ${ce?`<button class="btn btnp btnsm" onclick="openAdd()" style="background:var(--green)">＋ 직원 추가</button>`:''}
+      </div>
+    </div>
+    ${ce?`<div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px">
+      <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px">팀 담당자 설정 (팀 전체 적용)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
+        <div>
+          <div class="flab" style="margin-bottom:4px">현지매니저</div>
+          ${(()=>{
+            const mgrs=[...new Set(devEmps().filter(e=>e.bumun==='캄보디아'&&['부장','팀장','리더'].includes(e.jikchak)).map(e=>e.nick||e.name).filter(Boolean))].sort();
+            const cur=[...new Set(mbs.filter(e=>e.type!=='파견').map(e=>e.localMgr).filter(Boolean))][0]||'';
+            const allDisp=mbs.every(e=>e.type==='파견');
+            const opts='<option value="">-- 선택 --</option>'+mgrs.map(n=>`<option value="${n}" ${n===cur?'selected':''}>${n}</option>`).join('');
+            const disAttr=allDisp?'disabled style="opacity:0.4;cursor:not-allowed" title="파견 직원만 있는 팀은 현지매니저를 지정하지 않습니다"':'';
+            return `<select class="fi" id="oe-localmgr" ${disAttr}>${opts}</select>`;
+          })()}
+        </div>
+        <div>
+          <div class="flab" style="margin-bottom:4px">업무지시자</div>
+          <input class="fi" id="oe-director" value="${[...new Set(mbs.map(e=>e.director).filter(Boolean))].join(', ')}" placeholder="업무지시자 이름">
+        </div>
+        <div>
+          <div class="flab" style="margin-bottom:4px">부서장(KR)</div>
+          <input class="fi" id="oe-depthead" value="${[...new Set(mbs.map(e=>e.deptHead).filter(Boolean))].join(', ')}" placeholder="부서장 이름">
+        </div>
+      </div>
+      <button class="btn btnp btnsm" onclick="applyTeamManagers('${esc(center)}','${esc(bu)}','${esc(team)}')">💾 팀 전체 적용</button>
+      <span style="font-size:11px;color:var(--text3);margin-left:8px">소속 ${mbs.length}명 전원에 적용됩니다</span>
+    </div>`:''}
+    <div style="font-size:11px;color:var(--text3);margin-bottom:10px">소속 직원 <strong style="color:var(--text)">${mbs.length}명</strong></div>
+    <div class="ox">
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap">호칭/본명</th>
+          <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border)">등급</th>
+          <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border)">직책</th>
+          <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border)">직무</th>
+          <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border)">고용형태</th>
+          <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border)">원가부서</th>
+          <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border)">연차</th>
+          <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border);max-width:120px">비고</th>
+          ${ce?`<th style="background:var(--bg3);padding:8px 10px;border-bottom:1px solid var(--border)"></th>`:''}
+        </tr></thead>
+        <tbody>
+          ${mbs.length===0?`<tr><td colspan="9" style="padding:30px;text-align:center;color:var(--text3);font-size:13px">소속 직원이 없습니다</td></tr>`:
+          mbs.map(e=>{
+            const idx=emps.indexOf(e);
+            const ini=(e.nick||e.name||'?')[0];
+            return `<tr style="border-bottom:1px solid var(--border)" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background=''">
+              <td style="padding:9px 10px;cursor:pointer" onclick="openDet(${idx})">
+                <div style="display:flex;align-items:center;gap:7px">
+                  <div class="av av${e.gender||'_'}" style="width:26px;height:26px;font-size:11px;flex-shrink:0">${ini}</div>
+                  <div>
+                    <div style="font-weight:700;font-size:12px">${e.nick||'-'}</div>
+                    <div style="font-size:10px;color:var(--text3)">${e.name||''}</div>
+                  </div>
+                </div>
+              </td>
+              <td style="padding:9px 10px">${e.grade?`<span class="tag t-grade">${e.grade}</span>`:'-'}</td>
+              <td style="padding:9px 10px">${e.jikchak?`<span class="tag t-직책">${e.jikchak}</span>`:'-'}</td>
+              <td style="padding:9px 10px;font-size:11px;color:var(--text2)">${e.jikmu||'-'}</td>
+              <td style="padding:9px 10px"><span class="tag t-${(e.type||'').replace(/\s/g,'')}">${e.type||'-'}</span></td>
+              <td style="padding:9px 10px;font-size:11px">${e.wonka||'-'}</td>
+              <td style="padding:9px 10px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--text3)">${e.join?calcYeon(e.join)+'년':'-'}</td>
+              <td style="padding:9px 10px;font-size:11px;color:${e.note?'var(--orange)':'var(--text3)'};max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${e.note||''}">${e.note||'-'}</td>
+              ${ce?`<td style="padding:9px 10px;white-space:nowrap">
+                <div style="display:flex;gap:4px">
+                  <button class="btn btng btnsm" onclick="openEdit(${idx});document.querySelector('.modal .mt').textContent='직원 수정'">수정</button>
+                  <button class="btn btnd btnsm" onclick="delEmpOrg(${idx},'${esc(center)}','${esc(bu)}','${esc(team)}')">삭제</button>
+                </div>
+              </td>`:''}
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function delEmpOrg(idx,center,bu,team){
+  if(!CU?.canEdit){toast('조회 전용 계정입니다','err');return;}
+  const e=emps[idx];
+  const nm=e?(e.nick||e.name||'해당 직원'):'';
+  if(!confirm('"'+nm+'"을(를) 삭제하시겠습니까?'))return;
+  emps.splice(idx,1);saveEmps();uc();pf();
+  renderTeamPanel(center,bu,team);
+  toast('삭제되었습니다');
+}
+function selOrg(center,bu,team){
+  orgSel={center,bu,team,execId:null};
+  renderOrgTree();
+  const body=document.getElementById('org-edit-body');
+  const title=document.getElementById('org-edit-title');
+  if(team!==null){
+    title.textContent=`📋 ${team}`;
+    renderTeamPanel(center,bu,team);
+  }else if(bu!==null){
+    title.textContent=`📂 ${bu}`;
+    const buCnt=emps.filter(e=>e.center===center&&e.bu===bu).length;
+    body.innerHTML=`
+      <div class="fg" style="margin-bottom:10px"><div class="flab">부/실명</div><input class="fi" id="oe-v" value="${bu}"></div>
+      <div style="display:flex;gap:8px;margin-bottom:18px">
+        <button class="btn btnp" onclick="saveBuName('${esc(center)}','${esc(bu)}')">저장</button>
+        <button class="btn btnd" onclick="deleteBu('${esc(center)}','${esc(bu)}')">삭제</button>
+      </div>
+      <div style="color:var(--text3);font-size:12px;padding:8px 0">소속 ${buCnt}명 — 팀을 클릭하면 인력 내역을 볼 수 있습니다</div>`;
+  }else{
+    title.textContent=`🏢 ${center}`;
+    const curMgr=(orgData[center]&&orgData[center]._mgr)||'';
+    const cCnt=emps.filter(e=>e.center===center&&e.type!=='한국파견').length;
+    body.innerHTML=`
+      <div class="fg" style="margin-bottom:10px"><div class="flab">센터명</div><input class="fi" id="oe-v" value="${center}"></div>
+      <div class="fg" style="margin-bottom:18px"><div class="flab">센터장</div><input class="fi" id="oe-mgr" value="${curMgr}" placeholder="센터장 이름 입력"></div>
+      <div style="display:flex;gap:8px;margin-bottom:18px">
+        <button class="btn btnp" onclick="saveCenterName('${esc(center)}')">저장</button>
+        <button class="btn btnd" onclick="deleteCenter('${esc(center)}')">삭제</button>
+      </div>
+      <div style="color:var(--text3);font-size:12px;padding:8px 0">총 ${cCnt}명 — 팀을 클릭하면 인력 내역을 볼 수 있습니다</div>`;
+  }
+}
+
+function addCenterPrompt(){
+  const n=prompt('새 센터 이름:');if(!n||!n.trim())return;
+  if(orgData[n]){toast('이미 존재하는 센터명입니다','err');return;}
+  orgData[n]={};saveOrg(orgData);renderOrgTree();showOrgMsg('센터 추가됨');
+}
+function addBuPrompt(center){
+  const n=prompt(`[${center}] 새 부/실 이름:`);if(!n||!n.trim())return;
+  orgData[center][n]=[];saveOrg(orgData);renderOrgTree();showOrgMsg('부/실 추가됨');
+}
+function addTeamPrompt(center,bu){
+  const n=prompt(`[${bu}] 새 팀 이름:`);if(!n||!n.trim())return;
+  if(!orgData[center][bu])orgData[center][bu]=[];
+  orgData[center][bu].push(n);saveOrg(orgData);renderOrgTree();showOrgMsg('팀 추가됨');
+}
+function saveCenterName(old){
+  const nv=document.getElementById('oe-v').value.trim();
+  const mgr=(document.getElementById('oe-mgr')||{}).value||'';
+  // 센터명 변경 처리
+  if(nv&&nv!==old){
+    const no={};for(const[k,v]of Object.entries(orgData))no[k===old?nv:k]=v;orgData=no;
+    emps.forEach(e=>{if(e.center===old)e.center=nv;});saveEmps();
+  }
+  // 센터장 저장 (_mgr 필드)
+  const key=nv||old;
+  if(!orgData[key])orgData[key]={};
+  orgData[key]._mgr=mgr.trim();
+  saveOrg(orgData);
+  orgSel.center=key;renderOrgTree();showOrgMsg('저장됨');
+}
+function saveBuName(center,old){
+  const nv=document.getElementById('oe-v').value.trim();if(!nv||nv===old)return;
+  const nb={};for(const[k,v]of Object.entries(orgData[center]))nb[k===old?nv:k]=v;orgData[center]=nb;
+  emps.forEach(e=>{if(e.center===center&&e.bu===old)e.bu=nv;});saveEmps();saveOrg(orgData);
+  orgSel.bu=nv;renderOrgTree();showOrgMsg('저장됨');
+}
+function saveTeamName(center,bu,old){
+  const nv=document.getElementById('oe-v').value.trim();if(!nv||nv===old)return;
+  const idx=orgData[center][bu].indexOf(old);if(idx>=0)orgData[center][bu][idx]=nv;
+  emps.forEach(e=>{if(e.center===center&&e.bu===bu&&e.team===old)e.team=nv;});saveEmps();saveOrg(orgData);
+  orgSel.team=nv;renderOrgTree();showOrgMsg('저장됨');
+}
+function deleteCenter(center){
+  if(!confirm(`'${center}' 센터를 삭제하시겠습니까?\n소속 직원의 센터값이 초기화됩니다.`))return;
+  emps.forEach(e=>{if(e.center===center)e.center='';});delete orgData[center];
+  saveEmps();saveOrg(orgData);orgSel={center:null,bu:null,team:null};
+  renderOrgTree();document.getElementById('org-edit-body').innerHTML='<div style="color:var(--text3);text-align:center;padding:60px 0">항목을 선택하세요</div>';
+  showOrgMsg('삭제됨');
+}
+function deleteBu(center,bu){
+  if(!confirm(`'${bu}' 부/실을 삭제하시겠습니까?`))return;
+  emps.forEach(e=>{if(e.center===center&&e.bu===bu)e.bu='';});delete orgData[center][bu];
+  saveEmps();saveOrg(orgData);orgSel.bu=null;orgSel.team=null;renderOrgTree();showOrgMsg('삭제됨');
+}
+function deleteTeam(center,bu,team){
+  if(!confirm(`'${team}' 팀을 삭제하시겠습니까?`))return;
+  emps.forEach(e=>{if(e.center===center&&e.bu===bu&&e.team===team)e.team='';});
+  orgData[center][bu]=orgData[center][bu].filter(t=>t!==team);
+  saveEmps();saveOrg(orgData);orgSel.team=null;renderOrgTree();showOrgMsg('삭제됨');
+}
+function showOrgMsg(msg){const el=document.getElementById('org-save-msg');if(el){el.textContent=msg;setTimeout(()=>el.textContent='',2000);}}
+
+// ═══════════════════════════════════════════════════
+// 사용자 관리
+// ═══════════════════════════════════════════════════
+const USERS_SK="cosine_users_v1";
+function loadUsers(){
+  const r=localStorage.getItem(USERS_SK);
+  if(r)return JSON.parse(r);
+  return[
+    {id:'admin',  pw:'admin1234',name:'설욱환',role:'최고관리자',canEdit:true, empNick:''},
+    {id:'manager',pw:'mgr1234',  name:'최기종',role:'매니저',    canEdit:true, empNick:''},
+    {id:'viewer', pw:'view1234', name:'조회자', role:'조회전용', canEdit:false,empNick:''},
+  ];
+}
+function saveUsers(users){localStorage.setItem(USERS_SK,JSON.stringify(users));}
+
+function renderSettingsUsers(){
+  const users=loadUsers();
+  // 직원 검색용 데이터 배열 준비
+  window._empSearchData = devEmps()
+    .filter(e=>e.type!=='한국파견')
+    .sort((a,b)=>(a.nick||'').localeCompare(b.nick||''));
+  // 목록 테이블
+  const rows=users.map((u,i)=>`<tr>
+    <td class="mono" style="font-size:12px">${u.id}</td>
+    <td>${u.name}${u.empNick?`<div style="font-size:10px;color:var(--text3)">${u.empNick}</div>`:''}</td>
+    <td><span class="tag t-직책">${u.role}</span></td>
+    <td style="font-size:11px;color:var(--text3)">${u.empNick?'직원':'직원 외'}</td>
+    <td><div style="display:flex;gap:4px">
+      <button class="btn btng btnsm" onclick="editUser(${i})">수정</button>
+      <button class="btn btnd btnsm" onclick="deleteUser(${i})">삭제</button>
+    </div></td>
+  </tr>`).join('');
+  document.getElementById('users-table').innerHTML=`
+    <table><thead><tr>
+      <th>아이디</th><th>이름</th><th>권한</th><th>유형</th><th></th>
+    </tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function toggleUserType(){
+  const isEmp=document.getElementById('utype-emp').checked;
+  document.getElementById('emp-select-wrap').style.display=isEmp?'':'none';
+  document.getElementById('uf-name-wrap').style.display=isEmp?'none':'';
+}
+function fillFromEmp(){}  // 하위호환용 빈 함수
+
+// 초성 추출
+function getChosung(str){
+  const CHO=['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+  return (str||'').split('').map(ch=>{
+    const code=ch.charCodeAt(0)-0xAC00;
+    if(code<0||code>11171)return ch;
+    return CHO[Math.floor(code/588)];
+  }).join('');
+}
+
+function empMatchesQuery(emp, q){
+  if(!q)return true;
+  const nick=(emp.nick||'').toLowerCase();
+  const name=(emp.name||'').toLowerCase();
+  const center=(emp.center||'').toLowerCase();
+  const bu=(emp.bu||'').toLowerCase();
+  const ql=q.toLowerCase();
+  // 직접 매칭
+  if(nick.includes(ql)||name.includes(ql)||center.includes(ql)||bu.includes(ql))return true;
+  // 초성 매칭
+  const cs=getChosung(emp.nick||'')+getChosung(emp.name||'');
+  if(cs.includes(q))return true;
+  return false;
+}
+
+function filterEmpList(){
+  const q=document.getElementById('uf-emp-search').value.trim();
+  document.getElementById('uf-emp-clear').style.display=q?'':'none';
+  showEmpList(q);
+}
+
+function showEmpList(q){
+  const dropdown=document.getElementById('uf-emp-dropdown');
+  const data=window._empSearchData||[];
+  const query=q!==undefined?q:(document.getElementById('uf-emp-search').value.trim());
+  const filtered=data.filter(e=>empMatchesQuery(e,query));
+
+  if(filtered.length===0){
+    dropdown.innerHTML=`<div style="padding:12px;text-align:center;color:var(--text3);font-size:12px">검색 결과 없음</div>`;
+  } else {
+    dropdown.innerHTML=filtered.map((e,i)=>`
+      <div onclick="selectEmp(${data.indexOf(e)})"
+        style="padding:9px 12px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:2px"
+        onmouseover="this.style.background='var(--bg4)'" onmouseout="this.style.background=''">
+        <div style="display:flex;align-items:center;gap:6px">
+          <div class="av av${e.gender||'_'}" style="width:20px;height:20px;font-size:9px;flex-shrink:0">${(e.nick||e.name||'?')[0]}</div>
+          <span style="font-weight:700;font-size:13px">${e.nick||e.name}</span>
+          ${e.nick&&e.name?`<span style="font-size:11px;color:var(--text3)">${e.name}</span>`:''}
+          ${e.jikchak?`<span class="tag t-직책" style="font-size:10px;padding:1px 5px">${e.jikchak}</span>`:''}
+        </div>
+        <div style="font-size:10px;color:var(--text3);padding-left:26px">${e.center||''} ${e.bu?'› '+e.bu:''} ${e.team?'› '+e.team:''}</div>
+      </div>`).join('');
+  }
+  dropdown.style.display='';
+}
+
+function selectEmp(idx){
+  const emp=(window._empSearchData||[])[idx];
+  if(!emp)return;
+  // 검색창에 선택된 직원 표시
+  document.getElementById('uf-emp-search').value=`${emp.nick||emp.name}`;
+  document.getElementById('uf-emp-clear').style.display='';
+  document.getElementById('uf-emp-dropdown').style.display='none';
+  // 아이디 자동 제안
+  const idSuggest=(emp.nick||'').replace(/[^A-Za-z0-9]/g,'').toLowerCase().slice(0,10);
+  document.getElementById('uf-id').value=idSuggest;
+  document.getElementById('uf-emp-info').textContent=
+    `${emp.center||''} › ${emp.bu||''} › ${emp.team||''} | ${emp.jikchak||''} ${emp.jikmu||''}`;
+  // 이름 자동 입력 (직원 외 name 필드 혹시 있으면)
+  document.getElementById('uf-name').value=emp.nick||emp.name||'';
+  // 저장용 empNick 세팅을 위해 hidden input 활용
+  if(!document.getElementById('uf-emp-nick-hidden')){
+    const hid=document.createElement('input');
+    hid.type='hidden';hid.id='uf-emp-nick-hidden';
+    document.getElementById('uf-emp-search').parentNode.appendChild(hid);
+  }
+  document.getElementById('uf-emp-nick-hidden').value=emp.nick||emp.name||'';
+}
+
+function clearEmpSearch(){
+  document.getElementById('uf-emp-search').value='';
+  document.getElementById('uf-emp-clear').style.display='none';
+  document.getElementById('uf-emp-dropdown').style.display='none';
+  document.getElementById('uf-emp-info').textContent='';
+  const hid=document.getElementById('uf-emp-nick-hidden');
+  if(hid)hid.value='';
+}
+function resetUserForm(){
+  document.getElementById('uf-edit-idx').value='';
+  document.getElementById('uform-title').textContent='＋ 사용자 추가';
+  document.getElementById('utype-emp').checked=true;
+  // 검색창 초기화
+  const srch=document.getElementById('uf-emp-search');
+  if(srch)srch.value='';
+  const clr=document.getElementById('uf-emp-clear');
+  if(clr)clr.style.display='none';
+  const dd=document.getElementById('uf-emp-dropdown');
+  if(dd)dd.style.display='none';
+  const hid=document.getElementById('uf-emp-nick-hidden');
+  if(hid)hid.value='';
+  document.getElementById('uf-id').value='';
+  document.getElementById('uf-pw').value='';
+  document.getElementById('uf-name').value='';
+  document.getElementById('uf-role').value='매니저';
+  document.getElementById('uf-emp-info').textContent='';
+  toggleUserType();
+}
+function editUser(i){
+  const users=loadUsers();const u=users[i];
+  document.getElementById('uf-edit-idx').value=i;
+  document.getElementById('uform-title').textContent='✏️ 사용자 수정';
+  const isEmp=!!u.empNick;
+  document.getElementById(isEmp?'utype-emp':'utype-ext').checked=true;
+  toggleUserType();
+  if(isEmp){
+    // 검색 인풋에 기존 직원명 표시
+    const srch=document.getElementById('uf-emp-search');
+    if(srch) srch.value=u.empNick||'';
+    const clr=document.getElementById('uf-emp-clear');
+    if(clr) clr.style.display=u.empNick?'':'none';
+    // hidden input에 empNick 세팅
+    if(!document.getElementById('uf-emp-nick-hidden')){
+      const hid=document.createElement('input');
+      hid.type='hidden';hid.id='uf-emp-nick-hidden';
+      srch&&srch.parentNode.appendChild(hid);
+    }
+    const hid=document.getElementById('uf-emp-nick-hidden');
+    if(hid) hid.value=u.empNick||'';
+    // 소속 정보 표시
+    const emp=emps.find(e=>(e.nick||'')===u.empNick);
+    if(emp){
+      document.getElementById('uf-emp-info').textContent=
+        `${emp.center||''} › ${emp.bu||''} › ${emp.team||''} | ${emp.jikchak||''} ${emp.jikmu||''}`;
+    }
+  }else{
+    document.getElementById('uf-name').value=u.name||'';
+  }
+  document.getElementById('uf-id').value=u.id;
+  document.getElementById('uf-pw').value=u.pw;
+  document.getElementById('uf-role').value=u.role;
+}
+function saveUser(){
+  const id=document.getElementById('uf-id').value.trim();
+  const pw=document.getElementById('uf-pw').value.trim();
+  const role=document.getElementById('uf-role').value;
+  const isEmp=document.getElementById('utype-emp').checked;
+  const empNick=isEmp?(document.getElementById('uf-emp-nick-hidden')?.value||document.getElementById('uf-emp-search')?.value||''):'';
+  if(!id){toast('아이디를 입력하세요','err');return;}
+  if(!pw){toast('비밀번호를 입력하세요','err');return;}
+  let name='';
+  if(isEmp&&empNick){
+    const emp=emps.find(e=>(e.nick||'')===empNick);
+    name=emp?emp.nick||emp.name:empNick;
+  }else{
+    name=document.getElementById('uf-name').value.trim()||id;
+  }
+  const canEdit=role!=='조회전용';
+  const users=loadUsers();
+  const editIdx=document.getElementById('uf-edit-idx').value;
+  const userData={id,pw,name,role,canEdit,empNick};
+  if(editIdx!==''){
+    users[parseInt(editIdx)]=userData;toast('수정됐습니다');
+  }else{
+    if(users.find(u=>u.id===id)){toast('이미 존재하는 아이디입니다','err');return;}
+    users.push(userData);toast('사용자 추가됐습니다');
+  }
+  saveUsers(users);
+  ACCS[id]={pw,name,role,canEdit};
+  renderSettingsUsers();
+  resetUserForm();
+}
+
+
+function deleteUser(i){
+  const users=loadUsers();
+  if(users[i].id===CU?.id){toast('현재 로그인 계정은 삭제 불가','err');return;}
+  if(!confirm(`'${users[i].id}' 계정을 삭제하시겠습니까?`))return;
+  delete ACCS[users[i].id];users.splice(i,1);saveUsers(users);
+  renderSettingsUsers();resetUserForm();toast('삭제됐습니다');
+}
+
+
+// ═══════════════════════════════════════════════════
+// 파견 관리
+// ═══════════════════════════════════════════════════
+function calcDday(endStr){
+  if(!endStr)return null;
+  const rdEl=document.getElementById('dsp-refDate');
+  const base=rdEl&&rdEl.value?new Date(rdEl.value):new Date();
+  return Math.ceil((new Date(endStr)-base)/86400000);
+}
+function ddayBadge(d){
+  if(d===null)return "-";
+  if(d<=0)return `<span style="background:rgba(224,63,63,.15);color:var(--red);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace">만료</span>`;
+  const c=d<=30?"var(--red)":d<=60?"var(--orange)":"var(--green)";
+  const bg=d<=30?"rgba(224,63,63,.1)":d<=60?"rgba(224,138,32,.1)":"rgba(24,169,110,.1)";
+  return `<span style="background:${bg};color:${c};padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace">D-${d}</span>`;
+}
+function renderDispatchPage(){
+  const dispatched=devEmps().filter(e=>e.type==='파견');
+  const prep=devEmps().filter(e=>e.type==='파견준비'||e.type==='파견검토');
+  const d30=dispatched.filter(e=>{const d=calcDday(e.dispatchEnd);return d!==null&&d<=30;});
+  // 경고 → 헤더 알림으로 표시
+  const ha=document.getElementById('dispatch-head-alert');
+  const ht=document.getElementById('dispatch-head-txt');
+  if(ha&&ht){
+    if(d30.length>0){
+      ha.style.display='flex';
+      ht.textContent=`만료 30일 이내 ${d30.length}명: ${d30.map(e=>e.nick||e.name).join(' · ')}`;
+    } else {
+      ha.style.display='none';
+    }
+  }
+  // 기준일자 오늘로 리셋
+  setRefDate('dsp-refDate');
+  // 고객사 필터 옵션
+  const clients=[...new Set(dispatched.map(e=>e.dispatchClient).filter(Boolean))].sort();
+  const sel=document.getElementById('dsp-filter-client');
+  if(sel) sel.innerHTML='<option value="">전체 고객사</option>'+clients.map(c=>`<option>${c}</option>`).join('');
+  renderDispatchTable();
+  renderDispatchPrepTable(prep);
+}
+function renderDispatchTable(){
+  const city=document.getElementById('dsp-filter-city')?.value||'';
+  const client=document.getElementById('dsp-filter-client')?.value||'';
+  const days=parseInt(document.getElementById('dsp-filter-days')?.value||'0')||0;
+  let list=emps.filter(e=>e.type==='파견');
+  if(city)list=list.filter(e=>e.dispatchCity===city);
+  if(client)list=list.filter(e=>e.dispatchClient===client);
+  if(days)list=list.filter(e=>{const d=calcDday(e.dispatchEnd);return d!==null&&d<=days;});
+  list.sort((a,b)=>{const da=calcDday(a.dispatchEnd)??9999,db=calcDday(b.dispatchEnd)??9999;return da-db;});
+  const tbl=document.getElementById('dispatch-tbl');
+  const empty=document.getElementById('dispatch-empty');
+  const ce=CU?.canEdit;
+  if(!list.length){tbl.innerHTML='';empty.style.display='';return;}
+  empty.style.display='none';
+  tbl.innerHTML=`<thead><tr>
+    <th>호칭</th><th>파견 도시</th><th>고객사</th><th>부서장</th>
+    <th>시작일</th><th>종료일</th><th>D-Day</th><th>연장가능</th>
+    ${ce?'<th>액션</th>':''}
+  </tr></thead><tbody>${list.map(e=>{
+    const idx=emps.indexOf(e);
+    const d=calcDday(e.dispatchEnd);
+    const rowBg=d!==null&&d<=30?'background:rgba(224,63,63,.06)':d!==null&&d<=60?'background:rgba(224,138,32,.06)':'';
+    return `<tr style="${rowBg}">
+      <td style="cursor:pointer;font-weight:700" onclick="openDet(${idx})">${e.nick||e.name}</td>
+      <td>${e.dispatchCity||'-'}</td>
+      <td style="font-size:11px">${e.dispatchClient||'-'}</td>
+      <td style="font-size:11px;color:var(--text2)">${e.deptHead||'-'}</td>
+      <td class="mono" style="font-size:11px;color:var(--text3)">${e.dispatchStart||'-'}</td>
+      <td class="mono" style="font-size:11px">${e.dispatchEnd||'-'}</td>
+      <td>${ddayBadge(d)}</td>
+      <td>${e.dispatchExtendable?'<span class="tag t-파견준비">가능</span>':'<span style="color:var(--text3);font-size:11px">미정</span>'}</td>
+      ${ce?`<td><div style="display:flex;gap:4px">
+        <button class="btn btng btnsm" onclick="changeDispatchStatus(${idx},'복귀')" title="복귀 처리">복귀</button>
+        <button class="btn btng btnsm" onclick="extendDispatch(${idx})" title="연장 처리">연장</button>
+      </div></td>`:''}
+    </tr>`;
+  }).join('')}</tbody>`;
+}
+function renderDispatchPrepTable(prep){
+  const tbl=document.getElementById('dispatch-prep-tbl');
+  const empty=document.getElementById('dispatch-prep-empty');
+  const ce=CU?.canEdit;
+  if(!prep||!prep.length){tbl.innerHTML='';empty.style.display='';return;}
+  empty.style.display='none';
+  tbl.innerHTML=`<thead><tr>
+    <th>호칭</th><th>등급</th><th>직무</th><th>원가부서</th><th>비고</th>
+    ${ce?'<th>액션</th>':''}
+  </tr></thead><tbody>${prep.map(e=>{
+    const idx=emps.indexOf(e);
+    return `<tr>
+      <td style="cursor:pointer;font-weight:700" onclick="openDet(${idx})">${e.nick||e.name}</td>
+      <td><span class="tag t-grade">${e.grade||'-'}</span></td>
+      <td style="font-size:11px">${e.jikmu||'-'}</td>
+      <td style="font-size:11px">${e.wonka||'-'}</td>
+      <td style="font-size:11px;color:var(--orange);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.note||e.workplace||'-'}</td>
+      ${ce?`<td><button class="btn btnp btnsm" onclick="changeDispatchStatus(${idx},'파견')">✈️ 파견시작</button></td>`:''}
+    </tr>`;
+  }).join('')}</tbody>`;
+}
+function changeDispatchStatus(idx,newType){
+  const e=emps[idx];if(!e)return;
+  const labels={파견:'파견 시작 처리',복귀:'복귀 처리'};
+  if(!confirm(`[${e.nick||e.name}] ${labels[newType]||newType+' 처리'}하시겠습니까?`))return;
+  const prev=e.type;
+  e.type=newType==='복귀'?'정규직원':newType;
+  if(newType==='복귀'){e.dispatchStart='';e.dispatchEnd='';e.dispatchCity='';e.dispatchClient='';}
+  if(!e.statusHistory)e.statusHistory=[];
+  e.statusHistory.push({type:e.type,date:new Date().toISOString().split('T')[0],note:`${prev} → ${e.type}`});
+  saveEmps();updateAll();
+  if(document.getElementById('page-dispatch').classList.contains('active'))renderDispatchPage();
+  toast(`${e.nick||e.name} ${newType==='복귀'?'복귀':'파견 시작'} 처리됐습니다`);
+  if(document.getElementById('dov').style.display!=='none')renderDetTab(e,'dispatch');
+}
+function extendDispatch(idx){
+  const e=emps[idx];if(!e)return;
+  const newEnd=prompt(`[${e.nick||e.name}] 연장 후 종료일을 입력하세요 (YYYY-MM-DD):`,e.dispatchEnd||'');
+  if(!newEnd)return;
+  const prev=e.dispatchEnd;
+  e.dispatchEnd=newEnd;
+  if(!e.statusHistory)e.statusHistory=[];
+  e.statusHistory.push({type:'파견연장',date:new Date().toISOString().split('T')[0],note:`종료일 ${prev} → ${newEnd}`});
+  saveEmps();
+  if(document.getElementById('page-dispatch').classList.contains('active'))renderDispatchPage();
+  toast(`연장 처리됐습니다 (종료일: ${newEnd})`);
+  if(document.getElementById('dov').style.display!=='none')renderDetTab(e,'dispatch');
+}
+
+// ═══════════════════════════════════════════════════
+// Excel 내보내기
+// ═══════════════════════════════════════════════════
+function exportExcel(){
+  const headers=['empId','호칭','본명','부문','센터','부/실','팀','등급','K등급','직책','직무','성별','입사일','연차','고용형태','현지매니저','업무지시자','부서장','원가부서','파견도시','파견고객사','파견시작','파견종료','재직상태','비고'];
+  const rows=devEmps().filter(e=>e.type!=='한국파견').map(e=>[
+    e.empId||'',e.nick||'',e.name||'',e.bumun||'',e.center||'',e.bu||'',e.team||'',
+    e.grade||'',e.kgrade||'',e.jikchak||'',e.jikmu||'',e.gender||'',e.join||'',
+    e.join?calcYeon(e.join)+'년':'',e.type||'',
+    e.localMgr||'',e.director||'',e.deptHead||'',e.wonka||'',
+    e.dispatchCity||'',e.dispatchClient||'',e.dispatchStart||'',e.dispatchEnd||'',
+    e.status||'재직',e.note||''
+  ]);
+  const bom='﻿';
+  const csv=bom+[headers,...rows].map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='코사인_인력현황_'+new Date().toISOString().split('T')[0]+'.csv';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  toast('Excel 파일로 내보냈습니다 (CSV)');
+}
+
+
+function toggleNonDev(on){
+  SHOW_NON_DEV=on;
+  document.getElementById('toggle-non-dev-lbl').textContent=on?'표시 중':'숨김';
+  updateAll();pf();rl();
+  toast(on?'비개발 직군 표시 중 (전체 142명)':'개발자 인력만 표시 중 (127명)');
+}
+function toast(msg,type="ok"){
+  const t=document.getElementById("toast");t.textContent=msg;t.className="toast "+type+" show";
+  setTimeout(()=>t.classList.remove("show"),3000);
+}
+
+// Session restore
+const sess=sessionStorage.getItem("cos_s");
+if(sess){CU=JSON.parse(sess);startApp();}
+</script>
+
+<script>
+// 드롭다운 외부 클릭 시 닫기
+document.addEventListener('click', function(e){
+  const container = document.getElementById('emp-search-container');
+  if(container && !container.contains(e.target)){
+    const dd = document.getElementById('uf-emp-dropdown');
+    if(dd) dd.style.display = 'none';
+  }
+});
+</script>
+</body>
+</html>
