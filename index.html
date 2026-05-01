@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>코사인 개발자인력관리</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
 :root{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#f5f7fb;--bg4:#ebeef5;--bg5:#e2e6f0;--border:#dde2ee;--border2:#c8cfdf;--text:#1a2240;--text2:#4a5578;--text3:#8e9ab8;--accent:#4f86f7;--accent2:#3a6de0;--green:#18a96e;--orange:#e08a20;--red:#e03f3f;--purple:#7c52e0;--cyan:#1aa8d4;--yellow:#c8a800;--pink:#d43077;--r:10px;--sh:0 4px 20px rgba(80,100,160,.10);}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;}
 body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;}
@@ -578,7 +579,53 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.01
 <script>
 const ACCS={admin:{pw:"admin1234",name:"설욱환",role:"최고관리자",canEdit:true},manager:{pw:"mgr1234",name:"최기종",role:"매니저",canEdit:true},viewer:{pw:"view1234",name:"조회자",role:"조회전용",canEdit:false}};
 let CU=null;
-const SK="cosine_hr_v21";
+// ============================================================
+// SUPABASE — paste your project URL + anon key here
+// (Supabase Dashboard → Settings → API)
+// ============================================================
+const SUPABASE_URL = 'https://tnkofdygsdxmtuiijygi.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_l0HIz9kEtTu1-C2h3jIOKA_--9B-HCl';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SK = "unused";
+
+function dbToJs(r) {
+  return {
+    empId: r.emp_id, nick: r.nick||'', name: r.name||'',
+    gender: r.gender||'', join: r.join_date||'',
+    grade: r.grade||'', kgrade: r.kgrade||'',
+    jikchak: r.jikchak||'', jikmu: r.jikmu||'',
+    type: r.employment_type||'', wonka: r.wonka||'',
+    workplace: r.workplace||'', bumun: r.bumun||'',
+    center: r.center||'', bu: r.bu||'', team: r.team||'',
+    localMgr: r.local_mgr||'', director: r.director||'',
+    deptHead: r.dept_head||'', status: r.status||'재직',
+    note: r.note||'',
+    dispatchStart: r.dispatch_start||'', dispatchEnd: r.dispatch_end||'',
+    dispatchCity: r.dispatch_city||'', dispatchClient: r.dispatch_client||'',
+    dispatchExtendable: !!r.dispatch_extendable,
+    statusHistory: []
+  };
+}
+
+function jsToDb(e) {
+  return {
+    emp_id: e.empId, nick: e.nick||null, name: e.name||null,
+    gender: e.gender||null, join_date: e.join||null,
+    grade: e.grade||null, kgrade: e.kgrade||null,
+    jikchak: e.jikchak||null, jikmu: e.jikmu||null,
+    employment_type: e.type||null, wonka: e.wonka||null,
+    workplace: e.workplace||null, bumun: e.bumun||null,
+    center: e.center||null, bu: e.bu||null, team: e.team||null,
+    local_mgr: e.localMgr||null, director: e.director||null,
+    dept_head: e.deptHead||null, status: e.status||'재직',
+    note: e.note||null,
+    dispatch_start: e.dispatchStart||null, dispatch_end: e.dispatchEnd||null,
+    dispatch_city: e.dispatchCity||null, dispatch_client: e.dispatchClient||null,
+    dispatch_extendable: !!e.dispatchExtendable
+  };
+}
+
+  
 const COLORS=["var(--accent)","var(--green)","var(--orange)","var(--purple)","var(--cyan)","var(--yellow)","var(--pink)","var(--red)"];
 
 // EMBEDDED DATA - 140명 전원
@@ -639,14 +686,23 @@ function isDevStaff(e){
   return true;
 }
 function devEmps(){ return emps.filter(isDevStaff); }
-function loadEmps(){
-  const r=localStorage.getItem(SK);
-  if(r){emps=JSON.parse(r);return;}
-  // First run: use embedded data
-  emps=JSON.parse(JSON.stringify(BASE_DATA));
-  localStorage.setItem(SK,JSON.stringify(emps));
+async function loadEmps() {
+  const { data, error } = await sb.from('employees').select('*').order('emp_id');
+  if (error) { console.error(error); toast('데이터 로드 실패','err'); emps=[]; return; }
+  emps = data.map(dbToJs);
 }
-function saveEmps(){localStorage.setItem(SK,JSON.stringify(emps));}
+
+async function saveEmps() {
+  const { error } = await sb.from('employees')
+    .upsert(emps.map(jsToDb), { onConflict: 'emp_id' });
+  if (error) { console.error(error); toast('저장 실패','err'); }
+}
+
+async function deleteEmpFromDb(empId) {
+  if (!empId) return;
+  const { error } = await sb.from('employees').delete().eq('emp_id', empId);
+  if (error) { console.error(error); toast('삭제 실패','err'); }
+}
 
 function doLogin(){
   const id=document.getElementById("lid").value.trim();
@@ -680,8 +736,27 @@ function startApp(){
   document.getElementById("sbRl").textContent=CU.role;
   const an=document.getElementById('adminNav');
   if(an)an.style.display=CU.canEdit?'':'none';
-  const today=new Date();const pad=n=>String(n).padStart(2,"0");const todayStr=today.getFullYear()+"-"+pad(today.getMonth()+1)+"-"+pad(today.getDate());const rdEl=document.getElementById("refDate");if(rdEl)rdEl.value=todayStr;  loadEmps();updateAll();setTimeout(()=>setPill("dashboard"), 80);setTimeout(()=>{const d30=emps.filter(e=>e.type==="파견"&&(()=>{const d=calcDday(e.dispatchEnd);return d!==null&&d<=30;})());if(d30.length){const al=document.getElementById("dash-alert");if(al){al.style.display="flex";document.getElementById("dash-alert-txt").textContent=`파견 계약 만료 30일 이내: ${d30.map(e=>e.nick||e.name).join(" · ")} — ${d30.length}명`;}}},100);
-  toast("✅ "+CU.name+"님 환영합니다 ("+devEmps().filter(e=>e.type!=="한국파견").length+"명 개발자 인력)","ok");
+  const today=new Date();
+  const pad=n=>String(n).padStart(2,"0");
+  const todayStr=today.getFullYear()+"-"+pad(today.getMonth()+1)+"-"+pad(today.getDate());
+  const rdEl=document.getElementById("refDate");
+  if(rdEl)rdEl.value=todayStr;
+
+  loadEmps().then(()=>{
+    updateAll();
+    setTimeout(()=>setPill("dashboard"), 80);
+    setTimeout(()=>{
+      const d30=emps.filter(e=>e.type==="파견"&&(()=>{const d=calcDday(e.dispatchEnd);return d!==null&&d<=30;})());
+      if(d30.length){
+        const al=document.getElementById("dash-alert");
+        if(al){
+          al.style.display="flex";
+          document.getElementById("dash-alert-txt").textContent=`파견 계약 만료 30일 이내: ${d30.map(e=>e.nick||e.name).join(" · ")} — ${d30.length}명`;
+        }
+      }
+    },100);
+    toast("✅ "+CU.name+"님 환영합니다 ("+devEmps().filter(e=>e.type!=="한국파견").length+"명 개발자 인력)","ok");
+  });
 }
 
 const PM={dashboard:{t:"대시보드",s:"2026년 개발자 인력 현황"},list:{t:"전체 인력",s:"전체 직원 검색 및 관리"},outsourcing:{t:"아웃소싱 인력",s:"아웃소싱/파견센터 재직 인력"},dispatch:{t:"파견 인력",s:"한국 파견 현황 및 D-Day 관리"},rnd:{t:"R&D지원 인력",s:"R&D 지원센터 소속 인력"},summary:{t:"고객사별 인력현황",s:"고객사별 아웃소싱/파견 인력 현황"},"settings-org":{t:"조직 관리",s:"센터/부/실/팀 구조 편집"},"settings-users":{t:"사용자 관리",s:"계정 및 권한 관리"}};
@@ -1211,7 +1286,7 @@ function delEmp(idx){
   if(!CU?.canEdit){toast("조회 전용 계정입니다","err");return;}
   const e=emps[idx];
   if(!confirm(`"${e?.nick||e?.name||"해당 직원"}"을(를) 삭제하시겠습니까?`))return;
-  emps.splice(idx,1);saveEmps();uc();pf();rl();toast("삭제되었습니다");
+    const removed=emps[idx];emps.splice(idx,1);deleteEmpFromDb(removed?.empId);uc();pf();rl();toast("삭제되었습니다");
 }
 function closeModal(){document.getElementById("mov").style.display="none";}
 
@@ -1715,7 +1790,7 @@ function delEmpOrg(idx,center,bu,team){
   const e=emps[idx];
   const nm=e?(e.nick||e.name||'해당 직원'):'';
   if(!confirm('"'+nm+'"을(를) 삭제하시겠습니까?'))return;
-  emps.splice(idx,1);saveEmps();uc();pf();
+  const removed=emps[idx];emps.splice(idx,1);deleteEmpFromDb(removed?.empId);uc();pf();
   renderTeamPanel(center,bu,team);
   toast('삭제되었습니다');
 }
