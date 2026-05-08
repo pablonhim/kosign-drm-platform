@@ -51,18 +51,17 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
    Sits behind the tech-icon orbit (z-index:0 vs tech-bg's z-index:1). */
 .login-glow{
   position:absolute;left:50%;bottom:0;
-  transform:translate(-50%, 50%);
-  width:140vw;height:65vh;
+  transform:translate(-50%, 60%);
+  width:140vw;height:55vh;
   border-radius:50%;
   background:radial-gradient(ellipse at center,
-    rgba(255,80,15,.95)   0%,
-    rgba(255,115,45,.80)  10%,
-    rgba(255,150,85,.60)  22%,
-    rgba(255,180,130,.40) 35%,
-    rgba(250,200,180,.22) 50%,
-    rgba(245,200,215,.10) 65%,
-    transparent           80%);
-  filter:blur(24px);
+    rgba(255,130,60,.40)  0%,
+    rgba(255,160,100,.30) 14%,
+    rgba(255,185,140,.22) 28%,
+    rgba(255,200,170,.14) 42%,
+    rgba(250,205,200,.08) 56%,
+    transparent           75%);
+  filter:blur(28px);
   pointer-events:none;
   z-index:0;
 }
