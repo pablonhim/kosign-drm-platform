@@ -42,10 +42,32 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
 .tech-bg{
   position:absolute;left:0;right:0;bottom:0;
   height:48vh;min-height:420px;max-height:600px;
-  pointer-events:none;z-index:0;overflow:hidden;
+  pointer-events:none;z-index:1;overflow:hidden;
   -webkit-mask-image:linear-gradient(to bottom, black 0%, black 82%, transparent 100%);
           mask-image:linear-gradient(to bottom, black 0%, black 82%, transparent 100%);
 }
+/* Sunset/sunrise glow anchored at the very bottom of the login screen — wide
+   ellipse so the bright zone hugs the floor without bleeding into the form.
+   Sits behind the tech-icon orbit (z-index:0 vs tech-bg's z-index:1). */
+.login-glow{
+  position:absolute;left:50%;bottom:0;
+  transform:translate(-50%, 50%);
+  width:140vw;height:65vh;
+  border-radius:50%;
+  background:radial-gradient(ellipse at center,
+    rgba(255,80,15,.95)   0%,
+    rgba(255,115,45,.80)  10%,
+    rgba(255,150,85,.60)  22%,
+    rgba(255,180,130,.40) 35%,
+    rgba(250,200,180,.22) 50%,
+    rgba(245,200,215,.10) 65%,
+    transparent           80%);
+  filter:blur(24px);
+  pointer-events:none;
+  z-index:0;
+}
+/* Soft pink tint across the whole login page (very subtle — keeps the form readable) */
+#LP{background:linear-gradient(to bottom, #fff7f8 0%, #fdebef 70%, #fcdde3 100%) !important;}
 /* Each badge rides the same wide, gentle arc. Icons stay at 100% opacity throughout —
    apex emphasis comes from scale + halo only. Approaching either horizon, a Gaussian blur
    ramps up so the icon appears to "speed past" the screen edge instead of just vanishing. */
@@ -480,6 +502,7 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
 
 <!-- LOGIN -->
 <div id="LP">
+  <div class="login-glow" aria-hidden="true"></div>
   <div class="tech-bg" aria-hidden="true">
     <div class="tech-icon" style="--delay:-0s"><div class="tech-icon-inner" style="--bg:#F7DF1E;--fg:#000" title="JavaScript">JS</div></div>
     <div class="tech-icon" style="--delay:-7.5s"><div class="tech-icon-inner" style="--bg:#3178C6;--fg:#fff" title="TypeScript">TS</div></div>
