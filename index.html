@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>코사인 개발자인력관리</title>
+<title>KOSIGN DRM — 개발자인력관리</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -11,29 +11,89 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;}
 body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;}
 /* LOGIN */
-#LP{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);position:relative;overflow:hidden;}
-#LP::before{content:"";position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(79,134,247,.1) 0%,transparent 65%);top:-200px;left:-200px;pointer-events:none;}
-#LP::after{content:"";position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(157,114,245,.07) 0%,transparent 65%);bottom:-150px;right:-150px;pointer-events:none;}
-.lbox{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:44px 46px;width:420px;box-shadow:var(--sh);position:relative;z-index:1;animation:fu .4s ease;}
+#LP{min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding-top:14vh;background:#fff;position:relative;overflow:hidden;}
+.lbox{width:300px;max-width:90vw;position:relative;z-index:1;animation:fu .4s ease;}
 @keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-.llogo{text-align:center;margin-bottom:30px;}
-.lico{width:58px;height:58px;background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:16px;display:inline-flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:14px;box-shadow:0 8px 24px rgba(79,134,247,.3);}
-.len{font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;font-weight:600;}
-.lko{font-size:20px;font-weight:800;margin-top:4px;}.lsub{font-size:12px;color:var(--text3);margin-top:3px;}
+.llogo{text-align:left;margin-bottom:30px;}
+.lico{width:76px;height:76px;background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:20px;display:inline-flex;align-items:center;justify-content:center;color:#fff;margin-bottom:14px;box-shadow:0 10px 28px rgba(79,134,247,.30);}
+.lico svg{width:36px;height:36px;}
+.len{font-size:11px;color:var(--text3);letter-spacing:.4px;text-transform:uppercase;font-weight:700;line-height:1.1;}
+.lko{font-size:26px;font-weight:800;margin-top:1px;letter-spacing:-0.3px;line-height:1.15;}
 .lform{display:flex;flex-direction:column;gap:14px;}
 .lg{display:flex;flex-direction:column;gap:6px;}
-.lg label{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+.lg label{font-size:13px;color:var(--text);font-weight:600;letter-spacing:0;text-transform:none;}
+.lcheck{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);cursor:pointer;user-select:none;margin-top:-4px;}
+.lcheck input{margin:0;cursor:pointer;accent-color:var(--accent);width:14px;height:14px;}
 .li{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:11px 14px;color:var(--text);font-size:14px;font-family:"Noto Sans KR",sans-serif;outline:none;transition:border-color .15s,box-shadow .15s;width:100%;}
 .li:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,134,247,.14);}
 .lpw-wrap{position:relative;}
-.lpw-wrap .li{padding-right:42px;}
-.lpw-eye{position:absolute;top:50%;right:8px;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);padding:6px;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:color .15s,background .15s;}
+.lpw-wrap > input{padding-right:42px;}
+.lpw-eye{position:absolute;top:50%;right:8px;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);padding:6px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:color .15s,background .15s;}
 .lpw-eye:hover{color:var(--text2);background:rgba(255,255,255,.05);}
 .lpw-eye:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
 .lerr{background:rgba(240,92,92,.08);border:1px solid rgba(240,92,92,.25);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--red);display:none;}
 .lerr.show{display:block;}
-.lbtn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:9px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:"Noto Sans KR",sans-serif;box-shadow:0 4px 16px rgba(79,134,247,.28);transition:opacity .15s;}
+.lbtn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:9px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:"Noto Sans KR",sans-serif;box-shadow:0 4px 16px rgba(79,134,247,.28);transition:opacity .15s;margin-top:18px;}
 .lbtn:hover{opacity:.92;}
+/* Platform version label, anchored bottom-center of the screen. Auto-updated from APP_VERSION in JS. */
+.lversion{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--text3);font-family:"JetBrains Mono",monospace;letter-spacing:.5px;pointer-events:none;z-index:2;}
+/* ── Login background: bottom-anchored region with decorative dome curves + an elliptical orbit of tech badges. ── */
+/* ── Login background: a single thin arc with tech-brand badges that scale up at the apex. ── */
+.tech-bg{
+  position:absolute;left:0;right:0;bottom:0;
+  height:48vh;min-height:420px;max-height:600px;
+  pointer-events:none;z-index:0;overflow:hidden;
+  -webkit-mask-image:linear-gradient(to bottom, black 0%, black 82%, transparent 100%);
+          mask-image:linear-gradient(to bottom, black 0%, black 82%, transparent 100%);
+}
+/* Each badge rides the same wide, gentle arc. Icons stay at 100% opacity throughout —
+   apex emphasis comes from scale + halo only. Approaching either horizon, a Gaussian blur
+   ramps up so the icon appears to "speed past" the screen edge instead of just vanishing. */
+.tech-icon{
+  position:absolute;left:50%;bottom:60px;z-index:1;
+  width:60px;height:60px;margin:-30px 0 0 -30px;
+  offset-path:path('M -900 0 A 900 280 0 1 0 900 0 A 900 280 0 1 0 -900 0');
+  offset-rotate:0deg;
+  animation:tech-orbit 90s linear infinite;
+  animation-delay:var(--delay,0s);
+  /* Pixel-perfect rendering hints: force GPU layer + crisp transforms, prevent sub-pixel rasterization. */
+  will-change:transform, filter;
+  backface-visibility:hidden;
+  transform-style:preserve-3d;
+}
+.tech-icon-inner{
+  width:100%;height:100%;
+  background:var(--bg,#fff);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:800;color:var(--fg,#1a2240);
+  font-family:"Inter","Noto Sans KR",sans-serif;
+  letter-spacing:-0.3px;
+  /* Box-shadow halo (NOT drop-shadow filter) — box-shadow is composited sharply by the GPU,
+     while drop-shadow inside filter chains forces a raster step that can soften transformed content. */
+  box-shadow:0 4px 14px rgba(79,134,247,.22), 0 1px 3px rgba(0,0,0,.08);
+  /* Crisp-edge hint for raster fallback paths (no effect on SVG/CSS-rendered text but doesn't hurt). */
+  image-rendering:-webkit-optimize-contrast;
+}
+.tech-icon-inner svg{
+  width:30px;height:30px;
+  /* SVGs are vector — they scale infinitely sharp. shape-rendering forces crisp edges on path strokes. */
+  shape-rendering:geometricPrecision;
+}
+@keyframes tech-orbit{
+  /* LEFT HORIZON — heavy blur + low opacity. Filter only contains blur (no drop-shadow) so the apex frames stay crisp. */
+  0%   {offset-distance:0%;   transform:scale(1) translateZ(0); opacity:.10; filter:blur(16px);}
+   5%  {offset-distance:5%;   transform:scale(1) translateZ(0); opacity:.30; filter:blur(9px); }
+  /* CLEAR ZONE — every keyframe in this band uses blur(0) and integer-multiple scale (1× or 1.5× of 60px = 60 or 90, both whole). */
+  12%  {offset-distance:12%;  transform:scale(1) translateZ(0); opacity:1;   filter:blur(0);}
+  25%  {offset-distance:25%;  transform:scale(1.5) translateZ(0); opacity:1; filter:blur(0);}     /* APEX — 60×1.5 = 90px, integer */
+  38%  {offset-distance:38%;  transform:scale(1) translateZ(0); opacity:1;   filter:blur(0);}
+  /* RIGHT HORIZON — mirror. */
+  45%  {offset-distance:45%;  transform:scale(1) translateZ(0); opacity:.30; filter:blur(9px); }
+  50%  {offset-distance:50%;  transform:scale(1) translateZ(0); opacity:.10; filter:blur(16px);}
+  100% {offset-distance:100%; transform:scale(1) translateZ(0); opacity:.10; filter:blur(16px);}
+}
+@media (prefers-reduced-motion: reduce){.tech-icon{animation:none;}}
 .lhint{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:14px 16px;margin-top:4px;}
 .lht{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
 .lhr{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);}
@@ -42,7 +102,26 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
 /* MAIN */
 #MA{display:none;height:100vh;flex-direction:column;}
 .layout{display:flex;flex:1;overflow:hidden;}
-.topheader{height:52px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;}.th-brand{display:flex;align-items:center;gap:10px;}.th-ico{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0;}.th-name{font-size:14px;font-weight:800;color:var(--text);}.th-sub{font-size:10px;color:var(--text3);margin-top:1px;letter-spacing:.3px;}.th-user{display:flex;align-items:center;gap:10px;}.page-head-bar{padding:20px 24px 14px;display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0;}.sidebar{width:210px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;height:100%;}
+.topheader{height:52px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;}.th-brand{display:flex;align-items:center;gap:10px;}.th-ico{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0;}
+.th-ico svg{width:15px;height:15px;}.th-name{font-size:14px;font-weight:800;color:var(--text);}.th-sub{font-size:10px;color:var(--text3);margin-top:1px;letter-spacing:.3px;}.th-user{display:flex;align-items:center;gap:10px;}.page-head-bar{padding:20px 24px 14px;display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0;}.sidebar{width:210px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;height:100%;}
+/* Notification Center — bell button + dropdown panel in the top-right header. */
+.bell-wrap{position:relative;}
+.bell-btn{width:36px;height:36px;background:none;border:1px solid transparent;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--text2);position:relative;transition:background .15s,color .15s,border-color .15s,box-shadow .15s;font-family:inherit;}
+.bell-btn:hover{background:var(--bg3);color:var(--text);}
+.bell-btn:focus-visible{outline:none;border-color:var(--accent2);box-shadow:0 0 0 2px rgba(58,109,224,.20);}
+.bell-ico{width:20px;height:20px;}
+.bell-dot{position:absolute;top:7px;right:7px;width:9px;height:9px;background:var(--red);border:2px solid var(--bg2);border-radius:50%;pointer-events:none;}
+.bell-menu{position:absolute;top:calc(100% + 8px);right:0;width:340px;max-width:90vw;max-height:380px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.16);z-index:80;overflow:hidden;display:flex;flex-direction:column;}
+.bell-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px;font-weight:700;color:var(--text);}
+.bell-count{font-size:11px;font-weight:700;background:var(--bg3);color:var(--text2);padding:2px 8px;border-radius:10px;font-family:"JetBrains Mono",monospace;}
+.bell-list{flex:1;overflow-y:auto;padding:6px;}
+.bell-item{display:flex;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;transition:background .12s;}
+.bell-item:hover{background:var(--bg3);}
+.bell-item-ico{width:28px;height:28px;flex-shrink:0;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;background:rgba(224,138,32,.12);color:var(--orange);}
+.bell-item-body{flex:1;min-width:0;}
+.bell-item-title{font-size:12px;font-weight:600;color:var(--text);}
+.bell-item-desc{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4;}
+.bell-empty{padding:28px 16px;text-align:center;font-size:12px;color:var(--text3);}
 .sblogo{padding:20px 18px 14px;border-bottom:1px solid var(--border);}
 .sblogo-en{font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;font-weight:600;}
 .sblogo-ko{font-size:14px;font-weight:800;margin-top:2px;}
@@ -53,27 +132,68 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
 .sbout{margin-left:auto;cursor:pointer;color:var(--text3);font-size:14px;transition:color .12s;}.sbout:hover{color:var(--red);}
 .nav{padding:8px;flex:1;overflow-y:auto;}
 .navl{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:1.5px;padding:8px 10px 4px;text-transform:uppercase;}
-.navi{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;cursor:pointer;color:var(--text2);font-size:13px;font-weight:500;transition:all .12s;margin-bottom:1px;user-select:none;}.navdiv{height:1px;background:var(--border);margin:6px 8px;}.nav-admin{background:var(--bg3);border-radius:0;padding:4px;border:none;}
-.navi:hover{background:var(--bg3);color:var(--text);}
-.navi.active{background:rgba(79,134,247,.15);color:var(--accent);}
+.navi{display:flex;align-items:center;gap:10px;padding:8px 11px;border-radius:8px;cursor:pointer;color:var(--text2);font-size:13px;font-weight:500;transition:background .12s,color .12s;margin-bottom:2px;user-select:none;}.navdiv{height:16px;}.nav-admin{background:var(--bg3);border-radius:0;padding:4px;border:none;}
+.navi:hover{background:var(--bg4);color:var(--text);}              /* slightly darker gray than the page bg */
+.navi.active{background:rgba(79,134,247,.12);color:var(--accent2);font-weight:600;}  /* two-tone: light-blue tint + deep-blue label & icon */
+.navi-ic{width:17px;height:17px;flex-shrink:0;}                     /* outlined SVG icon, inherits color via stroke=currentColor */
 .navc{margin-left:auto;background:var(--bg4);border-radius:10px;padding:1px 7px;font-size:10px;font-family:"JetBrains Mono",monospace;color:var(--text3);}
 .navi.active .navc{background:rgba(79,134,247,.2);color:var(--accent);}
 .sum-tbl{width:100%;border-collapse:collapse;}.sum-tbl th{padding:9px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border2);background:var(--bg3);white-space:nowrap;}.sum-tbl th.tc{text-align:center;}.sum-tbl td{padding:10px 14px;font-size:12px;color:var(--text2);border-bottom:0.5px solid var(--border);vertical-align:middle;}.sum-tbl td.tc{text-align:center;}.sum-tbl .co-cell{background:var(--bg3);border-right:1px solid var(--border);border-left:3px solid var(--accent);vertical-align:middle;font-size:13px;font-weight:700;color:var(--text);}.sum-tbl tr.grp-mid td{border-bottom:0.5px dashed var(--border);}.sum-tbl tr.grp-end td{border-bottom:1px solid var(--border2);}.sum-tbl tr.grp-sub td{background:var(--bg3);}.sum-tbl tr.grp-sub .co-cell{background:var(--bg3);}.sum-tbl tr.sum-total td{background:var(--bg3);font-weight:700;font-size:13px;border-top:2px solid var(--border2);}.ref-date-wrap{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border2);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap;}.ref-date-wrap input[type=date]{background:none;border:none;outline:none;font-size:12px;color:var(--text);font-family:"Noto Sans KR",sans-serif;cursor:pointer;}.sbfoot{padding:10px;border-top:1px solid var(--border);}
 .synbtn{width:100%;padding:9px;background:rgba(47,201,138,.07);border:1px solid rgba(47,201,138,.18);border-radius:8px;color:var(--green);font-size:12px;font-weight:600;cursor:pointer;font-family:"Noto Sans KR",sans-serif;transition:background .12s;display:flex;align-items:center;justify-content:center;gap:7px;}
 .synbtn:hover{background:rgba(47,201,138,.14);}
+body{overflow:hidden;}
 .main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
 .topbar{display:none;}
 .ttl{font-size:20px;font-weight:800;}.sub{font-size:12px;color:var(--text3);margin-top:4px;font-weight:400;}
 .tbr{display:flex;align-items:center;gap:9px;}
 .pill{border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700;font-family:"JetBrains Mono",monospace;}.pill-blue{background:rgba(79,134,247,.12);color:var(--accent);border:1px solid rgba(79,134,247,.2);}.pill-amber{background:rgba(224,138,32,.12);color:var(--orange);border:1px solid rgba(224,138,32,.2);}.pill-green{background:rgba(24,169,110,.12);color:var(--green);border:1px solid rgba(24,169,110,.2);}
-.content{flex:1;overflow-y:auto;padding:0 0 20px;}
-.page{display:none;}.page.active{display:block;padding:0 24px;}
+/* Content area now hosts the active page directly; scroll is delegated to each page (or to the table inside it). */
+.content{flex:1;overflow:hidden;padding:0;display:flex;flex-direction:column;min-height:0;}
+.page{display:none;}
+.page.active{display:flex;flex:1;flex-direction:column;min-height:0;padding:6px 24px 20px;overflow-y:auto;}  /* 6px top so focus halos on the filter row aren't clipped */
+/* Page-switch entrance — applied to the global .content wrapper. JS removes + re-adds the class on every showPage(),
+   forcing a reflow in between so the keyframe restarts cleanly even on rapid clicks.
+   No `forwards` fill-mode: the transform must NOT persist after the animation ends, otherwise it creates a
+   stacking context that breaks `position:fixed` for the dropdown menus (they'd jump to the wrong spot). */
+.content.page-fade{animation:fadeIn .3s ease-out;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);}}
+@media (prefers-reduced-motion: reduce){.content.page-fade{animation:none;}}
+/* List page: kill the page's own scroll — the table body is the only scrolling region. */
+#page-list.active{overflow:hidden;padding-bottom:0;}
+#page-list.active > .section{flex:1;display:flex;flex-direction:column;min-height:0;margin-bottom:20px;}
+#page-list.active > .section > .ox{flex:1;overflow:auto;min-height:0;}
+#page-list.active > .section > #ecnt{flex-shrink:0;}
+/* Sticky header inside the scrolling .ox — applied per-th so the cell background stays opaque while rows scroll under it. */
+#etbl thead th{position:sticky;top:0;background:var(--bg2);z-index:5;box-shadow:inset 0 -1px 0 var(--border);}
+/* Standardised table cell SIZE only — every td matches the 본명/호칭 column's font-size.
+   Weight and color are NOT touched by these rules; each cell carries its own inline color/weight (the originals).
+   .tag (status badges) and .av (profile circles) opt out via their own font-size/weight. */
+#etbl tbody td{font-size:13px;padding:10px 12px;}
+.tp-row td{font-size:12px;padding:9px 10px;}
+.tp-empty td{padding:30px;text-align:center;color:var(--text3);font-size:13px;}
+/* Resigned rows keep their muted-gray override. */
+tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
+/* Custom multi-select dropdown (replaces native <select> filters). */
+.ms-wrap{position:relative;display:inline-block;}
+.ms-btn{background:#fff;border:1px solid var(--border2);border-radius:8px;padding:0 32px 0 14px;font-size:12px;color:var(--text);cursor:pointer;font-family:"Noto Sans KR",sans-serif;display:inline-flex;align-items:center;min-width:140px;max-width:240px;height:40px;position:relative;transition:border-color .15s,background .15s,box-shadow .15s;line-height:1;}
+.ms-btn:hover{background:var(--bg3);border-color:var(--accent2);}
+/* .is-open / focus state — handled centrally by the unified .filter-row focus rule above so all controls match. */
+.ms-btn .ms-label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;}
+.ms-btn .ms-caret{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:10px;}
+.ms-menu{display:none;position:fixed;min-width:200px;max-width:300px;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.14);z-index:60;padding:4px;max-height:340px;overflow-y:auto;}
+.ms-menu.show{display:block;}
+.ms-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12px;color:var(--text);transition:background .12s;user-select:none;}
+.ms-item:hover{background:var(--bg3);}
+.ms-item input[type=checkbox]{margin:0;cursor:pointer;accent-color:var(--accent);flex-shrink:0;}
+.ms-item span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ms-item.ms-all{font-weight:700;}
+.ms-sep{height:1px;background:var(--border);margin:3px 0;}
 /* STATS */
 .sg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
 .sc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:15px 17px;position:relative;overflow:hidden;}
 .sc::after{content:"";position:absolute;top:0;left:0;right:0;height:3px;}
 .sc.c1::after{background:var(--accent);}.sc.c2::after{background:var(--green);}.sc.c3::after{background:var(--orange);}.sc.c4::after{background:var(--purple);}.sc.c5::after{background:var(--cyan);}
-.scl{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.scl{font-size:13px;color:var(--text);font-weight:700;letter-spacing:0;text-transform:none;}
 .scn{font-size:26px;font-weight:700;font-family:"JetBrains Mono",monospace;margin:5px 0 3px;}
 .sc.c1 .scn{color:var(--accent);}.sc.c2 .scn{color:var(--green);}.sc.c3 .scn{color:var(--orange);}.sc.c4 .scn{color:var(--purple);}.sc.c5 .scn{color:var(--cyan);}
 .scd{font-size:11px;color:var(--text3);}
@@ -86,9 +206,69 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
 .bv{font-weight:700;font-family:"JetBrains Mono",monospace;}
 .bt{height:6px;background:var(--bg4);border-radius:4px;overflow:hidden;}
 .bf{height:100%;border-radius:4px;transition:width .5s ease;}
+/* 보유기술 현황 — floating colored bars on white card, gridlines at each tick, hover focus line + live count badge. */
+.skill-chart{height:100%;display:flex;flex-direction:column;padding-top:2px;}
+.skill-grid{flex:1;min-height:0;display:grid;grid-template-columns:140px 1fr;gap:14px;}
+.skill-labels{display:flex;flex-direction:column;padding-top:14px;padding-bottom:38px;}
+.skill-label{flex:1;min-height:30px;max-height:56px;display:flex;align-items:center;font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.skill-tracks{position:relative;display:flex;flex-direction:column;padding-top:14px;padding-bottom:38px;}
+.skill-track-row{flex:1;min-height:30px;max-height:56px;position:relative;}
+.skill-bar{position:absolute;left:0;top:50%;transform:translateY(-50%);height:22px;border-radius:3px;animation:skillBarGrow 1s cubic-bezier(.4,0,.2,1) both;animation-delay:var(--delay,0ms);}
+.skill-count{position:absolute;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;font-family:"JetBrains Mono",monospace;color:var(--text);white-space:nowrap;animation:skillCountSlide 1s cubic-bezier(.4,0,.2,1) both;animation-delay:var(--delay,0ms);}
+@keyframes skillBarGrow{from{width:0%;} to{width:var(--target-w,0%);}}
+@keyframes skillCountSlide{from{left:6px;opacity:0;} to{left:calc(var(--target-w,0%) + 6px);opacity:1;}}
+.skill-gridline{position:absolute;top:0;bottom:38px;width:1px;background:var(--border);pointer-events:none;}
+.skill-focus{position:absolute;top:0;bottom:38px;width:1px;background:rgba(79,134,247,.5);pointer-events:none;display:none;will-change:left;}
+.skill-focus-badge{position:absolute;top:-2px;transform:translateX(-50%);background:var(--text);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;pointer-events:none;display:none;white-space:nowrap;font-family:"JetBrains Mono",monospace;box-shadow:0 1px 4px rgba(0,0,0,.18);}
+.skill-axis{position:absolute;left:0;right:0;bottom:0;height:28px;}
+.skill-axis-rule{position:absolute;left:0;right:0;top:0;height:1px;background:var(--border2);}
+.skill-axis-tick{position:absolute;transform:translateX(-50%);font-size:10px;font-weight:500;color:var(--text3);font-family:"JetBrains Mono",monospace;top:8px;}
+/* Donut: slices stay at static opacity 0.9; the radial-wipe entry animation is driven by JS via a conic-gradient mask. */
+.donut-svg{display:block;}
+.donut-slice{opacity:.9;}
+/* HTML overlay for the center label so it stays exactly centered AND can be count-animated independently. */
+.donut-wrap{position:relative;}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;width:100%;}
+.donut-num{font-size:30px;font-weight:800;color:var(--text);font-family:"JetBrains Mono",monospace;line-height:1;}
+.donut-unit{font-size:11px;color:var(--text3);font-family:"Noto Sans KR",sans-serif;margin-top:4px;}
+/* Respect users who prefer reduced motion — instant final state for skill bars; donut handled in JS. */
+@media (prefers-reduced-motion: reduce){
+  .skill-bar,.skill-count{animation:none !important;}
+  .skill-bar{width:var(--target-w,0%);}
+  .skill-count{left:calc(var(--target-w,0%) + 6px);opacity:1;}
+}
 /* CONTROLS */
 .cb{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-.srch{display:flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--border2);border-radius:8px;padding:7px 11px;}
+.srch{display:flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--border2);border-radius:8px;padding:0 12px;height:40px;box-sizing:border-box;transition:border-color .15s,box-shadow .15s;}
+/* Filter bar: every child sits at exactly 40px on the same baseline. */
+.filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.filter-row > .ref-date-wrap,
+.filter-row > .srch,
+.filter-row > .ms-wrap > .ms-btn,
+.filter-row > .btn,
+.filter-row > select,
+.filter-row > input[type="date"]{height:40px;box-sizing:border-box;transition:border-color .15s,box-shadow .15s;}
+.filter-row > .ref-date-wrap{padding:0 14px;}
+.filter-row > input[type="date"]{padding:0 12px;border:1px solid var(--border2);border-radius:8px;background:#fff;font-family:"Noto Sans KR",sans-serif;font-size:12px;color:var(--text);}
+.filter-row > select{padding:0 32px 0 12px;border:1px solid var(--border2);border-radius:8px;background:#fff;font-family:"Noto Sans KR",sans-serif;font-size:12px;color:var(--text);}
+/* Crisp focus state — 1px solid deep-blue border + 2px even outer glow.
+   The outline is killed entirely; box-shadow with no inset paints a perfectly uniform halo
+   on all four sides, following border-radius automatically. No content reflow (border stays 1px). */
+.filter-row .srch:focus-within,
+.filter-row .ref-date-wrap:focus-within,
+.filter-row .ms-wrap .ms-btn.is-open,
+.filter-row .ms-wrap .ms-btn:focus-visible,
+.filter-row > input[type="date"]:focus,
+.filter-row > select:focus{
+  outline:none;
+  border-color:var(--accent2);
+  box-shadow:0 0 0 2px rgba(58,109,224,.20);
+}
+/* Native input/select inside the wrappers: kill their browser default focus rings so only our wrapper stroke shows. */
+.filter-row .srch input:focus,
+.filter-row .ref-date-wrap input:focus,
+.filter-row > input[type="date"]:focus,
+.filter-row > select:focus{outline:none;}
 .srch input{background:none;border:none;outline:none;color:var(--text);font-size:13px;width:190px;font-family:"Noto Sans KR",sans-serif;}
 .srch input::placeholder{color:var(--text3);}
 select{background:#fff;border:1px solid var(--border2);border-radius:8px;padding:7px 10px;color:var(--text);font-size:12px;outline:none;cursor:pointer;font-family:"Noto Sans KR",sans-serif;}
@@ -122,6 +302,11 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.01
 .av_{background:var(--bg4);color:var(--text3);border:1px solid var(--border);}
 .nc{display:flex;align-items:center;gap:8px;}
 .n1{font-weight:700;}.n2{font-size:10px;color:var(--text3);}
+/* Resigned row: grayscale tint applied row-wide; badges and tags lose their colors. */
+tr.row-resigned td{filter:grayscale(100%);opacity:.65;}
+tr.row-resigned .n1,tr.row-resigned .n2{color:var(--text3) !important;}
+tr.row-resigned .tag{background:var(--bg3) !important;color:var(--text3) !important;border-color:var(--border) !important;}
+tr.row-resigned .av{filter:grayscale(100%) brightness(.92);}
 /* ORG */
 .ow{display:flex;flex-direction:column;gap:12px;}
 .oc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
@@ -162,9 +347,55 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.01
 .s2{grid-column:span 2;}.s3{grid-column:span 3;}
 .mfoot{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;border-top:1px solid var(--border);padding-top:14px;}
 /* TOAST */
-.toast{position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:500;z-index:999;box-shadow:var(--sh);transform:translateY(70px);transition:transform .25s;pointer-events:none;}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:500;z-index:999;box-shadow:var(--sh);transform:translateY(70px);transition:transform .25s;pointer-events:none;display:flex;align-items:center;gap:8px;}
 .toast.show{transform:translateY(0);}
-.toast.ok{border-left:3px solid var(--green);}.toast.err{border-left:3px solid var(--red);}
+.toast.ok{border-left:3px solid var(--green);font-weight:600;}.toast.err{border-left:3px solid var(--red);font-weight:600;}
+.toast.show{animation:toastIn .25s ease-out;}
+@keyframes toastIn{from{opacity:0;transform:translateY(70px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);}}
+.toast::before{content:"";width:16px;height:16px;flex-shrink:0;background-repeat:no-repeat;background-position:center;background-size:contain;display:none;}
+.toast.ok::before,.toast.err::before{display:inline-block;}
+.toast.ok::before{background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2322c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>');}
+.toast.err::before{background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23ef4444" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>');}
+.is-loading{position:relative;color:transparent !important;pointer-events:none;opacity:.85;}
+.is-loading::after{content:"";position:absolute;top:50%;left:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes rowPulse{0%{background:rgba(79,134,247,.22);box-shadow:inset 3px 0 0 var(--accent);}60%{background:rgba(79,134,247,.10);box-shadow:inset 3px 0 0 rgba(79,134,247,.5);}100%{background:transparent;box-shadow:none;}}
+.row-pulse{animation:rowPulse 3s ease-out;}
+.qa-wrap{position:relative;display:inline-block;}
+.qa-toggle{display:inline-flex;align-items:center;gap:3px;}
+.qa-dot{background:var(--bg2);border:1px solid var(--border);cursor:pointer;color:var(--text2);font-size:18px;line-height:1;width:30px;height:30px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s,color .15s,box-shadow .15s;font-weight:700;letter-spacing:1px;}
+.qa-dot:hover{color:var(--text);background:var(--bg3);border-color:var(--border2);box-shadow:0 1px 2px rgba(80,100,160,.08);}
+.qa-dot:active{background:var(--bg4);}
+.qa-dot:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+.qa-menu{display:none;position:absolute;right:0;top:calc(100% + 4px);background:var(--bg2);border:1px solid var(--border2);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:50;min-width:140px;padding:4px;}
+.qa-menu.show{display:block;}
+.qa-menu button{display:flex;align-items:center;gap:8px;width:100%;text-align:left;padding:8px 10px;border:none;background:none;color:var(--text);font-size:12px;font-weight:500;border-radius:6px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .12s;}
+.qa-menu button:hover{background:var(--bg3);}
+.qa-menu button.qa-danger{color:var(--red);}
+.qa-menu button.qa-danger:hover{background:rgba(240,92,92,.10);}
+.qa-menu .qa-sep{height:1px;background:var(--border);margin:3px 0;}
+.qmodal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;}
+.qmodal-back{position:absolute;inset:0;background:rgba(0,0,0,.45);}
+.qmodal-card{position:relative;background:var(--bg2);border:1px solid var(--border2);border-radius:12px;width:min(420px,90vw);box-shadow:0 16px 48px rgba(0,0,0,.30);overflow:hidden;}
+.qmodal-head{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--border);}
+.qmodal-title{font-size:14px;font-weight:700;color:var(--text);}
+.qmodal-x{background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;padding:4px 8px;border-radius:6px;line-height:1;}
+.qmodal-x:hover{color:var(--text);background:var(--bg3);}
+.qmodal-body{padding:14px 16px;display:flex;flex-direction:column;gap:6px;}
+.qmodal-emp{font-size:11px;color:var(--text3);padding-bottom:6px;border-bottom:1px dashed var(--border);margin-bottom:4px;}
+.qmodal-emp-big{font-size:1.2rem;color:#333;font-weight:700;line-height:1.25;}
+.qmodal-curr{font-size:1.05rem;color:#333;font-weight:500;margin-top:2px;padding-bottom:8px;border-bottom:1px dashed var(--border);margin-bottom:4px;}
+.qmodal-hint{font-size:11px;color:var(--orange);margin-top:4px;background:rgba(224,138,32,.10);border:1px solid rgba(224,138,32,.25);border-radius:8px;padding:7px 10px;}
+.qmodal-info{font-size:12px;color:var(--text2);background:var(--bg3);border-radius:8px;padding:8px 10px;border-left:3px solid var(--accent);}
+.qmodal-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin:8px 0 2px;}
+.qmodal-input{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color .15s,box-shadow .15s;width:100%;box-sizing:border-box;}
+.qmodal-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,134,247,.14);}
+textarea.qmodal-input{resize:vertical;min-height:56px;}
+.qmodal-foot{display:flex;gap:8px;justify-content:flex-end;padding:11px 16px;border-top:1px solid var(--border);background:var(--bg3);}
+.qmodal-foot .btn{padding:8px 16px;font-size:12px;border-radius:8px;}
+.srch-clear{background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;line-height:1;padding:2px 5px;border-radius:4px;display:none;align-items:center;justify-content:center;transition:color .15s,background .15s;}
+.srch-clear:hover{color:var(--text);background:rgba(0,0,0,.05);}
+.srch-clear.show{display:inline-flex;}
 .empty{padding:40px;text-align:center;color:var(--text3);}
 
 /* ─── 조직도 차트뷰 ─── */
@@ -249,21 +480,64 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.01
 
 <!-- LOGIN -->
 <div id="LP">
+  <div class="tech-bg" aria-hidden="true">
+    <div class="tech-icon" style="--delay:-0s"><div class="tech-icon-inner" style="--bg:#F7DF1E;--fg:#000" title="JavaScript">JS</div></div>
+    <div class="tech-icon" style="--delay:-7.5s"><div class="tech-icon-inner" style="--bg:#3178C6;--fg:#fff" title="TypeScript">TS</div></div>
+    <div class="tech-icon" style="--delay:-15s"><div class="tech-icon-inner" style="--bg:#149ECA;--fg:#fff" title="React">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+        <ellipse cx="12" cy="12" rx="10" ry="3.8"/>
+        <ellipse cx="12" cy="12" rx="10" ry="3.8" transform="rotate(60 12 12)"/>
+        <ellipse cx="12" cy="12" rx="10" ry="3.8" transform="rotate(-60 12 12)"/>
+        <circle cx="12" cy="12" r="1.7" fill="currentColor"/>
+      </svg>
+    </div></div>
+    <div class="tech-icon" style="--delay:-22.5s"><div class="tech-icon-inner" style="--bg:#42B883;--fg:#fff" title="Vue.js">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 4 h4 l5 8 l5-8 h4 l-9 16 z"/>
+      </svg>
+    </div></div>
+    <div class="tech-icon" style="--delay:-30s"><div class="tech-icon-inner" style="--bg:#DD0031;--fg:#fff" title="Angular">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 2 L21 5 L19 18 L12 22 L5 18 L3 5 z"/>
+        <path d="M9 16 L12 8 L15 16 M10 14 H14"/>
+      </svg>
+    </div></div>
+    <div class="tech-icon" style="--delay:-37.5s"><div class="tech-icon-inner" style="--bg:#000;--fg:#fff" title="Next.js">Nx</div></div>
+    <div class="tech-icon" style="--delay:-45s"><div class="tech-icon-inner" style="--bg:#339933;--fg:#fff" title="Node.js">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 2 L21 7 V17 L12 22 L3 17 V7 z"/>
+      </svg>
+    </div></div>
+    <div class="tech-icon" style="--delay:-52.5s"><div class="tech-icon-inner" style="--bg:#3776AB;--fg:#FFD43B" title="Python">Py</div></div>
+    <div class="tech-icon" style="--delay:-60s"><div class="tech-icon-inner" style="--bg:#ED8B00;--fg:#fff" title="Java">Jv</div></div>
+    <div class="tech-icon" style="--delay:-67.5s"><div class="tech-icon-inner" style="--bg:#00ADD8;--fg:#fff" title="Go">Go</div></div>
+    <div class="tech-icon" style="--delay:-75s"><div class="tech-icon-inner" style="--bg:#CE422B;--fg:#fff" title="Rust">Rs</div></div>
+    <div class="tech-icon" style="--delay:-82.5s"><div class="tech-icon-inner" style="--bg:#9B4F96;--fg:#fff" title="C#">C#</div></div>
+  </div>
   <div class="lbox">
     <div class="llogo">
-      <div class="lico">👥</div>
-      <div class="len">Cosine Cambodia</div>
+      <div class="lico" aria-label="KOSIGN DRM 로고">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="16" y1="16" x2="16" y2="9"/>
+          <line x1="16" y1="16" x2="8.5" y2="20.5"/>
+          <line x1="16" y1="16" x2="23.5" y2="20.5"/>
+          <circle cx="16" cy="6" r="3"/>
+          <circle cx="6" cy="22" r="3"/>
+          <circle cx="26" cy="22" r="3"/>
+          <circle cx="16" cy="16" r="2.5" fill="currentColor" stroke="none"/>
+        </svg>
+      </div>
+      <div class="len">KOSIGN DRM</div>
       <div class="lko">개발자인력관리</div>
-      <div class="lsub">2026년 개발자인력관리</div>
     </div>
     <div class="lform">
       <div class="lg"><label>아이디</label>
-        <input class="li" id="lid" type="text" placeholder="아이디 입력" autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('lpw').focus()">
+        <input class="li" id="lid" type="text" placeholder="아이디 입력" autocomplete="off" onkeydown="if(event.key==='Enter')document.getElementById('lpw').focus()">
       </div>
       <div class="lg"><label>비밀번호</label>
         <div class="lpw-wrap">
-          <input class="li" id="lpw" type="password" placeholder="비밀번호 입력" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
-          <button type="button" class="lpw-eye" id="lpwEye" onclick="togglePassword()" aria-label="비밀번호 표시/숨기기" tabindex="-1">
+          <input class="li" id="lpw" type="password" placeholder="비밀번호 입력" autocomplete="new-password" onkeydown="if(event.key==='Enter')doLogin()">
+          <button type="button" class="lpw-eye" id="lpwEye" onclick="togglePassword('lpw','lpwEyeIcon')" aria-label="비밀번호 표시/숨기기" tabindex="-1">
             <svg id="lpwEyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
               <circle cx="12" cy="12" r="3"/>
@@ -271,11 +545,16 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.01
           </button>
         </div>
       </div>
+      <label class="lcheck">
+        <input type="checkbox" id="lremember">
+        <span>아이디 기억하기</span>
+      </label>
       <div class="lerr" id="lerr">아이디 또는 비밀번호가 올바르지 않습니다.</div>
-      <button class="lbtn" onclick="doLogin()">로그인</button>
+      <button class="lbtn" id="loginBtn" onclick="doLogin()">로그인</button>
 
     </div>
   </div>
+  <div class="lversion" id="lversion"></div>
 </div>
 
 <!-- MAIN APP -->
@@ -283,13 +562,39 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.01
   <!-- 상단 헤더 -->
   <div class="topheader">
     <div class="th-brand">
-      <div class="th-ico">C</div>
+      <div class="th-ico" aria-label="KOSIGN DRM 로고">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="16" y1="16" x2="16" y2="9"/>
+          <line x1="16" y1="16" x2="8.5" y2="20.5"/>
+          <line x1="16" y1="16" x2="23.5" y2="20.5"/>
+          <circle cx="16" cy="6" r="3"/>
+          <circle cx="6" cy="22" r="3"/>
+          <circle cx="26" cy="22" r="3"/>
+          <circle cx="16" cy="16" r="2.5" fill="currentColor" stroke="none"/>
+        </svg>
+      </div>
       <div>
-        <div class="th-name">Cosine Cambodia</div>
+        <div class="th-name">KOSIGN DRM</div>
         <div class="th-sub">개발자인력관리 시스템</div>
       </div>
     </div>
     <div class="th-user">
+      <div class="bell-wrap">
+        <button class="bell-btn" id="bellBtn" type="button" onclick="toggleBell(event)" aria-label="알림">
+          <svg class="bell-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+          </svg>
+          <span class="bell-dot" id="bellDot" style="display:none" aria-hidden="true"></span>
+        </button>
+        <div class="bell-menu" id="bellMenu" style="display:none" role="menu">
+          <div class="bell-head">
+            <span>알림</span>
+            <span class="bell-count" id="bellCount">0</span>
+          </div>
+          <div class="bell-list" id="bellList"></div>
+        </div>
+      </div>
       <div class="sbav" id="sbAv">A</div>
       <div><div class="sbuname" id="sbNm">-</div><div class="sburole" id="sbRl">-</div></div>
       <span class="sbout" title="로그아웃" onclick="doLogout()">⏻</span>
@@ -300,19 +605,79 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.01
     <aside class="sidebar">
       <nav class="nav" style="display:flex;flex-direction:column;height:100%;">
         <div style="flex:1;overflow-y:auto;">
-          <div class="navi active" id="nav-dashboard" onclick="showPage('dashboard')"><span>📊</span>대시보드</div>
+          <div class="navi active" id="nav-dashboard" onclick="showPage('dashboard')">
+            <svg class="navi-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="9" rx="1.2"/>
+              <rect x="14" y="3" width="7" height="5" rx="1.2"/>
+              <rect x="14" y="12" width="7" height="9" rx="1.2"/>
+              <rect x="3" y="16" width="7" height="5" rx="1.2"/>
+            </svg>
+            대시보드
+          </div>
           <div class="navdiv"></div>
-          <div class="navi" id="nav-list" onclick="showPage('list')"><span>👥</span>전체 인력</div>
-          <div class="navi" id="nav-outsourcing" onclick="showPage('outsourcing')"><span>🏢</span>아웃소싱 인력</div>
-          <div class="navi" id="nav-dispatch" onclick="showPage('dispatch')"><span>✈️</span>파견 인력</div>
-          <div class="navi" id="nav-rnd" onclick="showPage('rnd')"><span>🔬</span>R&D지원 인력</div>
+          <div class="navi" id="nav-list" onclick="showPage('list')">
+            <svg class="navi-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            전체개발 인력
+          </div>
+          <div class="navi" id="nav-outsourcing" onclick="showPage('outsourcing')">
+            <svg class="navi-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="4" y="2" width="16" height="20" rx="2"/>
+              <path d="M9 22v-4h6v4"/>
+              <path d="M8 6h.01"/><path d="M16 6h.01"/>
+              <path d="M8 10h.01"/><path d="M16 10h.01"/>
+              <path d="M8 14h.01"/><path d="M16 14h.01"/>
+            </svg>
+            아웃소싱 인력
+          </div>
+          <div class="navi" id="nav-dispatch" onclick="showPage('dispatch')">
+            <svg class="navi-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 2 11 13"/>
+              <path d="M22 2 15 22l-4-9-9-4 20-7Z"/>
+            </svg>
+            파견 인력
+          </div>
+          <div class="navi" id="nav-rnd" onclick="showPage('rnd')">
+            <svg class="navi-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M10 2v7.5a2 2 0 0 1-.21.9L4.7 20.55A1 1 0 0 0 5.6 22h12.8a1 1 0 0 0 .9-1.45L14.21 10.4a2 2 0 0 1-.21-.9V2"/>
+              <path d="M8.5 2h7"/>
+              <path d="M7 16h10"/>
+            </svg>
+            R&D지원 인력
+          </div>
           <div class="navdiv"></div>
-          <div class="navi" id="nav-summary" onclick="showPage('summary')"><span>📋</span>고객사별 인력현황</div>
+          <div class="navi" id="nav-summary" onclick="showPage('summary')">
+            <svg class="navi-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="8" y="2" width="8" height="4" rx="1"/>
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+              <path d="M9 12h6"/><path d="M9 16h4"/>
+            </svg>
+            고객사별 인력현황
+          </div>
         </div>
         <div id="adminNav" style="border-top:1px solid var(--border);padding:6px 4px;">
           <div class="navl" style="padding:6px 8px 4px;font-size:10px">관리자</div>
-          <div class="navi" id="nav-settings-org" onclick="showPage('settings-org')"><span>🏗️</span>조직 관리</div>
-          <div class="navi" id="nav-settings-users" onclick="showPage('settings-users')"><span>👤</span>사용자 관리</div>
+          <div class="navi" id="nav-settings-org" onclick="showPage('settings-org')">
+            <svg class="navi-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="3" width="6" height="6" rx="1"/>
+              <rect x="3" y="15" width="6" height="6" rx="1"/>
+              <rect x="15" y="15" width="6" height="6" rx="1"/>
+              <path d="M12 9v3"/>
+              <path d="M6 15v-3h12v3"/>
+            </svg>
+            조직 관리
+          </div>
+          <div class="navi" id="nav-settings-users" onclick="showPage('settings-users')">
+            <svg class="navi-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 21v-1a8 8 0 0 1 16 0v1"/>
+            </svg>
+            사용자 관리
+          </div>
         </div>
       </nav>
     </aside>
@@ -334,32 +699,41 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.01
       </div>
       <!-- DASHBOARD -->
       <div class="page active" id="page-dashboard">
-        <div id="dash-alert" style="display:none;background:rgba(224,138,32,.12);border:1px solid rgba(224,138,32,.35);border-radius:8px;padding:10px 16px;margin-bottom:12px;align-items:center;gap:10px;font-size:12px;color:var(--orange)">
-          <span style="font-size:16px">⚠️</span>
-          <span id="dash-alert-txt"></span>
-          <span style="margin-left:auto;cursor:pointer;text-decoration:underline;color:var(--orange)" onclick="showPage('dispatch')">파견 관리로 이동 →</span>
-        </div>
         <div class="sg" id="sg"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-          <div class="section" style="grid-row:span 2;display:flex;flex-direction:column;"><div class="sh" style="flex-shrink:0"><span class="sht">아웃소싱/파견 현황</span></div><div class="sp" id="ch-wonka" style="flex:1;padding:16px 18px;overflow-y:auto;"></div></div>
-          <div class="section"><div class="sh"><span class="sht">보유기술 현황</span></div><div class="sp" id="ch-type"></div></div>
-
+        <div style="display:flex;gap:12px;margin-bottom:16px;align-items:stretch">
+          <div class="section" style="flex:1;display:flex;flex-direction:column;"><div class="sh" style="flex-shrink:0"><span class="sht">아웃소싱/파견 현황</span></div><div class="sp" id="ch-wonka" style="flex:1;padding:16px 18px;overflow-y:auto;"></div></div>
+          <div class="section" style="flex:1;display:flex;flex-direction:column;"><div class="sh" style="flex-shrink:0"><span class="sht">보유기술 현황</span></div><div class="sp" id="ch-type" style="flex:1;padding:16px 18px;overflow-y:auto;"></div></div>
         </div>
       </div>
       <!-- LIST -->
       <div class="page" id="page-list">
         <!-- 검색조건: 표 밖 -->
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <div class="filter-row">
           <div class="ref-date-wrap">
             <span style="font-size:11px;color:var(--text3);font-weight:700;letter-spacing:.3px">기준일자</span>
             <input type="date" id="refDate" onchange="rl()" style="width:130px">
           </div>
-          <div class="srch"><span>🔍</span><input id="sq" placeholder="이름, 호칭, 직무, 비고..." oninput="rl()"></div>
-          <select id="fc" onchange="rl()"><option value="">전체 센터</option></select>
-          <select id="fb" onchange="rl()"><option value="">전체 부/실</option></select>
-          <select id="fw" onchange="rl()"><option value="">전체 원가부서</option></select>
-          <select id="ft" onchange="rl()"><option value="">전체 고용형태</option></select>
-          <select id="fp" onchange="rl()"><option value="">전체 직책</option></select>
+          <div class="srch"><span>🔍</span><input id="sq" placeholder="이름, 호칭, 직무, 비고..." oninput="rl();updateSearchClear()"><button type="button" class="srch-clear" id="sqClear" onclick="clearSearch()" aria-label="검색 지우기">✕</button></div>
+          <div class="ms-wrap" data-key="fc" data-placeholder="전체 센터" data-onchange="rl">
+            <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 센터</span><span class="ms-caret">▾</span></button>
+            <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
+          </div>
+          <div class="ms-wrap" data-key="fb" data-placeholder="전체 부/실" data-onchange="rl">
+            <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 부/실</span><span class="ms-caret">▾</span></button>
+            <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
+          </div>
+          <div class="ms-wrap" data-key="fw" data-placeholder="전체 원가부서" data-onchange="rl">
+            <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 원가부서</span><span class="ms-caret">▾</span></button>
+            <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
+          </div>
+          <div class="ms-wrap" data-key="ft" data-placeholder="전체 고용형태" data-onchange="rl">
+            <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 고용형태</span><span class="ms-caret">▾</span></button>
+            <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
+          </div>
+          <div class="ms-wrap" data-key="fp" data-placeholder="전체 직책" data-onchange="rl">
+            <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 직책</span><span class="ms-caret">▾</span></button>
+            <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
+          </div>
           <button class="btn btng" onclick="exportExcel()" style="background:rgba(24,169,110,.08);border-color:rgba(24,169,110,.25);color:var(--green)">📥 Excel</button>
         </div>
         <!-- 테이블만 섹션 카드 안에 -->
@@ -373,13 +747,19 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.01
       <!-- DISPATCH PAGE -->
       <div class="page" id="page-dispatch">
         <!-- 필터 (표 밖) -->
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <div class="filter-row">
           <div class="ref-date-wrap">
             <span style="font-size:11px;color:var(--text3);font-weight:700;letter-spacing:.3px">기준일자</span>
             <input type="date" id="dsp-refDate" onchange="renderDispatchTable()" style="width:130px">
           </div>
-          <select id="dsp-filter-city" onchange="renderDispatchTable()"><option value="">전체 도시</option><option>서울</option><option>부산</option></select>
-          <select id="dsp-filter-client" onchange="renderDispatchTable()"><option value="">전체 고객사</option></select>
+          <div class="ms-wrap" data-key="dsp-city" data-placeholder="전체 도시" data-onchange="renderDispatchTable">
+            <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 도시</span><span class="ms-caret">▾</span></button>
+            <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
+          </div>
+          <div class="ms-wrap" data-key="dsp-client" data-placeholder="전체 고객사" data-onchange="renderDispatchTable">
+            <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 고객사</span><span class="ms-caret">▾</span></button>
+            <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
+          </div>
           <select id="dsp-filter-days" onchange="renderDispatchTable()">
             <option value="">전체</option>
             <option value="30">D-30 이내</option>
@@ -495,7 +875,15 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.01
               </div>
               <div class="fg" style="margin-bottom:12px">
                 <div class="flab">비밀번호 *</div>
-                <input class="fi" id="uf-pw" type="password" placeholder="비밀번호">
+                <div class="lpw-wrap">
+                  <input class="fi" id="uf-pw" type="password" placeholder="비밀번호" autocomplete="new-password">
+                  <button type="button" class="lpw-eye" id="ufPwEye" onclick="togglePassword('uf-pw','ufPwEyeIcon')" aria-label="비밀번호 표시/숨기기" tabindex="-1">
+                    <svg id="ufPwEyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </div>
               </div>
               <div class="fg" style="margin-bottom:12px" id="uf-name-wrap">
                 <div class="flab">이름</div>
@@ -512,7 +900,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.01
               <input type="hidden" id="uf-edit-idx" value="">
               <input type="hidden" id="uf-original-id" value="">
               <div style="display:flex;gap:8px">
-                <button class="btn btnp" style="flex:1;text-align:center" onclick="saveUser()">저장</button>
+                <button class="btn btnp" id="userSaveBtn" style="flex:1;text-align:center" onclick="saveUser()">저장</button>
                 <button class="btn btng" onclick="resetUserForm()">취소</button>
               </div>
             </div>
@@ -583,14 +971,91 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.01
   </div>
   <div class="mfoot">
     <button class="btn btng" onclick="closeModal()">취소</button>
-    <button class="btn btnp" onclick="saveEmp()">저장</button>
+    <button class="btn btnp" id="empSaveBtn" onclick="saveEmp()">저장</button>
   </div>
 </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
+<!-- ── 퇴사 처리 모달 ───────────────────────────────────────── -->
+<div class="qmodal" id="resignModal" style="display:none">
+  <div class="qmodal-back" onclick="closeResignModal()"></div>
+  <div class="qmodal-card" role="dialog" aria-modal="true" aria-labelledby="resignTitle">
+    <div class="qmodal-head">
+      <div class="qmodal-title" id="resignTitle">퇴사 처리</div>
+      <button class="qmodal-x" onclick="closeResignModal()" aria-label="닫기">✕</button>
+    </div>
+    <div class="qmodal-body">
+      <div class="qmodal-emp" id="resignEmp"></div>
+      <div class="qmodal-info">상태가 <b>Resigned</b> 로 변경됩니다.</div>
+      <label class="qmodal-lbl" for="resignDate">퇴사일</label>
+      <input type="date" class="qmodal-input" id="resignDate">
+      <label class="qmodal-lbl" for="resignNote">메모 (선택)</label>
+      <textarea class="qmodal-input" id="resignNote" rows="2" placeholder="퇴사 사유 등"></textarea>
+    </div>
+    <div class="qmodal-foot">
+      <button class="btn btng" onclick="closeResignModal()">취소</button>
+      <button class="btn btnp" id="resignSave" onclick="confirmResign()">퇴사 처리</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 부서 이동 모달 ───────────────────────────────────────── -->
+<div class="qmodal" id="moveDeptModal" style="display:none">
+  <div class="qmodal-back" onclick="closeMoveDeptModal()"></div>
+  <div class="qmodal-card" role="dialog" aria-modal="true" aria-labelledby="moveDeptTitle">
+    <div class="qmodal-head">
+      <div class="qmodal-title" id="moveDeptTitle">부서 이동</div>
+      <button class="qmodal-x" onclick="closeMoveDeptModal()" aria-label="닫기">✕</button>
+    </div>
+    <div class="qmodal-body">
+      <div class="qmodal-emp-big" id="moveDeptEmp"></div>
+      <div class="qmodal-curr" id="moveDeptCurrent"></div>
+      <label class="qmodal-lbl" for="moveDeptSelect">새 부서 선택</label>
+      <select class="qmodal-input" id="moveDeptSelect" onchange="onMoveDeptChange()"></select>
+      <label class="qmodal-lbl" for="moveTeamSelect" id="moveTeamLbl" style="display:none">팀 선택</label>
+      <select class="qmodal-input" id="moveTeamSelect" style="display:none"></select>
+      <label class="qmodal-lbl" for="moveDeptDate">발령일</label>
+      <input type="date" class="qmodal-input" id="moveDeptDate">
+      <div class="qmodal-hint" id="moveDeptDateHint" style="display:none">미래 일자입니다 — 해당 일자에 자동 적용됩니다.</div>
+      <label class="qmodal-lbl" for="moveDeptNote">메모 (선택)</label>
+      <textarea class="qmodal-input" id="moveDeptNote" rows="2" placeholder="이동 사유 등"></textarea>
+    </div>
+    <div class="qmodal-foot">
+      <button class="btn btng" onclick="closeMoveDeptModal()">취소</button>
+      <button class="btn btnp" id="moveDeptSave" onclick="confirmMoveDept()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 파견 복귀 모달 ───────────────────────────────────────── -->
+<div class="qmodal" id="returnModal" style="display:none">
+  <div class="qmodal-back" onclick="closeReturnModal()"></div>
+  <div class="qmodal-card" role="dialog" aria-modal="true" aria-labelledby="returnTitle">
+    <div class="qmodal-head">
+      <div class="qmodal-title" id="returnTitle">파견 복귀</div>
+      <button class="qmodal-x" onclick="closeReturnModal()" aria-label="닫기">✕</button>
+    </div>
+    <div class="qmodal-body">
+      <div class="qmodal-emp" id="returnEmp"></div>
+      <div class="qmodal-info">현재 파견: <span id="returnCurrent" style="font-weight:600">—</span></div>
+      <label class="qmodal-lbl" for="returnDate">복귀일</label>
+      <input type="date" class="qmodal-input" id="returnDate">
+      <label class="qmodal-lbl" for="returnNote">메모 (선택)</label>
+      <textarea class="qmodal-input" id="returnNote" rows="2" placeholder="복귀 사유 등"></textarea>
+    </div>
+    <div class="qmodal-foot">
+      <button class="btn btng" onclick="closeReturnModal()">취소</button>
+      <button class="btn btnp" id="returnSave" onclick="confirmReturn()">저장</button>
+    </div>
+  </div>
+</div>
+
 <script>
+// Platform version. Bump on every change. Format: vMAJOR.MINOR.PATCH
+const APP_VERSION = '1.2.3';
+
 let CU=null;
 const SUPABASE_URL = 'https://tnkofdygsdxmtuiijygi.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_l0HIz9kEtTu1-C2h3jIOKA_--9B-HCl';
@@ -612,6 +1077,10 @@ function dbToJs(r) {
     dispatchStart: r.dispatch_start||'', dispatchEnd: r.dispatch_end||'',
     dispatchCity: r.dispatch_city||'', dispatchClient: r.dispatch_client||'',
     dispatchExtendable: !!r.dispatch_extendable,
+    lastUpdatedAt: r.last_updated_at||null,
+    pendingDept: r.pending_dept||'',
+    pendingTeam: r.pending_team||'',
+    effectiveDate: r.effective_date||'',
     statusHistory: []
   };
 }
@@ -630,7 +1099,10 @@ function jsToDb(e) {
     note: e.note||null,
     dispatch_start: e.dispatchStart||null, dispatch_end: e.dispatchEnd||null,
     dispatch_city: e.dispatchCity||null, dispatch_client: e.dispatchClient||null,
-    dispatch_extendable: !!e.dispatchExtendable
+    dispatch_extendable: !!e.dispatchExtendable,
+    pending_dept: e.pendingDept||null,
+    pending_team: e.pendingTeam||null,
+    effective_date: e.effectiveDate||null
   };
 }
 const COLORS=["var(--accent)","var(--green)","var(--orange)","var(--purple)","var(--cyan)","var(--yellow)","var(--pink)","var(--red)"];
@@ -698,15 +1170,164 @@ async function loadEmps() {
 }
 
 async function saveEmps() {
+  // Send each row with its OWN current lastUpdatedAt — do NOT bulk-stamp here,
+  // otherwise every row looks "just updated" and the pulse-on-render logic lights up the entire table.
+  const rows=emps.map(e=>{
+    const dbRow=jsToDb(e);
+    if(e.lastUpdatedAt) dbRow.last_updated_at=e.lastUpdatedAt;
+    return dbRow;
+  });
   const { error } = await sb.from('employees')
-    .upsert(emps.map(jsToDb), { onConflict: 'emp_id' });
-  if (error) { console.error(error); toast('저장 실패','err'); }
+    .upsert(rows, { onConflict: 'emp_id' });
+  if (error) { console.error(error); toast('저장 실패: '+error.message,'err'); return false; }
+  return true;
 }
 
 async function deleteEmpFromDb(empId) {
   if (!empId) return;
   const { error } = await sb.from('employees').delete().eq('emp_id', empId);
   if (error) { console.error(error); toast('삭제 실패','err'); }
+}
+
+// Easing + count-up animation, shared by the dashboard donuts and the four top stat cards.
+const _easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+function animateCountUp(el, target, duration, suffix){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){ el.textContent=target+(suffix||''); return; }
+  const start=performance.now();
+  function tick(now){
+    const t=Math.min(1,(now-start)/duration);
+    const v=Math.round(target*_easeOutCubic(t));
+    el.textContent=v+(suffix||'');
+    if(t<1) requestAnimationFrame(tick);
+    else el.textContent=target+(suffix||'');
+  }
+  requestAnimationFrame(tick);
+}
+
+// ── Multi-select dropdown (replaces filter <select>s on 전체 인력 / 아웃소싱 / 파견 / R&D) ──
+// Each ms-wrap carries data-key (used by filter logic), data-placeholder (label when "전체"),
+// data-onchange (name of a global function to call after each toggle).
+function msToggle(btn){
+  const wrap=btn.closest('.ms-wrap');
+  const menu=wrap.querySelector('.ms-menu');
+  const wasOpen=menu.classList.contains('show');
+  closeAllMs();
+  if(wasOpen) return;
+  // Position the menu directly under the button using fixed coords so it can't be clipped by the page's overflow:hidden.
+  const r=btn.getBoundingClientRect();
+  menu.style.left=r.left+'px';
+  menu.style.top=(r.bottom+4)+'px';
+  menu.classList.add('show');
+  btn.classList.add('is-open');
+  setTimeout(()=>{
+    const close=(ev)=>{
+      if(!wrap.contains(ev.target) && !menu.contains(ev.target)){
+        closeAllMs();
+        document.removeEventListener('mousedown', close);
+      }
+    };
+    document.addEventListener('mousedown', close);
+  },0);
+}
+function closeAllMs(){
+  document.querySelectorAll('.ms-menu.show').forEach(m=>m.classList.remove('show'));
+  document.querySelectorAll('.ms-btn.is-open').forEach(b=>b.classList.remove('is-open'));
+}
+window.addEventListener('resize', closeAllMs);
+window.addEventListener('scroll', closeAllMs, true);
+
+function msToggleAll(allChk){
+  const wrap=allChk.closest('.ms-wrap');
+  wrap.querySelectorAll('.ms-list input[type=checkbox]').forEach(c=>{ c.checked=allChk.checked; });
+  msAfterChange(wrap);
+}
+function msOnItemChange(chk){
+  const wrap=chk.closest('.ms-wrap');
+  const checks=wrap.querySelectorAll('.ms-list input[type=checkbox]');
+  const allChk=wrap.querySelector('.ms-all-chk');
+  if(allChk){
+    const checkedCount=[...checks].filter(c=>c.checked).length;
+    allChk.checked=(checkedCount===checks.length);
+    allChk.indeterminate=(checkedCount>0 && checkedCount<checks.length);
+  }
+  msAfterChange(wrap);
+}
+function msAfterChange(wrap){
+  msUpdateLabel(wrap);
+  const cb=wrap.dataset.onchange;
+  if(cb && typeof window[cb]==='function') window[cb]();
+}
+function msUpdateLabel(wrap){
+  const label=wrap.querySelector('.ms-label');
+  const placeholder=wrap.dataset.placeholder||'';
+  const checks=wrap.querySelectorAll('.ms-list input[type=checkbox]');
+  const checked=[...checks].filter(c=>c.checked);
+  if(!checks.length || checked.length===0 || checked.length===checks.length){
+    label.textContent=placeholder;
+  } else if(checked.length<=2){
+    label.textContent=checked.map(c=>c.dataset.label||c.value).join(', ');
+  } else {
+    label.textContent=`${checked.length}개 선택`;
+  }
+}
+// Returns null when "전체" (no filtering); otherwise a Set of checked values.
+function msSelected(key){
+  const wrap=document.querySelector(`.ms-wrap[data-key="${key}"]`);
+  if(!wrap) return null;
+  const checks=wrap.querySelectorAll('.ms-list input[type=checkbox]');
+  if(!checks.length) return null;
+  const checked=[...checks].filter(c=>c.checked).map(c=>c.value);
+  if(checked.length===0 || checked.length===checks.length) return null;
+  return new Set(checked);
+}
+// Refill the option list. Preserves currently-checked values across refreshes (so filters survive a save).
+// options: Array of strings or {value,label} objects.
+// extras:  additional always-present options (e.g., 퇴사 sentinel).
+// opts.defaultUnchecked: array of values that should be UNCHECKED on first render (e.g., 퇴사 in 전체개발 인력).
+function msPopulate(key, options, extras, opts){
+  const wrap=document.querySelector(`.ms-wrap[data-key="${key}"]`);
+  if(!wrap) return;
+  const list=wrap.querySelector('.ms-list');
+  const prevChecks=wrap.querySelectorAll('.ms-list input[type=checkbox]');
+  const hadAny=prevChecks.length>0;
+  const prevChecked=new Set([...prevChecks].filter(c=>c.checked).map(c=>c.value));
+  const prevAll=hadAny && [...prevChecks].every(c=>c.checked);
+  const norm=arr=>(arr||[]).map(o=>typeof o==='string'?{value:o,label:o}:{value:o.value,label:o.label||o.value});
+  const all=[...norm(options), ...norm(extras)];
+  const defaultUnchecked=new Set((opts && opts.defaultUnchecked) || []);
+  list.innerHTML=all.map(o=>{
+    // First render: every option checked EXCEPT those in defaultUnchecked.
+    // Subsequent renders: preserve the user's prior state (prevAll preserved as full-check; otherwise the explicit set).
+    const checked = !hadAny
+      ? !defaultUnchecked.has(o.value)
+      : (prevAll ? true : prevChecked.has(o.value));
+    return `<label class="ms-item"><input type="checkbox" value="${esc(o.value)}" data-label="${esc(o.label)}" ${checked?'checked':''} onchange="msOnItemChange(this)"><span>${esc(o.label)}</span></label>`;
+  }).join('');
+  const allChk=wrap.querySelector('.ms-all-chk');
+  if(allChk){
+    const checks=wrap.querySelectorAll('.ms-list input[type=checkbox]');
+    const cc=[...checks].filter(c=>c.checked).length;
+    allChk.checked=(cc===checks.length);
+    allChk.indeterminate=(cc>0 && cc<checks.length);
+  }
+  msUpdateLabel(wrap);
+}
+// Programmatically set selection (used by quick-jump links and qf()).
+function msSet(key, values){
+  const wrap=document.querySelector(`.ms-wrap[data-key="${key}"]`);
+  if(!wrap) return;
+  const checks=wrap.querySelectorAll('.ms-list input[type=checkbox]');
+  const list = (values===null || values===undefined || (Array.isArray(values) && !values.length) || values==='')
+    ? null : new Set(Array.isArray(values)?values:[values]);
+  checks.forEach(c=>{ c.checked = list ? list.has(c.value) : true; });
+  msAfterChange(wrap);
+}
+
+function setBtnLoading(btnOrId, on){
+  const btn = typeof btnOrId === 'string' ? document.getElementById(btnOrId) : btnOrId;
+  if(!btn) return;
+  btn.classList.toggle('is-loading', !!on);
+  btn.disabled = !!on;
 }
 
 async function doLogin(){
@@ -721,52 +1342,73 @@ async function doLogin(){
     document.getElementById("lpw").focus();
   };
   if(!id||!pw){ failLogin('Empty ID or password'); return; }
-  console.log('[Login] Querying users where id =', id, 'and password = (hidden)');
-  const { data, error, status } = await sb
-    .from('users')
-    .select('id,password,name,role,can_edit')
-    .eq('id', id)
-    .eq('password', pw)
-    .maybeSingle();
-  if(error){
-    console.error('[Login] Supabase returned an error. HTTP status:', status);
-    console.error('[Login] error.code   :', error.code);
-    console.error('[Login] error.message:', error.message);
-    console.error('[Login] error.hint   :', error.hint);
-    console.error('[Login] error.details:', error.details);
-    console.error('[Login] full error   :', error);
-    failLogin(error.message||'Supabase error');
-    return;
+  setBtnLoading('loginBtn', true);
+  try {
+    console.log('[Login] Querying users where id =', id, 'and password = (hidden)');
+    const { data, error, status } = await sb
+      .from('users')
+      .select('id,password,name,role,can_edit')
+      .eq('id', id)
+      .eq('password', pw)
+      .maybeSingle();
+    if(error){
+      console.error('[Login] Supabase returned an error. HTTP status:', status);
+      console.error('[Login] error.code   :', error.code);
+      console.error('[Login] error.message:', error.message);
+      console.error('[Login] error.hint   :', error.hint);
+      console.error('[Login] error.details:', error.details);
+      console.error('[Login] full error   :', error);
+      failLogin(error.message||'Supabase error');
+      return;
+    }
+    if(!data){
+      console.log('[Login] No matching row in users table. Either id="'+id+'" does not exist, or its password value does not match. Verify in the Supabase Table Editor.');
+      failLogin('No matching row');
+      return;
+    }
+    console.log('[Login] Success for user id:', data.id);
+    errEl.classList.remove("show");
+    CU={ id:data.id, name:data.name||data.id, role:data.role||'직원', canEdit:!!data.can_edit };
+    sessionStorage.setItem("cos_s",JSON.stringify(CU));
+    // Persist or clear the "remember ID" preference based on the checkbox state at submit time.
+    const _rem=document.getElementById('lremember');
+    if(_rem && _rem.checked) localStorage.setItem('kosign_remember_id', id);
+    else                     localStorage.removeItem('kosign_remember_id');
+    startApp();
+  } finally {
+    setBtnLoading('loginBtn', false);
   }
-  if(!data){
-    console.log('[Login] No matching row in users table. Either id="'+id+'" does not exist, or its password value does not match. Verify in the Supabase Table Editor.');
-    failLogin('No matching row');
-    return;
-  }
-  console.log('[Login] Success for user id:', data.id);
-  errEl.classList.remove("show");
-  CU={ id:data.id, name:data.name||data.id, role:data.role||'직원', canEdit:!!data.can_edit };
-  sessionStorage.setItem("cos_s",JSON.stringify(CU));
-  startApp();
 }
 
-function togglePassword(){
-  const inp=document.getElementById("lpw");
-  const icon=document.getElementById("lpwEyeIcon");
+// Generic password show/hide toggle. Each call site passes its own input + icon IDs,
+// so toggling one field never affects another.
+const _EYE_OPEN  = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+const _EYE_OFF   = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+function togglePassword(inputId, iconId){
+  // Backward-compat: legacy onclick calling togglePassword() with no args still toggles the login field.
+  if(arguments.length===0){ inputId='lpw'; iconId='lpwEyeIcon'; }
+  const inp=document.getElementById(inputId);
+  const icon=document.getElementById(iconId);
   if(!inp||!icon) return;
-  if(inp.type==="password"){
-    inp.type="text";
-    icon.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
-  }else{
-    inp.type="password";
-    icon.innerHTML='<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
-  }
+  if(inp.type==="password"){ inp.type="text";    icon.innerHTML=_EYE_OFF; }
+  else                     { inp.type="password";icon.innerHTML=_EYE_OPEN; }
 }
+// Reset the login form. Password is always cleared. ID is restored from localStorage if "Remember ID" was last checked.
+function initLoginFields(){
+  const lid=document.getElementById('lid');
+  const lpw=document.getElementById('lpw');
+  const chk=document.getElementById('lremember');
+  if(lpw) lpw.value='';
+  const saved=localStorage.getItem('kosign_remember_id');
+  if(lid) lid.value = saved || '';
+  if(chk) chk.checked = !!saved;
+}
+
 function doLogout(){
   sessionStorage.removeItem("cos_s");CU=null;
   document.getElementById("MA").style.display="none";
   document.getElementById("LP").style.display="flex";
-  document.getElementById("lid").value="";document.getElementById("lpw").value="";
+  initLoginFields();
 }
 function startApp(){
   document.getElementById("LP").style.display="none";
@@ -787,38 +1429,24 @@ function startApp(){
   if(rdEl)rdEl.value=todayStr;
 
 
-  loadEmps().then(()=>{
+  loadEmps().then(async ()=>{
 
+    await applyPendingTransfers();
     updateAll();
+
+    // Always land on the dashboard after login — explicit redirect, not relying on default-active state.
+    showPage('dashboard');
 
     setTimeout(()=>setPill("dashboard"), 80);
 
-    setTimeout(()=>{
-
-      const d30=emps.filter(e=>e.type==="파견"&&(()=>{const d=calcDday(e.dispatchEnd);return d!==null&&d<=30;})());
-
-      if(d30.length){
-
-        const al=document.getElementById("dash-alert");
-
-        if(al){
-
-          al.style.display="flex";
-
-          document.getElementById("dash-alert-txt").textContent=`파견 계약 만료 30일 이내: ${d30.map(e=>e.nick||e.name).join(" · ")} — ${d30.length}명`;
-
-        }
-
-      }
-
-    },100);
+    // Dashboard banner replaced by the global bell-icon notification center in the top header (see refreshBellAlerts).
 
     toast("✅ "+CU.name+"님 환영합니다 ("+devEmps().filter(e=>e.type!=="한국파견").length+"명 개발자 인력)","ok");
 
   });
 }
 
-const PM={dashboard:{t:"대시보드",s:"2026년 개발자 인력 현황"},list:{t:"전체 인력",s:"전체 직원 검색 및 관리"},outsourcing:{t:"아웃소싱 인력",s:"아웃소싱/파견센터 재직 인력"},dispatch:{t:"파견 인력",s:"한국 파견 현황 및 D-Day 관리"},rnd:{t:"R&D지원 인력",s:"R&D 지원센터 소속 인력"},summary:{t:"고객사별 인력현황",s:"고객사별 아웃소싱/파견 인력 현황"},"settings-org":{t:"조직 관리",s:"센터/부/실/팀 구조 편집"},"settings-users":{t:"사용자 관리",s:"계정 및 권한 관리"}};
+const PM={dashboard:{t:"대시보드",s:"2026년 개발자 인력 현황"},list:{t:"전체개발 인력",s:"전체 직원 검색 및 관리"},outsourcing:{t:"아웃소싱 인력",s:"아웃소싱/파견센터 재직 인력"},dispatch:{t:"파견 인력",s:"한국 파견 현황 및 D-Day 관리"},rnd:{t:"R&D지원 인력",s:"R&D 지원센터 소속 인력"},summary:{t:"고객사별 인력현황",s:"고객사별 아웃소싱/파견 인력 현황"},"settings-org":{t:"조직 관리",s:"센터/부/실/팀 구조 편집"},"settings-users":{t:"사용자 관리",s:"계정 및 권한 관리"}};
 // 가상 페이지: 리스트 페이지를 센터 필터로 표시
 
 function setPill(id, cnt){
@@ -855,23 +1483,29 @@ function showPage(id){
   document.querySelectorAll(".navi").forEach(n=>n.classList.remove("active"));
   const pg=document.getElementById("page-"+realId);
   if(pg)pg.classList.add("active");
+  // Restart the wrapper fade-in on every nav — works even on rapid back-to-back clicks because
+  // we strip the class, force a layout pass, then re-add it so the keyframe begins from frame 0.
+  const _cont=document.querySelector('.content');
+  if(_cont){
+    _cont.classList.remove('page-fade');
+    void _cont.offsetWidth;        // force reflow so the next class addition is treated as a fresh animation
+    _cont.classList.add('page-fade');
+  }
   const info=PM[id]||{t:id,s:''};
   document.getElementById("ptitle").textContent=info.t;
   document.getElementById("psub").textContent=info.s;
   if(realId==="dashboard")rd();
   if(realId==="list"){
-    // 기준일자 항상 오늘로 리셋
     setRefDate('refDate');
-    // 전체인력: 항상 센터 필터 초기화
-    const fcEl=document.getElementById('fc');
-    if(!vp && fcEl) fcEl.value='';
-    // 센터 필터 표시 제어: 가상페이지(아웃소싱/R&D)는 센터 선택 숨김
-    if(fcEl) fcEl.style.display=vp?'none':'';
-    pf();rl();
-    if(vp&&vp.center){
-      if(fcEl) fcEl.value=vp.center;
-      rl();
-    }
+    // Hide the 센터 multi-select on the virtual pages (아웃소싱/R&D) since their center is preset.
+    const fcWrap=document.querySelector('.ms-wrap[data-key="fc"]');
+    if(fcWrap) fcWrap.style.display=vp?'none':'';
+    pf();
+    // On the master 전체 인력 page, reset 센터 to 전체 (all checked) so users see everything.
+    if(!vp) msSet('fc', null);
+    // On a virtual page, force the 센터 to the page's preset.
+    if(vp && vp.center) msSet('fc', vp.center);
+    rl();
   }
   if(id==="summary"){renderSummaryPage();}
   if(id==="settings-org")renderSettingsOrg();
@@ -887,8 +1521,77 @@ function showPage(id){
     if(ha) ha.style.display='none';
   }
 }
-function qf(t){showPage("list");document.getElementById("ft").value=t;rl();}
-function updateAll(){uc();rd();}
+function qf(t){showPage("list");msSet('ft', t);}
+function updateAll(){uc();rd();refreshBellAlerts();}
+
+// ── Notification Center ─────────────────────────────────────────
+function toggleBell(ev){
+  if(ev) ev.stopPropagation();
+  const m=document.getElementById('bellMenu'); if(!m) return;
+  const open=m.style.display!=='none';
+  if(open){ m.style.display='none'; return; }
+  refreshBellAlerts();
+  m.style.display='flex';
+  setTimeout(()=>{
+    const close=(e)=>{
+      if(!m.contains(e.target) && !document.getElementById('bellBtn').contains(e.target)){
+        m.style.display='none';
+        document.removeEventListener('mousedown', close);
+      }
+    };
+    document.addEventListener('mousedown', close);
+  },0);
+}
+
+function refreshBellAlerts(){
+  const list=document.getElementById('bellList');
+  const dot=document.getElementById('bellDot');
+  const count=document.getElementById('bellCount');
+  if(!list||!dot||!count) return;
+  // Build alerts. Today: dispatch contracts ending within 30 days.
+  const alerts=[];
+  if(typeof emps!=='undefined' && Array.isArray(emps)){
+    emps.filter(e=>e.type==='파견').forEach(e=>{
+      const d=calcDday(e.dispatchEnd);
+      if(d!==null && d<=30){
+        alerts.push({
+          title:`파견 계약 만료 임박 (D-${d})`,
+          desc:`${e.nick||e.name||'직원'} · ${e.dispatchClient||e.dispatchCity||'파견지 미상'}`,
+          target:'dispatch'
+        });
+      }
+    });
+    // Sort: most urgent first.
+    alerts.sort((a,b)=>{
+      const ad=parseInt((a.title.match(/D-(\d+)/)||[])[1]||'999',10);
+      const bd=parseInt((b.title.match(/D-(\d+)/)||[])[1]||'999',10);
+      return ad-bd;
+    });
+  }
+  count.textContent=String(alerts.length);
+  if(alerts.length){
+    dot.style.display='block';
+    list.innerHTML=alerts.map(a=>`<div class="bell-item" onclick="bellItemClick('${esc(a.target)}')">
+      <div class="bell-item-ico">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
+      <div class="bell-item-body">
+        <div class="bell-item-title">${esc(a.title)}</div>
+        <div class="bell-item-desc">${esc(a.desc)}</div>
+      </div>
+    </div>`).join('');
+  } else {
+    dot.style.display='none';
+    list.innerHTML='<div class="bell-empty">새로운 알림이 없습니다</div>';
+  }
+}
+function bellItemClick(target){
+  document.getElementById('bellMenu').style.display='none';
+  if(target) showPage(target);
+}
 function uc(){
   const nonKR=devEmps().filter(e=>e.type!=="한국파견");
   const t=nonKR.length;
@@ -900,10 +1603,12 @@ function rd(){
   const os=nk.filter(e=>e.center==="아웃소싱/파견센터"&&e.type!=="파견"&&e.type!=="파견준비"&&e.type!=="파견검토").length;
   const rd=nk.filter(e=>e.center==="R&D 지원센터").length;
   document.getElementById("sg").innerHTML=`
-    <div class="sc c1" style="cursor:pointer" onclick="showPage('list')"><div class="scl">개발인력</div><div class="scn">${t}</div><div class="scd">전체 관리 인원</div></div>
-    <div class="sc c2" style="cursor:pointer" onclick="showPage('list');document.getElementById('fc').value='아웃소싱/파견센터';rl()"><div class="scl">아웃소싱</div><div class="scn">${os}</div><div class="scd">아웃소싱/파견센터</div></div>
-    <div class="sc c3" style="cursor:pointer" onclick="showPage('dispatch')"><div class="scl">파견</div><div class="scn">${p}</div><div class="scd">현재 한국 파견 중</div></div>
-    <div class="sc c4" style="cursor:pointer" onclick="showPage('list');document.getElementById('fc').value='R&D 지원센터';rl()"><div class="scl">R&D지원</div><div class="scn">${rd}</div><div class="scd">R&D 지원센터</div></div>`;
+    <div class="sc c1" style="cursor:pointer" onclick="showPage('list')"><div class="scl">개발인력</div><div class="scn" data-target="${t}">0</div><div class="scd">전체 관리 인원</div></div>
+    <div class="sc c2" style="cursor:pointer" onclick="showPage('list');msSet('fc','아웃소싱/파견센터')"><div class="scl">아웃소싱</div><div class="scn" data-target="${os}">0</div><div class="scd">아웃소싱/파견센터</div></div>
+    <div class="sc c3" style="cursor:pointer" onclick="showPage('dispatch')"><div class="scl">파견</div><div class="scn" data-target="${p}">0</div><div class="scd">현재 한국 파견 중</div></div>
+    <div class="sc c4" style="cursor:pointer" onclick="showPage('list');msSet('fc','R&D 지원센터')"><div class="scl">R&D지원</div><div class="scn" data-target="${rd}">0</div><div class="scd">R&D 지원센터</div></div>`;
+  // Count-up animation for the four top cards — runs on every dashboard render.
+  document.querySelectorAll('#sg .scn').forEach(el=>animateCountUp(el, parseInt(el.dataset.target,10)||0, 1500, ''));
   const cb=(k)=>{const m={};nk.forEach(e=>{const v=e[k]||"미기재";m[v]=(m[v]||0)+1;});return Object.entries(m).sort((a,b)=>b[1]-a[1]);};
   const rb=(id,en)=>{const mx=Math.max(...en.map(([,v])=>v),1);document.getElementById(id).innerHTML=en.map(([k,v],i)=>`<div class="bi"><div class="bm"><span>${k}</span><span class="bv" style="color:${COLORS[i%COLORS.length]}">${v}명</span></div><div class="bt"><div class="bf" style="width:${(v/mx*100).toFixed(0)}%;background:${COLORS[i%COLORS.length]}"></div></div></div>`).join("");};
   // 아웃소싱/파견 현황 차트 (A안: 도넛 2개)
@@ -927,46 +1632,182 @@ function rd(){
         const xi2=cx+ri*Math.cos(ang+a),yi2=cy+ri*Math.sin(ang+a);
         const large=a>Math.PI?1:0;
         const fill=colors[i%colors.length];
-        slices+=`<path d="M${cx},${cy} L${x1.toFixed(2)},${y1.toFixed(2)} A${R},${R} 0 ${large},1 ${x2.toFixed(2)},${y2.toFixed(2)} L${xi2.toFixed(2)},${yi2.toFixed(2)} A${ri},${ri} 0 ${large},0 ${xi.toFixed(2)},${yi.toFixed(2)} Z" fill="${fill}" opacity="0.9" style="cursor:pointer;transition:opacity .15s" onmouseenter="this.setAttribute('opacity','1')" onmouseleave="this.setAttribute('opacity','0.9')"><title>${k}: ${v}명 (${(pct*100).toFixed(1)}%)</title></path>`;
+        slices+=`<path class="donut-slice" d="M${cx},${cy} L${x1.toFixed(2)},${y1.toFixed(2)} A${R},${R} 0 ${large},1 ${x2.toFixed(2)},${y2.toFixed(2)} L${xi2.toFixed(2)},${yi2.toFixed(2)} A${ri},${ri} 0 ${large},0 ${xi.toFixed(2)},${yi.toFixed(2)} Z" fill="${fill}" style="cursor:pointer;transition:opacity .15s;--slice-delay:${i*60}ms" onmouseenter="this.setAttribute('opacity','1')" onmouseleave="this.setAttribute('opacity','0.9')"><title>${k}: ${v}명 (${(pct*100).toFixed(1)}%)</title></path>`;
         if(pct>=0.06){const ma=ang+a/2,mr=(R+ri)/2;pctL+=`<text x="${(cx+mr*Math.cos(ma)).toFixed(1)}" y="${(cy+mr*Math.sin(ma)).toFixed(1)}" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="10" font-weight="700" font-family="JetBrains Mono,monospace" pointer-events="none">${(pct*100).toFixed(0)}%</text>`;}
-        legend+=`<div style="display:flex;align-items:center;gap:7px;padding:4px 0;font-size:12px;border-bottom:1px solid var(--border)"><div style="width:10px;height:10px;border-radius:2px;background:${fill};flex-shrink:0"></div><span style="color:var(--text2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${k}</span><span style="color:${fill};font-weight:700;font-family:JetBrains Mono,monospace">${v}명</span><span style="color:var(--text3);font-family:JetBrains Mono,monospace;font-size:11px;margin-left:4px">${(pct*100).toFixed(1)}%</span></div>`;
+        legend+=`<div style="display:flex;align-items:center;gap:7px;padding:4px 0;font-size:12px;border-bottom:1px solid var(--border)"><div style="width:10px;height:10px;border-radius:2px;background:${fill};flex-shrink:0"></div><span style="color:var(--text2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${k}</span><span class="legend-count" data-target="${v}" data-suffix="명" style="color:${fill};font-weight:700;font-family:JetBrains Mono,monospace">0명</span><span style="color:var(--text3);font-family:JetBrains Mono,monospace;font-size:11px;margin-left:4px">${(pct*100).toFixed(1)}%</span></div>`;
         ang+=a;
       });
       return {slices,pctL,legend,cx,cy};
     }
     const os=mkDonut(osEn,osTotal,blueC);
     const dp=mkDonut(dpEn,dpTotal,ambrC);
-    function panel(label,total,badgeStyle,d,en){
+    function panel(label,total,badgeStyle,d,en,idx){
       return `<div style="display:flex;flex-direction:column;gap:10px">
         <div style="display:flex;align-items:center;justify-content:space-between">
           <span style="font-size:12px;font-weight:700;color:var(--text)">${label}</span>
           <span style="padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;${badgeStyle}">${total}명</span>
         </div>
-        <svg width="100%" viewBox="0 0 260 260" style="display:block">
-          ${d.slices}${d.pctL}
-          <text x="${d.cx}" y="${d.cy-10}" text-anchor="middle" fill="var(--text)" font-size="30" font-weight="800" font-family="JetBrains Mono,monospace">${total}</text>
-          <text x="${d.cx}" y="${d.cy+14}" text-anchor="middle" fill="var(--text3)" font-size="11" font-family="Noto Sans KR,sans-serif">명</text>
-        </svg>
+        <div class="donut-wrap">
+          <svg class="donut-svg" width="100%" viewBox="0 0 260 260">
+            ${d.slices}${d.pctL}
+          </svg>
+          <div class="donut-center">
+            <div class="donut-num" data-target="${total}">0</div>
+            <div class="donut-unit">명</div>
+          </div>
+        </div>
         <div>${d.legend}</div>
       </div>`;
     }
     document.getElementById("ch-wonka").innerHTML=`
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;align-items:start">
-        ${panel("아웃소싱",osTotal,"background:rgba(79,134,247,.12);color:var(--accent)",os,osEn)}
-        ${panel("파견",dpTotal,"background:rgba(224,138,32,.12);color:var(--orange)",dp,dpEn)}
+        ${panel("아웃소싱",osTotal,"background:rgba(79,134,247,.12);color:var(--accent)",os,osEn,0)}
+        ${panel("파견",dpTotal,"background:rgba(224,138,32,.12);color:var(--orange)",dp,dpEn,1)}
       </div>`;
+    // ── Radial-wipe entry + count-up animations ─────────────────
+    const wonka=document.getElementById('ch-wonka');
+    const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const easeOutCubic=t=>1-Math.pow(1-t,3);
+    function animateRadialWipe(svg,duration){
+      // Mask is a conic-gradient revealing the SVG clockwise from 12 o'clock as the angle grows 0° → 360°.
+      svg.style.webkitMask='conic-gradient(from 0deg, transparent 0deg 360deg)';
+      svg.style.mask='conic-gradient(from 0deg, transparent 0deg 360deg)';
+      const start=performance.now();
+      function tick(now){
+        const t=Math.min(1,(now-start)/duration);
+        const angle=easeOutCubic(t)*360;
+        const m=`conic-gradient(from 0deg, #000 0deg ${angle}deg, transparent ${angle}deg 360deg)`;
+        svg.style.webkitMask=m; svg.style.mask=m;
+        if(t<1) requestAnimationFrame(tick);
+        else { svg.style.webkitMask=''; svg.style.mask=''; }   // remove mask once revealed
+      }
+      requestAnimationFrame(tick);
+    }
+    function animateCountUp(el,target,duration,suffix){
+      const start=performance.now();
+      function tick(now){
+        const t=Math.min(1,(now-start)/duration);
+        const v=Math.round(target*easeOutCubic(t));
+        el.textContent=v+(suffix||'');
+        if(t<1) requestAnimationFrame(tick);
+        else el.textContent=target+(suffix||'');
+      }
+      requestAnimationFrame(tick);
+    }
+    if(reduced){
+      // Reduced-motion users: skip all animation, render final values immediately.
+      wonka.querySelectorAll('.donut-num').forEach(el=>el.textContent=el.dataset.target);
+      wonka.querySelectorAll('.legend-count').forEach(el=>el.textContent=el.dataset.target+(el.dataset.suffix||''));
+    } else {
+      const DUR=1500;
+      wonka.querySelectorAll('.donut-svg').forEach(svg=>animateRadialWipe(svg,DUR));
+      wonka.querySelectorAll('.donut-num').forEach(el=>animateCountUp(el,parseInt(el.dataset.target,10)||0,DUR,''));
+      wonka.querySelectorAll('.legend-count').forEach(el=>animateCountUp(el,parseInt(el.dataset.target,10)||0,DUR,el.dataset.suffix||''));
+    }
   })();
-  rb("ch-type",cb("jikmu"));
+  // 보유기술 현황 — floating bars on the card, vertical insight marker (= average), bottom axis in 명.
+  (function renderSkillRanks(){
+    const SKILL_EXCLUDE=new Set(['Publishing','UX/UI','ux/ui','UI/UX','publishing']);
+    const counts={};
+    nk.forEach(e=>{
+      const v=(e.jikmu||'').trim();
+      if(!v||SKILL_EXCLUDE.has(v)) return;
+      counts[v]=(counts[v]||0)+1;
+    });
+    const entries=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+    const host=document.getElementById('ch-type');
+    if(!host) return;
+    if(!entries.length){
+      host.innerHTML='<div style="color:var(--text3);font-size:12px;padding:8px 0">표시할 기술이 없습니다</div>';
+      return;
+    }
+    // Pick a "nice" axis step so we get up to ~5 ticks.
+    const max=Math.max(...entries.map(([,v])=>v));
+    const stepCandidates=[1,2,5,10,20,25,50,100,200,500];
+    let step=1; for(const c of stepCandidates){ if(max/c<=5){ step=c; break; } }
+    const nTicks=Math.max(1, Math.ceil(max/step));
+    const scaleMax=nTicks*step;
+    const ticks=[]; for(let i=0;i<=nTicks;i++) ticks.push(i*step);
+    const palette=['var(--green)','var(--purple)'];
+
+    const labels=entries.map(([k])=>`<div class="skill-label" title="${esc(k)}">${esc(k)}</div>`).join('');
+    const rows=entries.map(([,v],i)=>{
+      const pct=(v/scaleMax*100);
+      const color=palette[i%palette.length];
+      const delay=i*70;  // staggered entry: each bar starts 70ms after the one above
+      // Bar grows 0% → target via @keyframes skillBarGrow; count slides + fades in via skillCountSlide.
+      // CSS variables --target-w and --delay drive the animation; they also become the final width post-animation.
+      return `<div class="skill-track-row">
+        <div class="skill-bar" style="--target-w:${pct.toFixed(2)}%;--delay:${delay}ms;background:${color}"></div>
+        <span class="skill-count" style="--target-w:${pct.toFixed(2)}%;--delay:${delay}ms">${v}명</span>
+      </div>`;
+    }).join('');
+    // Light-gray gridline at every x-axis value (and matching tick label below — number only, no 명 suffix).
+    const gridlines=ticks.map(t=>{
+      const pos=(t/scaleMax*100).toFixed(2);
+      return `<div class="skill-gridline" style="left:${pos}%"></div>`;
+    }).join('');
+    const tickEls=ticks.map(t=>{
+      const pos=(t/scaleMax*100).toFixed(2);
+      return `<div class="skill-axis-tick" style="left:${pos}%">${t}</div>`;
+    }).join('');
+    host.innerHTML=`<div class="skill-chart">
+      <div class="skill-grid">
+        <div class="skill-labels">${labels}</div>
+        <div class="skill-tracks">
+          ${gridlines}
+          ${rows}
+          <div class="skill-focus" id="ch-type-focus"></div>
+          <div class="skill-focus-badge" id="ch-type-focus-badge">0명</div>
+          <div class="skill-axis">
+            <div class="skill-axis-rule"></div>
+            ${tickEls}
+          </div>
+        </div>
+      </div>
+    </div>`;
+    // Hover focus line + live counting badge: tracks the cursor's x within the bar area.
+    const tracksEl=host.querySelector('.skill-tracks');
+    const focusEl=host.querySelector('#ch-type-focus');
+    const badgeEl=host.querySelector('#ch-type-focus-badge');
+    if(tracksEl && focusEl && badgeEl){
+      tracksEl.addEventListener('mousemove',(ev)=>{
+        const rect=tracksEl.getBoundingClientRect();
+        const x=ev.clientX-rect.left;
+        if(x<0 || x>rect.width){
+          focusEl.style.display='none';
+          badgeEl.style.display='none';
+          return;
+        }
+        focusEl.style.left=x+'px';
+        focusEl.style.display='block';
+        const value=Math.round((x/rect.width)*scaleMax);
+        badgeEl.textContent=value+'명';
+        badgeEl.style.left=x+'px';
+        badgeEl.style.display='block';
+      });
+      tracksEl.addEventListener('mouseleave',()=>{
+        focusEl.style.display='none';
+        badgeEl.style.display='none';
+      });
+    }
+  })();
 }
 
 function pf(){
-  const fill=(id,arr,lbl)=>{const s=document.getElementById(id);const cv=s.value;s.innerHTML=`<option value="">${lbl}</option>`+arr.map(v=>`<option ${v===cv?"selected":""}>${v}</option>`).join("");};
-  fill("fc",[...new Set(devEmps().map(e=>e.center).filter(Boolean))].sort(),"전체 센터");
-  fill("fb",[...new Set(devEmps().map(e=>e.bu).filter(Boolean))].sort(),"전체 부/실");
-  fill("fw",[...new Set(devEmps().map(e=>e.wonka).filter(Boolean))].sort(),"전체 원가부서");
+  // Multi-select filters on 전체 인력 / 아웃소싱 / R&D — preserve the user's current checkbox state on every refresh.
+  msPopulate("fc", [...new Set(devEmps().map(e=>e.center).filter(Boolean))].sort());
+  msPopulate("fb", [...new Set(devEmps().map(e=>e.bu).filter(Boolean))].sort());
+  msPopulate("fw", [...new Set(devEmps().map(e=>e.wonka).filter(Boolean))].sort());
+  // 고용형태: dynamic types + the special 퇴사 sentinel.
+  // 퇴사 is unchecked by default — the table loads showing only active staff; users opt-in by checking it.
+  msPopulate("ft",
+    [...new Set(devEmps().map(e=>e.type).filter(Boolean))],
+    [{value:'__resigned__', label:'퇴사'}],
+    {defaultUnchecked:['__resigned__']});
+  msPopulate("fp", [...new Set(devEmps().map(e=>e.jikchak).filter(Boolean))].sort());
   populateFcenter();
-  fill("ft",[...new Set(devEmps().map(e=>e.type).filter(Boolean))],"전체 고용형태");
-  fill("fp",[...new Set(devEmps().map(e=>e.jikchak).filter(Boolean))].sort(),"전체 직책");
+  // Datalists for the employee form (still native <datalist>, unrelated to filter dropdowns).
   const dl=(id,arr)=>{const d=document.getElementById(id);if(d)d.innerHTML=arr.map(v=>`<option value="${v}">`).join("");};
   dl("dlc",[...new Set(emps.map(e=>e.center).filter(Boolean))]);
   dl("dlb",[...new Set(emps.map(e=>e.bu).filter(Boolean))]);
@@ -985,16 +1826,43 @@ function sortBy(k){
 
 function rl(){
   const q=(document.getElementById("sq")?.value||"").toLowerCase();
-  const fc=document.getElementById("fc")?.value||"";
-  const fb=document.getElementById("fb")?.value||"";
-  const fw=document.getElementById("fw")?.value||"";
-  const ft=document.getElementById("ft")?.value||"";
-  const fp=document.getElementById("fp")?.value||"";
+  // Multi-select filters: each returns a Set of checked values, or null when "전체" (all selected).
+  const fcSet=msSelected("fc");
+  const fbSet=msSelected("fb");
+  const fwSet=msSelected("fw");
+  const ftSet=msSelected("ft");
+  const fpSet=msSelected("fp");
+  const _isResignedRl=e=>String(e.status||'').toLowerCase()==='resigned';
+  // 고용형태 filter behavior:
+  //   • ftSet == null  → "전체" (all checked or empty): no filter at all.
+  //   • Resigned employee → only matches when '__resigned__' is checked (their `type` field is ignored).
+  //   • Non-resigned     → matches when their `type` is in the checked set.
+  // This is what makes 퇴사-unchecked-by-default actually hide resigned staff (their underlying `type` would otherwise still match).
+  const ftMatches=(e)=>{
+    if(!ftSet) return true;
+    if(_isResignedRl(e)) return ftSet.has('__resigned__');
+    return ftSet.has(e.type);
+  };
   let list=devEmps().filter(e=>{
     const ok=!q||[e.nick,e.name,e.jikmu,e.team,e.bu,e.center,e.wonka,e.note,e.localMgr,e.director,e.deptHead,e.dispatchCity,e.dispatchClient].some(s=>(s||"").toLowerCase().includes(q));
-    return ok&&(!fc||e.center===fc)&&(!fb||e.bu===fb)&&(!fw||e.wonka===fw)&&(!ft||e.type===ft)&&(!fp||e.jikchak===fp);
+    return ok
+      && (!fcSet || fcSet.has(e.center))
+      && (!fbSet || fbSet.has(e.bu))
+      && (!fwSet || fwSet.has(e.wonka))
+      && ftMatches(e)
+      && (!fpSet || fpSet.has(e.jikchak));
   });
-  if(SK2&&SD!==0)list=[...list].sort((a,b)=>{const av=a[SK2]||"",bv=b[SK2]||"";return av<bv?-SD:av>bv?SD:0;});
+  // Always push Resigned to the bottom; secondary key = the column the user clicked.
+  const isResigned=e=>String(e.status||'').toLowerCase()==='resigned';
+  list=[...list].sort((a,b)=>{
+    const ar=isResigned(a)?1:0, br=isResigned(b)?1:0;
+    if(ar!==br) return ar-br;
+    if(SK2 && SD!==0){
+      const av=a[SK2]||"", bv=b[SK2]||"";
+      return av<bv?-SD:av>bv?SD:0;
+    }
+    return 0;
+  });
   const tbl=document.getElementById("etbl"),ee=document.getElementById("ee");
   document.getElementById("ecnt").textContent=list.length+"명 / 전체 "+devEmps().filter(e=>e.type!=="한국파견").length+"명";
   if(!list.length){tbl.innerHTML="";ee.style.display="";return;}
@@ -1006,7 +1874,8 @@ function rl(){
   tbl.innerHTML=`<thead><tr>
     <th onclick="sortBy('center')">센터${ar("center")}</th>
     <th onclick="sortBy('bu')">부/실 › 팀${ar("bu")}</th>
-    <th onclick="sortBy('nick')">호칭/본명${ar("nick")}</th>
+    <th onclick="sortBy('name')">본명${ar("name")}</th>
+    <th onclick="sortBy('nick')">호칭${ar("nick")}</th>
     <th onclick="sortBy('grade')">등급${ar("grade")}</th>
     <th onclick="sortBy('jikchak')">직책${ar("jikchak")}</th>
     <th onclick="sortBy('jikmu')">직무${ar("jikmu")}</th>
@@ -1015,29 +1884,35 @@ function rl(){
     <th onclick="sortBy('yeon')">연차${ar("yeon")}</th>
     <th>비고</th>
   </tr></thead><tbody>${list.map(e=>{
-    const idx=emps.indexOf(e);const ini=(e.nick||e.name||"?")[0];
-    return `<tr>
-      <td style="font-size:11px;color:var(--text3)">${e.center||"-"}</td>
-      <td style="font-size:11px">${[e.bu,e.team].filter(Boolean).join(" › ")||"-"}</td>
-      <td style="cursor:pointer;min-width:150px" onclick="openDet(${idx})">
+    const idx=emps.indexOf(e);const ini=(e.name||e.nick||"?")[0];
+    const cls=isResigned(e)?' class="row-resigned"':'';
+    const eid=e.empId?` data-emp-id="${esc(e.empId)}"`:'';
+    return `<tr${eid}${cls}>
+      <td style="color:var(--text3)">${e.center||"-"}</td>
+      <td>${[e.bu,e.team].filter(Boolean).join(" › ")||"-"}</td>
+      <td style="cursor:pointer" onclick="openDet(${idx})">
         <div class="nc"><div class="av av${e.gender||"_"}">${ini}</div>
-        <div><div class="n1">${e.nick||"-"}</div><div class="n2">${e.name||""}</div></div></div>
+        <div class="n1">${e.name||"-"}</div></div>
+      </td>
+      <td style="cursor:pointer" onclick="openDet(${idx})">
+        <div class="n1">${e.nick||"-"}</div>
       </td>
       <td>${e.grade?`<span class="tag t-grade">${e.grade}</span>`:"-"}</td>
       <td>${e.jikchak?`<span class="tag t-직책">${e.jikchak}</span>`:"-"}</td>
-      <td style="font-size:11px;color:var(--text2)">${e.jikmu||"-"}</td>
+      <td style="color:var(--text2)">${e.jikmu||"-"}</td>
       <td><span class="tag t-${(e.type||"").replace(/\s/g,"")}">${e.type||"-"}</span></td>
-      <td style="font-size:11px">${e.wonka||"-"}</td>
+      <td>${e.wonka||"-"}</td>
       <td class="mono" style="color:var(--text3)">${e.join?calcYeon(e.join)+"년":"-"}</td>
-      <td style="font-size:11px;color:${e.note?"var(--orange)":"var(--text3)"};max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${e.note||""}">${e.note||"-"}</td>
-
+      ${(()=>{const pend=pendingTransferLabel(e);const noteText=pend?(e.note?pend+' · '+e.note:pend):(e.note||'-');const col=(pend||e.note)?'var(--orange)':'var(--text3)';return `<td style="color:${col};max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(noteText)}">${esc(noteText)}</td>`;})()}
     </tr>`;
   }).join("")}</tbody>`;
 }
 
 function ro(){
   const tree={};
-  devEmps().forEach(e=>{
+  // 조직 관리 view: hide anyone whose status is 'Resigned' — only active staff appear in the tree.
+  const _isResignedOrg=e=>String(e.status||'').toLowerCase()==='resigned';
+  devEmps().filter(e=>!_isResignedOrg(e)).forEach(e=>{
     const c=e.center||"(미지정)",b=e.bu||"(미지정)",t=e.team||"(팀 미지정)";
     if(!tree[c])tree[c]={};if(!tree[c][b])tree[c][b]={};if(!tree[c][b][t])tree[c][b][t]=[];
     tree[c][b][t].push(e);
@@ -1309,7 +2184,7 @@ function openEdit(idx){
   updateYeonDisplay();toggleDispatchFields();
   document.getElementById("mov").style.display="flex";
 }
-function saveEmp(){
+async function saveEmp(){
   const nick=document.getElementById("fnick").value.trim();
   const name=document.getElementById("fname").value.trim();
   if(!nick&&!name){toast("호칭 또는 본명을 입력하세요","err");return;}
@@ -1335,11 +2210,30 @@ function saveEmp(){
     dispatchClient:isDisp?document.getElementById("fdispatchClient").value.trim():"",
     dispatchExtendable:isDisp?(document.getElementById("fdispatchExtendable").value==="true"):false};
   const idx=document.getElementById("eidx").value;
-  if(idx!==""){emps[parseInt(idx)]={...emps[parseInt(idx)],...data};toast("수정되었습니다");}
-  else{emps.push(data);toast("추가되었습니다");}
-  saveEmps();closeModal();uc();pf();rl();
-  // 조직관리 팀 패널이 열려있으면 갱신
-  if(orgSel.team){renderTeamPanel(orgSel.center,orgSel.bu,orgSel.team);}
+  const isUpdate=idx!=="";
+  // Snapshot for rollback if Supabase save fails
+  const prev=isUpdate?{...emps[parseInt(idx)]}:null;
+  const nowIso=new Date().toISOString();
+  if(isUpdate){emps[parseInt(idx)]={...emps[parseInt(idx)],...data,lastUpdatedAt:nowIso};}
+  else{emps.push({...data,lastUpdatedAt:nowIso});}
+  setBtnLoading('empSaveBtn', true);
+  try {
+    const ok=await saveEmps();
+    if(!ok){
+      // Roll back the local change so UI doesn't lie about what's persisted
+      if(isUpdate) emps[parseInt(idx)]=prev;
+      else emps.pop();
+      return;
+    }
+    closeModal();
+    toast(isUpdate?"수정되었습니다":"추가되었습니다");
+    refreshActiveViews();
+    // After re-render, pulse the row that was just saved (uses empId; new rows pulse on next save once they have one).
+    const savedEmp=isUpdate?emps[parseInt(idx)]:emps[emps.length-1];
+    if(savedEmp?.empId) pulseRow(savedEmp.empId);
+  } finally {
+    setBtnLoading('empSaveBtn', false);
+  }
 }
 function delEmp(idx){
   if(!CU?.canEdit){toast("조회 전용 계정입니다","err");return;}
@@ -1754,7 +2648,9 @@ function applyTeamManagers(center, bu, team){
 
 function renderTeamPanel(center,bu,team){
   const body=document.getElementById('org-edit-body');
-  const mbs=emps.filter(e=>e.center===center&&(bu?e.bu===bu:true)&&e.team===team);
+  const _isResigned=e=>String(e.status||'').toLowerCase()==='resigned';
+  // 조직 관리 view filters out resigned employees entirely; this list only shows active staff.
+  const mbs=emps.filter(e=>!_isResigned(e) && e.center===center && (bu?e.bu===bu:true) && e.team===team);
   const ce=CU?.canEdit;
   const ar=(k)=>`<span style="color:var(--text3);font-size:10px">▲</span>`;
   body.innerHTML=`
@@ -1799,7 +2695,8 @@ function renderTeamPanel(center,bu,team){
     <div class="ox">
       <table style="width:100%;border-collapse:collapse">
         <thead><tr>
-          <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap">호칭/본명</th>
+          <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap">본명</th>
+          <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap">호칭</th>
           <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border)">등급</th>
           <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border)">직책</th>
           <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border)">직무</th>
@@ -1810,31 +2707,40 @@ function renderTeamPanel(center,bu,team){
           ${ce?`<th style="background:var(--bg3);padding:8px 10px;border-bottom:1px solid var(--border)"></th>`:''}
         </tr></thead>
         <tbody>
-          ${mbs.length===0?`<tr><td colspan="9" style="padding:30px;text-align:center;color:var(--text3);font-size:13px">소속 직원이 없습니다</td></tr>`:
+          ${mbs.length===0?`<tr class="tp-empty"><td colspan="10">소속 직원이 없습니다</td></tr>`:
           mbs.map(e=>{
             const idx=emps.indexOf(e);
-            const ini=(e.nick||e.name||'?')[0];
-            return `<tr style="border-bottom:1px solid var(--border)" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background=''">
-              <td style="padding:9px 10px;cursor:pointer" onclick="openDet(${idx})">
+            const ini=(e.name||e.nick||'?')[0];
+            const empAttr=e.empId?` data-emp-id="${esc(e.empId)}"`:'';
+            const cls=_isResigned(e)?' class="row-resigned"':'';
+            return `<tr${empAttr} class="tp-row${_isResigned(e)?' row-resigned':''}" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background=''">
+              <td style="cursor:pointer" onclick="openDet(${idx})">
                 <div style="display:flex;align-items:center;gap:7px">
                   <div class="av av${e.gender||'_'}" style="width:26px;height:26px;font-size:11px;flex-shrink:0">${ini}</div>
-                  <div>
-                    <div style="font-weight:700;font-size:12px">${e.nick||'-'}</div>
-                    <div style="font-size:10px;color:var(--text3)">${e.name||''}</div>
-                  </div>
+                  <div style="font-weight:700">${e.name||'-'}</div>
                 </div>
               </td>
-              <td style="padding:9px 10px">${e.grade?`<span class="tag t-grade">${e.grade}</span>`:'-'}</td>
-              <td style="padding:9px 10px">${e.jikchak?`<span class="tag t-직책">${e.jikchak}</span>`:'-'}</td>
-              <td style="padding:9px 10px;font-size:11px;color:var(--text2)">${e.jikmu||'-'}</td>
-              <td style="padding:9px 10px"><span class="tag t-${(e.type||'').replace(/\s/g,'')}">${e.type||'-'}</span></td>
-              <td style="padding:9px 10px;font-size:11px">${e.wonka||'-'}</td>
-              <td style="padding:9px 10px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--text3)">${e.join?calcYeon(e.join)+'년':'-'}</td>
-              <td style="padding:9px 10px;font-size:11px;color:${e.note?'var(--orange)':'var(--text3)'};max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${e.note||''}">${e.note||'-'}</td>
-              ${ce?`<td style="padding:9px 10px;white-space:nowrap">
-                <div style="display:flex;gap:4px">
-                  <button class="btn btng btnsm" onclick="openEdit(${idx});document.querySelector('.modal .mt').textContent='직원 수정'">수정</button>
-                  <button class="btn btnd btnsm" onclick="delEmpOrg(${idx},'${esc(center)}','${esc(bu)}','${esc(team)}')">삭제</button>
+              <td style="cursor:pointer;font-weight:700" onclick="openDet(${idx})">${e.nick||'-'}</td>
+              <td>${e.grade?`<span class="tag t-grade">${e.grade}</span>`:'-'}</td>
+              <td>${e.jikchak?`<span class="tag t-직책">${e.jikchak}</span>`:'-'}</td>
+              <td style="color:var(--text2)">${e.jikmu||'-'}</td>
+              <td><span class="tag t-${(e.type||'').replace(/\s/g,'')}">${e.type||'-'}</span></td>
+              <td>${e.wonka||'-'}</td>
+              <td class="mono" style="color:var(--text3)">${e.join?calcYeon(e.join)+'년':'-'}</td>
+              ${(()=>{const pend=pendingTransferLabel(e);const noteText=pend?(e.note?pend+' · '+e.note:pend):(e.note||'-');const col=(pend||e.note)?'var(--orange)':'var(--text3)';return `<td style="color:${col};max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(noteText)}">${esc(noteText)}</td>`;})()}
+              ${ce?`<td style="padding:9px 10px;white-space:nowrap;text-align:right">
+                <div class="qa-wrap" style="display:inline-block">
+                  <button class="qa-dot" onclick="toggleRowMenu(this,'menu-${idx}')" aria-haspopup="menu" aria-label="작업 메뉴">⋮</button>
+                  <div class="qa-menu" id="menu-${idx}" role="menu">
+                    <!-- 운영 작업 -->
+                    <button onclick="quickResign(${idx})">퇴사 처리</button>
+                    <button onclick="quickMoveDept(${idx})">부서 이동</button>
+                    <button onclick="quickReturn(${idx})">파견 복귀</button>
+                    <div class="qa-sep"></div>
+                    <!-- 관리 작업 -->
+                    <button onclick="openEdit(${idx});closeAllRowMenus();document.querySelector('.modal .mt').textContent='직원 수정'">수정</button>
+                    <button class="qa-danger" onclick="closeAllRowMenus();delEmpOrg(${idx},'${esc(center)}','${esc(bu)}','${esc(team)}')">삭제</button>
+                  </div>
                 </div>
               </td>`:''}
             </tr>`;
@@ -1842,6 +2748,9 @@ function renderTeamPanel(center,bu,team){
         </tbody>
       </table>
     </div>`;
+  // Note: no automatic "pulse anything updated in last 5 minutes" trigger here.
+  // Pulses are now driven exclusively by explicit pulseRow(empId) calls from save handlers,
+  // so a re-render never lights up the whole table.
 }
 
 function delEmpOrg(idx,center,bu,team){
@@ -1852,6 +2761,324 @@ function delEmpOrg(idx,center,bu,team){
   const removed=emps[idx];emps.splice(idx,1);deleteEmpFromDb(removed?.empId);uc();pf();
   renderTeamPanel(center,bu,team);
   toast('삭제되었습니다');
+}
+
+// ── Row-level Quick Actions (조직 관리) ──────────────────────────
+function closeAllRowMenus(){
+  document.querySelectorAll('.qa-menu.show').forEach(m=>m.classList.remove('show'));
+}
+function toggleRowMenu(triggerBtn, menuId){
+  const menu=document.getElementById(menuId);
+  if(!menu) return;
+  const wasOpen=menu.classList.contains('show');
+  closeAllRowMenus();
+  if(wasOpen) return;
+  menu.classList.add('show');
+  setTimeout(()=>{
+    const close=(ev)=>{
+      if(!menu.contains(ev.target) && ev.target!==triggerBtn){
+        menu.classList.remove('show');
+        document.removeEventListener('click', close);
+      }
+    };
+    document.addEventListener('click', close);
+  },0);
+}
+document.addEventListener('keydown',(e)=>{
+  if(e.key!=='Escape') return;
+  closeAllRowMenus();
+  const rs=document.getElementById('resignModal');   if(rs && rs.style.display!=='none') closeResignModal();
+  const md=document.getElementById('moveDeptModal'); if(md && md.style.display!=='none') closeMoveDeptModal();
+  const rt=document.getElementById('returnModal');   if(rt && rt.style.display!=='none') closeReturnModal();
+});
+
+function pulseRow(empId){
+  if(!empId) return;
+  // There may be multiple visible tables (main list + team panel). Pulse every match.
+  const rows=document.querySelectorAll(`tr[data-emp-id="${CSS.escape(String(empId))}"]`);
+  rows.forEach(row=>{
+    row.classList.remove('row-pulse');
+    void row.offsetWidth;  // restart the animation
+    row.classList.add('row-pulse');
+    setTimeout(()=>row.classList.remove('row-pulse'), 3100);
+  });
+}
+
+// Silently re-render whichever data views are currently open, without changing the active page.
+function refreshActiveViews(){
+  // Main list — always safe to call; rl() reads its own filters/inputs.
+  if(typeof rl==='function' && document.getElementById('etbl')) rl();
+  // Team panel inside 조직 관리 — only re-render if the user has selected a team.
+  if(typeof renderTeamPanel==='function' && orgSel?.team){
+    renderTeamPanel(orgSel.center, orgSel.bu, orgSel.team);
+  }
+  // Header counters / pills.
+  if(typeof updateAll==='function') updateAll();
+}
+function pulseRecentlyUpdatedRows(){
+  const fiveMinAgo=Date.now()-5*60*1000;
+  emps.forEach(e=>{
+    if(!e.lastUpdatedAt||!e.empId) return;
+    const t=new Date(e.lastUpdatedAt).getTime();
+    if(!isNaN(t) && t>fiveMinAgo) pulseRow(e.empId);
+  });
+}
+
+// ── 퇴사 처리 — opens custom modal, single-row UPDATE on employees.emp_id ─────
+let _resignIdx=null;
+function quickResign(idx){
+  closeAllRowMenus();
+  if(!CU?.canEdit){toast('조회 전용 계정입니다','err');return;}
+  const e=emps[idx]; if(!e) return;
+  if(!e.empId){ toast('이 직원의 emp_id가 비어 있습니다 (먼저 저장 필요)','err'); return; }
+  _resignIdx=idx;
+  document.getElementById('resignEmp').textContent=`${e.nick||e.name||''} · ${e.center||''}${e.bu?' › '+e.bu:''}${e.team?' › '+e.team:''}`;
+  document.getElementById('resignDate').value=getTodayStr();
+  document.getElementById('resignNote').value='';
+  document.getElementById('resignModal').style.display='flex';
+}
+function closeResignModal(){
+  document.getElementById('resignModal').style.display='none';
+  _resignIdx=null;
+}
+async function confirmResign(){
+  if(_resignIdx===null) return;
+  const e=emps[_resignIdx]; if(!e) return;
+  const dt=document.getElementById('resignDate').value;
+  if(!dt){toast('퇴사일을 선택하세요','err');return;}
+  const noteIn=document.getElementById('resignNote').value.trim();
+  const newNote=noteIn
+    ? (e.note ? `${e.note}\n[${dt}] 퇴사: ${noteIn}` : `[${dt}] 퇴사: ${noteIn}`)
+    : (e.note||null);
+  const nowIso=new Date().toISOString();
+  const updates={ status:'Resigned', dispatch_end:dt, note:newNote, last_updated_at:nowIso };
+  setBtnLoading('resignSave', true);
+  try {
+    console.log('[QuickAction] Resign — UPDATE employees WHERE emp_id =', e.empId, updates);
+    const { error, status } = await sb.from('employees').update(updates).eq('emp_id', e.empId);
+    if(error){
+      console.error('[QuickAction] Resign FAILED — http', status, error);
+      toast('퇴사 처리 실패: '+error.message,'err');
+      return;
+    }
+    e.status='Resigned';
+    e.dispatchEnd=dt;
+    e.note=newNote||'';
+    e.lastUpdatedAt=nowIso;
+    closeResignModal();
+    toast('퇴사 처리됐습니다');
+    refreshActiveViews();
+    pulseRow(e.empId);
+  } finally {
+    setBtnLoading('resignSave', false);
+  }
+}
+
+// ── 부서 이동 — opens custom modal with dept/team cascade + future-date scheduling ──
+const DEPT_TEAMS = {
+  '쿠콘':         ['Team 1','Team 2'],
+  '비즈플레이':   ['Team 1','Team 2'],
+  'R&D 지원센터': ['Team 1','Team 2'],
+  '경영지원':     ['Team 1','Team 2'],
+  '영업본부':     ['Team 1','Team 2'],
+};
+
+let _moveDeptIdx=null;
+async function quickMoveDept(idx){
+  closeAllRowMenus();
+  if(!CU?.canEdit){toast('조회 전용 계정입니다','err');return;}
+  const e=emps[idx]; if(!e) return;
+  if(!e.empId){ toast('이 직원의 emp_id가 비어 있습니다 (먼저 저장 필요)','err'); return; }
+  _moveDeptIdx=idx;
+  // Bigger, darker employee + current dept lines per spec.
+  document.getElementById('moveDeptEmp').textContent=`${e.nick||e.name||''}`;
+  const cur=[e.center,e.bu,e.team].filter(Boolean).join(' › ')||'(부서 없음)';
+  document.getElementById('moveDeptCurrent').textContent=`현재: ${cur}`;
+  const sel=document.getElementById('moveDeptSelect');
+  sel.innerHTML='<option value="">-- 선택 --</option>'+Object.keys(DEPT_TEAMS).map(d=>`<option value="${esc(d)}"${e.center===d?' selected':''}>${esc(d)}</option>`).join('');
+  document.getElementById('moveDeptDate').value=getTodayStr();
+  document.getElementById('moveDeptNote').value='';
+  document.getElementById('moveDeptDateHint').style.display='none';
+  // Initialise team dropdown based on currently selected dept (none by default for a fresh open).
+  onMoveDeptChange();
+  document.getElementById('moveDeptModal').style.display='flex';
+}
+function onMoveDeptChange(){
+  const dept=document.getElementById('moveDeptSelect').value;
+  const teamSel=document.getElementById('moveTeamSelect');
+  const teamLbl=document.getElementById('moveTeamLbl');
+  if(!dept){
+    teamSel.style.display='none'; teamLbl.style.display='none';
+    teamSel.innerHTML=''; return;
+  }
+  const teams=DEPT_TEAMS[dept]||[];
+  teamSel.innerHTML='<option value="">-- 선택 --</option>'+teams.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');
+  teamLbl.style.display=''; teamSel.style.display='';
+}
+function closeMoveDeptModal(){
+  document.getElementById('moveDeptModal').style.display='none';
+  _moveDeptIdx=null;
+}
+// Show a hint when the user picks a future date.
+document.addEventListener('change',(ev)=>{
+  if(ev.target && ev.target.id==='moveDeptDate'){
+    const hint=document.getElementById('moveDeptDateHint');
+    if(!hint) return;
+    const v=ev.target.value;
+    hint.style.display = (v && v>getTodayStr()) ? '' : 'none';
+  }
+});
+
+async function confirmMoveDept(){
+  if(_moveDeptIdx===null) return;
+  const e=emps[_moveDeptIdx]; if(!e) return;
+  const newDept=document.getElementById('moveDeptSelect').value;
+  if(!newDept){toast('새 부서를 선택하세요','err');return;}
+  const newTeam=document.getElementById('moveTeamSelect').value||'';
+  const dt=document.getElementById('moveDeptDate').value;
+  if(!dt){toast('발령일을 선택하세요','err');return;}
+  const noteIn=document.getElementById('moveDeptNote').value.trim();
+  const isFuture = dt > getTodayStr();
+  const nowIso=new Date().toISOString();
+  // Build the note tail. We do NOT auto-insert "이동 예정" into note — the 비고 column derives that
+  // text at render time from pending_dept/effective_date so it stays in sync if the schedule changes.
+  const newNote = noteIn
+    ? (e.note ? `${e.note}\n[${dt}] 부서 이동 (${newDept}${newTeam?'/'+newTeam:''}): ${noteIn}` : `[${dt}] 부서 이동 (${newDept}${newTeam?'/'+newTeam:''}): ${noteIn}`)
+    : (e.note||null);
+  let updates;
+  if(isFuture){
+    // Schedule for later. Don't touch the main center/team yet.
+    updates={ pending_dept:newDept, pending_team:newTeam||null, effective_date:dt, note:newNote, last_updated_at:nowIso };
+  } else {
+    // Apply immediately. Clear any previously-pending transfer.
+    updates={ center:newDept, bu:'', team:newTeam||'', pending_dept:null, pending_team:null, effective_date:null, note:newNote, last_updated_at:nowIso };
+  }
+  setBtnLoading('moveDeptSave', true);
+  try{
+    console.log('[QuickAction] MoveDept — '+(isFuture?'SCHEDULE':'IMMEDIATE'),' UPDATE employees WHERE emp_id =', e.empId, updates);
+    const { error, status } = await sb.from('employees').update(updates).eq('emp_id', e.empId);
+    if(error){
+      console.error('[QuickAction] MoveDept FAILED — http', status, error);
+      toast('부서 이동 실패: '+error.message,'err');
+      return;
+    }
+    if(isFuture){
+      e.pendingDept=newDept; e.pendingTeam=newTeam||''; e.effectiveDate=dt;
+    } else {
+      e.center=newDept; e.bu=''; e.team=newTeam||'';
+      e.pendingDept=''; e.pendingTeam=''; e.effectiveDate='';
+    }
+    e.note=newNote||''; e.lastUpdatedAt=nowIso;
+    closeMoveDeptModal();
+    toast(isFuture?`이동 예약됨 (${dt})`:'부서 이동 완료');
+    refreshActiveViews();
+    pulseRow(e.empId);
+  } finally {
+    setBtnLoading('moveDeptSave', false);
+  }
+}
+
+// ── On page load: any scheduled transfer whose effective_date has passed gets moved into the
+//    main columns, then its pending fields are cleared. Runs after loadEmps().
+async function applyPendingTransfers(){
+  const today=getTodayStr();
+  const ready=emps.filter(e=>e.empId && e.pendingDept && e.effectiveDate && e.effectiveDate<=today);
+  if(!ready.length) return;
+  console.log('[Transfers] Auto-applying', ready.length, 'pending transfer(s) due on/before', today);
+  const nowIso=new Date().toISOString();
+  for(const e of ready){
+    const updates={
+      center:e.pendingDept, bu:'', team:e.pendingTeam||'',
+      pending_dept:null, pending_team:null, effective_date:null,
+      last_updated_at:nowIso,
+    };
+    const { error } = await sb.from('employees').update(updates).eq('emp_id', e.empId);
+    if(error){ console.error('[Transfers] Auto-apply failed for', e.empId, error); continue; }
+    e.center=updates.center; e.bu=''; e.team=updates.team;
+    e.pendingDept=''; e.pendingTeam=''; e.effectiveDate='';
+    e.lastUpdatedAt=nowIso;
+  }
+}
+// Render-time helper: if a row has a future-dated transfer pending, return the message to show in 비고.
+function pendingTransferLabel(e){
+  if(!e.pendingDept || !e.effectiveDate) return '';
+  if(e.effectiveDate<=getTodayStr()) return '';
+  const where = e.pendingTeam ? `${e.pendingDept}/${e.pendingTeam}` : e.pendingDept;
+  return `[${e.effectiveDate}] ${where} 이동 예정`;
+}
+
+// ── 파견 복귀 — opens custom modal ────────────────────────────
+let _returnIdx=null;
+async function quickReturn(idx){
+  closeAllRowMenus();
+  if(!CU?.canEdit){toast('조회 전용 계정입니다','err');return;}
+  const e=emps[idx]; if(!e) return;
+  if(!e.empId){ toast('이 직원의 emp_id가 비어 있습니다 (먼저 저장 필요)','err'); return; }
+  _returnIdx=idx;
+  // Pull the latest dispatch info straight from Supabase so the modal reflects DB truth, not stale local state.
+  const { data, error } = await sb.from('employees')
+    .select('dispatch_client,dispatch_city,dispatch_start,dispatch_end,team,bu,center')
+    .eq('emp_id', e.empId)
+    .maybeSingle();
+  if(error){
+    console.error('[QuickAction] Return prefetch failed:', error);
+    toast('현재 파견 정보 조회 실패: '+error.message,'err');
+    _returnIdx=null;
+    return;
+  }
+  const cur = data
+    ? ([data.dispatch_client, data.dispatch_city].filter(Boolean).join(' / ')
+        || [data.center, data.bu, data.team].filter(Boolean).join(' › ')
+        || '(파견 정보 없음)')
+    : '(조회 실패)';
+  document.getElementById('returnEmp').textContent=`${e.nick||e.name||''}`;
+  document.getElementById('returnCurrent').textContent=cur;
+  document.getElementById('returnDate').value=getTodayStr();
+  document.getElementById('returnNote').value='';
+  document.getElementById('returnModal').style.display='flex';
+}
+function closeReturnModal(){
+  document.getElementById('returnModal').style.display='none';
+  _returnIdx=null;
+}
+async function confirmReturn(){
+  if(_returnIdx===null) return;
+  const e=emps[_returnIdx]; if(!e) return;
+  const dt=document.getElementById('returnDate').value;
+  if(!dt){toast('복귀일을 선택하세요','err');return;}
+  const noteIn=document.getElementById('returnNote').value.trim();
+  const newNote=noteIn
+    ? (e.note ? `${e.note}\n[${dt}] 파견 복귀: ${noteIn}` : `[${dt}] 파견 복귀: ${noteIn}`)
+    : (e.note||null);
+  const nowIso=new Date().toISOString();
+  const updates={
+    employment_type:'정규직원',
+    dispatch_start:null, dispatch_end:dt,
+    dispatch_city:null, dispatch_client:null,
+    dispatch_extendable:false,
+    note:newNote,
+    last_updated_at:nowIso
+  };
+  setBtnLoading('returnSave', true);
+  try{
+    console.log('[QuickAction] Return — UPDATE employees WHERE emp_id =', e.empId, updates);
+    const { error, status } = await sb.from('employees').update(updates).eq('emp_id', e.empId);
+    if(error){
+      console.error('[QuickAction] Return FAILED — http', status, error);
+      toast('파견 복귀 실패: '+error.message,'err');
+      return;
+    }
+    e.type='정규직원';
+    e.dispatchStart=''; e.dispatchEnd=dt; e.dispatchCity=''; e.dispatchClient=''; e.dispatchExtendable=false;
+    e.note=newNote||'';
+    e.lastUpdatedAt=nowIso;
+    closeReturnModal();
+    toast('파견 복귀 처리됐습니다');
+    refreshActiveViews();
+    pulseRow(e.empId);
+  } finally {
+    setBtnLoading('returnSave', false);
+  }
 }
 function selOrg(center,bu,team){
   orgSel={center,bu,team,execId:null};
@@ -2139,6 +3366,9 @@ function resetUserForm(){
   if(hid)hid.value='';
   document.getElementById('uf-id').value='';
   document.getElementById('uf-pw').value='';
+  // Always reset the password field back to hidden when the form opens/clears.
+  const pwInp=document.getElementById('uf-pw'); if(pwInp) pwInp.type='password';
+  const pwIcon=document.getElementById('ufPwEyeIcon'); if(pwIcon) pwIcon.innerHTML=_EYE_OPEN;
   document.getElementById('uf-name').value='';
   document.getElementById('uf-role').value='매니저';
   document.getElementById('uf-emp-info').textContent='';
@@ -2201,36 +3431,56 @@ async function saveUser(){
   const row={ id, password:pw, name, role, can_edit:canEdit };
   if(empNick) row.emp_nick = empNick;
 
-  if(!isUpdate){
-    // CREATE — make sure id isn't already taken
-    const { data: existing, error: chkErr } = await sb.from('users').select('id').eq('id', id).maybeSingle();
-    if(chkErr){ console.error('[Users] Duplicate check failed:', chkErr); toast('저장 실패: '+chkErr.message,'err'); return; }
-    if(existing){ toast('이미 존재하는 아이디입니다','err'); return; }
-    const { error } = await sb.from('users').insert(row);
-    if(error){
-      console.error('[Users] Insert failed:', error);
-      toast('저장 실패: '+error.message,'err');
-      return;
+  setBtnLoading('userSaveBtn', true);
+  try {
+    if(!isUpdate){
+      // CREATE — make sure id isn't already taken
+      const { data: existing, error: chkErr } = await sb.from('users').select('id').eq('id', id).maybeSingle();
+      if(chkErr){ console.error('[Users] Duplicate check failed:', chkErr); toast('저장 실패: '+chkErr.message,'err'); return; }
+      if(existing){ toast('이미 존재하는 아이디입니다','err'); return; }
+      const { error } = await sb.from('users').insert(row);
+      if(error){
+        console.error('[Users] Insert failed:', error);
+        toast('저장 실패: '+error.message,'err');
+        return;
+      }
+      toast('사용자 추가됐습니다');
+    } else {
+      // UPDATE — by the ORIGINAL id captured when Edit was clicked.
+      // This prevents the duplicate-row bug when the user changes the id during edit.
+      if(originalId !== id){
+        const { data: collision, error: colErr } = await sb.from('users').select('id').eq('id', id).maybeSingle();
+        if(colErr){ console.error('[Users] Collision check failed:', colErr); toast('저장 실패: '+colErr.message,'err'); return; }
+        if(collision){ toast('이미 존재하는 아이디입니다','err'); return; }
+      }
+      const { error } = await sb.from('users').update(row).eq('id', originalId);
+      if(error){
+        console.error('[Users] Update failed:', error);
+        toast('수정 실패: '+error.message,'err');
+        return;
+      }
+      toast('수정됐습니다');
     }
-    toast('사용자 추가됐습니다');
-  } else {
-    // UPDATE — by the ORIGINAL id captured when Edit was clicked.
-    // This prevents the duplicate-row bug when the user changes the id during edit.
-    if(originalId !== id){
-      const { data: collision, error: colErr } = await sb.from('users').select('id').eq('id', id).maybeSingle();
-      if(colErr){ console.error('[Users] Collision check failed:', colErr); toast('저장 실패: '+colErr.message,'err'); return; }
-      if(collision){ toast('이미 존재하는 아이디입니다','err'); return; }
-    }
-    const { error } = await sb.from('users').update(row).eq('id', originalId);
-    if(error){
-      console.error('[Users] Update failed:', error);
-      toast('수정 실패: '+error.message,'err');
-      return;
-    }
-    toast('수정됐습니다');
+    await renderSettingsUsers();
+    resetUserForm();
+  } finally {
+    setBtnLoading('userSaveBtn', false);
   }
-  await renderSettingsUsers();
-  resetUserForm();
+}
+
+function clearSearch(){
+  const sq=document.getElementById('sq');
+  if(!sq) return;
+  sq.value='';
+  updateSearchClear();
+  if(typeof rl==='function') rl();
+  sq.focus();
+}
+function updateSearchClear(){
+  const sq=document.getElementById('sq');
+  const x=document.getElementById('sqClear');
+  if(!sq||!x) return;
+  x.classList.toggle('show', sq.value.length>0);
 }
 
 
@@ -2281,20 +3531,21 @@ function renderDispatchPage(){
   }
   // 기준일자 오늘로 리셋
   setRefDate('dsp-refDate');
-  // 고객사 필터 옵션
+  // 도시 + 고객사 multi-select 필터 옵션 (preserves user's checked items across refreshes).
+  const cities=[...new Set(dispatched.map(e=>e.dispatchCity).filter(Boolean))].sort();
   const clients=[...new Set(dispatched.map(e=>e.dispatchClient).filter(Boolean))].sort();
-  const sel=document.getElementById('dsp-filter-client');
-  if(sel) sel.innerHTML='<option value="">전체 고객사</option>'+clients.map(c=>`<option>${c}</option>`).join('');
+  msPopulate('dsp-city', cities.length?cities:['서울','부산']);
+  msPopulate('dsp-client', clients);
   renderDispatchTable();
   renderDispatchPrepTable(prep);
 }
 function renderDispatchTable(){
-  const city=document.getElementById('dsp-filter-city')?.value||'';
-  const client=document.getElementById('dsp-filter-client')?.value||'';
+  const citySet=msSelected('dsp-city');
+  const clientSet=msSelected('dsp-client');
   const days=parseInt(document.getElementById('dsp-filter-days')?.value||'0')||0;
   let list=emps.filter(e=>e.type==='파견');
-  if(city)list=list.filter(e=>e.dispatchCity===city);
-  if(client)list=list.filter(e=>e.dispatchClient===client);
+  if(citySet)list=list.filter(e=>citySet.has(e.dispatchCity));
+  if(clientSet)list=list.filter(e=>clientSet.has(e.dispatchClient));
   if(days)list=list.filter(e=>{const d=calcDday(e.dispatchEnd);return d!==null&&d<=days;});
   list.sort((a,b)=>{const da=calcDday(a.dispatchEnd)??9999,db=calcDday(b.dispatchEnd)??9999;return da-db;});
   const tbl=document.getElementById('dispatch-tbl');
@@ -2409,6 +3660,11 @@ function toast(msg,type="ok"){
   const t=document.getElementById("toast");t.textContent=msg;t.className="toast "+type+" show";
   setTimeout(()=>t.classList.remove("show"),3000);
 }
+
+// Initial login screen state — clear (or restore saved ID via Remember-ID).
+initLoginFields();
+// Stamp the platform version into the bottom-center label.
+(function(){const _v=document.getElementById('lversion');if(_v)_v.textContent='v '+APP_VERSION;})();
 
 // Session restore
 const sess=sessionStorage.getItem("cos_s");
