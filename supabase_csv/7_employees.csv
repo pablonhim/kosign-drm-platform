@@ -1,0 +1,142 @@
+emp_id,team_id,bumun,nick,name,gender,join_date,grade,kgrade,position_code,jikmu,employment_type,wonka,workplace,local_mgr_id,director_id,dept_head_id,status,note,dispatch_start,dispatch_end,dispatch_city,dispatch_client,dispatch_extendable
+EMP-002,1,한국,(홍현석),(Hong Hun Seok),,,,,부장,,한국파견,웹케시,,,,,재직,,,,,,false
+EMP-003,1,한국,(정인성),(Jeong In Sung),,,,,팀장,JEX,한국파견,웹케시,,EMP-002,,,재직,,,,,,false
+EMP-004,1,캄보디아,LEON(레온),Seat Sokhy(쌎 쏘키),M,2019-09-23,T2_M1,,팀원,JEX,정규직원,경리나라,,EMP-003,EMP-002,,재직,,,,,,false
+EMP-005,1,캄보디아,NARY(나리),Moul Nary(몰 나리),F,2021-09-13,T2_M1,,팀원,JEX,정규직원,경리나라,,EMP-003,EMP-002,,재직,,,,,,false
+EMP-006,1,캄보디아,VEEZY(비지),Sen Vysal(세엔 위사알),M,2022-08-17,T2_B2,,팀원,JEX,정규직원,경리나라,,EMP-003,EMP-002,,재직,,,,,,false
+EMP-007,1,캄보디아,ZELL(젤),Ear Piseth(이어 삐셋),M,2023-01-02,T2_B2,,팀원,JEX,정규직원,경리나라,,EMP-003,EMP-002,,재직,,,,,,false
+EMP-008,1,캄보디아,ETHAN(이든),Saut Sokreach(쏫 쏙리앶),M,2023-08-14,T2_B2,,리더,JEX,정규직원,경리나라,,EMP-003,EMP-002,,재직,,,,,,false
+EMP-009,1,캄보디아,LUCY(루시),Hout VouyIm(호웃 워우임),F,2024-01-01,T2_B2,,팀원,JEX,정규직원,경리나라,,EMP-003,EMP-002,,재직,,,,,,false
+EMP-010,1,캄보디아,CHERRY(체리),Roeun Chhorvy(르은 처위),F,2024-01-01,T2_B2,,팀원,JEX,정규직원,경리나라,,EMP-003,EMP-002,,재직,,,,,,false
+EMP-011,1,캄보디아,RONNIE(로니),Seung Phearun(써응 피어론),M,2024-01-01,T2_B2,,팀원,JEX,정규직원,경리나라,,EMP-003,EMP-002,,재직,,,,,,false
+EMP-012,1,캄보디아,LUKEY(루키),Soeng Channach(씨응 짠나앚),F,2024-01-01,T2_B2,,팀원,JEX,정규직원,경리나라,,EMP-003,EMP-002,,재직,,,,,,false
+EMP-013,1,캄보디아,ANDY(앤디),Vun Sophann(워운 쏘판),M,2024-01-01,T2_B2,,팀원,JEX,정규직원,경리나라,,EMP-003,EMP-002,,재직,,,,,,false
+EMP-014,1,캄보디아,MONITA(모니타),Chea Ratmonita(찌아 롯모니타),F,2019-03-01,T2_M2,,팀원,QA,정규직원,경리나라,,EMP-003,EMP-002,,재직,,,,,,false
+EMP-015,2,캄보디아,ROTHNAK(롯낙),Somang Rothnak(썸앙 롯낙),M,2019-02-25,T2_M2,,팀장,JEX,정규직원,경리나라,,,,,재직,,,,,,false
+EMP-016,2,캄보디아,TOMAS(토마스),Orl Tokata(오얼 또옥까따),M,2022-08-17,T2_B2,,팀원,JEX,정규직원,경리나라,,,,,재직,,,,,,false
+EMP-017,2,캄보디아,RIO(리오),Khy Seangorn(키 씨엥온),M,2024-01-01,T2_B2,,팀원,JEX,정규직원,경리나라,,,,,재직,,,,,,false
+EMP-018,2,캄보디아,SOTHY(소티),Rous Sothy(루어 소티),F,2015-03-10,T2_M2,,팀원,QA,정규직원,경리나라,,,,,재직,,,,,,false
+EMP-019,3,캄보디아,SOCHEA(소치아),Ly Sochea(리 소찌아),M,2014-03-01,T3_M2,,부장,Coocon Data,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-020,3,캄보디아,VANTHA(반타),Ken Vantha(겐 완타),M,2015-03-02,T3_M2,,팀원,Coocon Data,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-021,3,캄보디아,BONA(보나),Yean Bona(얀 보나),M,2019-09-23,T3_M1,,팀원,Coocon Data,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-022,3,캄보디아,RITH(리스),Dien Sereyrith(디은 쎄이리로엇),M,2020-10-01,T3_M1,,팀원,Coocon Data,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-023,3,캄보디아,PHEAP(피압),Bit Sopheap(빈 소피압),M,2020-10-01,T3_M1,,팀원,Coocon Data,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-024,3,캄보디아,SREYNICH(쓰레이닉),Morm Sreynich(머언 쓰레이닟),F,2021-03-09,T3_M1,,팀원,Coocon Data,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-025,3,캄보디아,CHANTHA(짠타),Pork Chantha(빠욱 짠타),M,2021-09-13,T3_M1,,팀원,Coocon Data,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-026,3,캄보디아,SOKKRY(속크리),Yob Sokkry(요업 썩크리),M,2021-09-13,T3_M1,,팀원,Coocon Data,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-027,3,캄보디아,LIMA(리마),Sang Solima(쌍 소리마),F,2023-01-01,T3_B2,,팀원,Coocon Data,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-028,3,캄보디아,SOCHEAT(소챗),Mann Socheat(만 쏘찌잇),M,2024-01-01,T3_B2,,팀원,Coocon Data,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-029,3,캄보디아,SODARAVANN(소다라완),Taing Sodaravann(땅 쏘다라완),M,2024-01-01,T3_B2,,팀원,Coocon Data,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-030,3,캄보디아,NICK(닉),Sam Rathanak(섬 로앗따낙),M,2024-08-12,T3_B1,,팀원,Coocon Data,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-031,3,캄보디아,THANA(타나),An Sovathna(언 소워따나),M,2025-01-13,T3_B1,,팀원,Coocon Data,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-032,3,캄보디아,PISEY(피세이),Sorn Pisey(썬 삐세이),M,2025-01-13,T3_B1,,팀원,Coocon Data,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-033,4,캄보디아,LOGAN(로건),Long Bunna(롱 분나),M,2014-03-01,T3_M2,,부장,Coocon Web,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-034,4,캄보디아,KOSAL(코살),E Kosal(이 코쌀),M,2015-03-02,PJ_M2,B,팀원,Coocon Web,정규직원,쿠콘,,,,,재직,3/16 파견복귀,,,,,false
+EMP-035,4,캄보디아,JUPITER(주피터),Veth Sam Oeun(웻 썸은),M,2019-09-23,T3_M1,,팀원,Coocon Web,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-036,4,캄보디아,METRA(메트라),Yim Metra(여음 메트라),M,2020-03-10,T3_M1,,팀원,Coocon Web,정규직원,쿠콘,,,,,재직,파견취소,,,,,false
+EMP-037,4,캄보디아,TAEKUANG(태광),Chang Techkuang(자앙 떽꼬웅),M,2021-03-09,T3_M1,,팀원,Coocon Web,정규직원,쿠콘,,,,,재직,파견취소,,,,,false
+EMP-038,4,캄보디아,DARA(다라),Lon Dara(로온 따라),M,2021-03-09,PJ_M1,,팀원,Coocon Web,정규직원,쿠콘,,,,,재직,3/16 파견복귀,,,,,false
+EMP-039,4,캄보디아,MIRA(미라),Un Sopheak(온 쏘피악),F,2021-09-13,T3_M1,,팀원,Coocon Web,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-040,4,캄보디아,A-NA(에이나),Pann Voleak(빤 불레악),F,2023-01-01,T3_B2,,팀원,Coocon Web,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-041,4,캄보디아,CHOUMY(추미),Heng Choumy(헹 쭘니),M,2023-01-01,T3_B2,,팀원,Coocon Web,정규직원,쿠콘,,,,,재직,파견취소,,,,,false
+EMP-042,4,캄보디아,NEO(네오),Nuon Vakhim(노운 와킴),M,2024-01-01,T3_B2,,팀원,Coocon Web,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-043,4,캄보디아,E-AN(이안),Long Sreyly(롱 스레이리),F,2024-08-12,T3_B1,,팀원,Coocon Web,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-044,4,캄보디아,PANHA(판하),Chamreun Odompanha(점라은 우덤빤냐),M,2024-08-12,T3_B1,,팀원,Coocon Web,정규직원,쿠콘,,,,,재직,3/01 로컬상품 → 기술연구소 배치,,,,,false
+EMP-045,4,캄보디아,TOLA(톨라),Soy Tola(서이 또라),M,2025-01-13,T3_B1,,팀원,Coocon Web,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-046,4,캄보디아,KC(케이씨),Sry Kimchhun(쓰리 킴춘),M,2025-02-18,T3_B1,,팀원,Coocon Web,정규직원,쿠콘,,,,,재직,2026.4.20 퇴사예정(AMK은행),,,,,false
+EMP-047,5,캄보디아,PHEEYAH(피야),Math Rorpheeyaha(맏 르어피야스),M,2020-03-10,T1_M1,,팀원,AOS,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-048,5,캄보디아,NANA(나나),Tang Mouycheng(땅 무이쨍),F,2023-01-02,T1_B2,,팀원,iOS,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-049,6,캄보디아,CHANTHY(찬티),Neo Chanthy(너으 짠티),M,2018-02-01,T4_M2,,팀장,Publishing,정규직원,쿠콘,,,,,재직,,,,,,false
+EMP-050,7,캄보디아,KARY(카리),Yen Sakary(사카리),M,2014-03-01,T1_M2,,부장,AOS,정규직원,비즈플레이,,,,,재직,,,,,,false
+EMP-051,7,캄보디아,VIRUN(비런),Ly Chaoverun(리 자우위론),M,2019-09-23,T1_M1,,팀원,AOS,정규직원,비즈플레이,,,,,재직,3/28 비즈플레이(세이마)퇴사자 충원,,,,,false
+EMP-052,7,캄보디아,PHYPHY(피피),Thoy Sophy(토오이 소옥피),F,2022-08-17,T1_B2,,팀원,AOS,정규직원,비즈플레이,,,,,재직,4/17 퇴사예정,,,,,false
+EMP-053,7,캄보디아,ELVIS(엘비스),Thea Oudom(티아 우덤),M,2025-01-13,T1_B1,,팀원,AOS,정규직원,비즈플레이,,,,,재직,4/17 비즈플레이(소피)퇴사자 충원,,,,,false
+EMP-054,7,캄보디아,SNA(스나),Thorn Veasna(턴 위어 쓰나),M,2023-01-02,T1_B2,,팀원,AOS,정규직원,비즈플레이,,,,,재직,,,,,,false
+EMP-055,7,캄보디아,KENA(케나),Thol Keolakena(터올 까우리악케나),F,2024-01-01,T1_B2,,팀원,AOS,정규직원,비즈플레이,,,,,재직,,,,,,false
+EMP-056,8,캄보디아,DOM(돔),Chheng Udam(챙우덤),M,2015-03-02,T1_M2,,부장,iOS,정규직원,비즈플레이,,,,,재직,,,,,,false
+EMP-057,8,캄보디아,THIAGO(티아고),Nem Sothea(냄 쏘티아),M,2017-03-01,T1_M2,,팀원,iOS,정규직원,비즈플레이,,,,,재직,,,,,,false
+EMP-058,8,캄보디아,NAVY(나비),Sen Navy(센 나위),M,2020-03-10,T1_M1,,팀원,iOS,정규직원,비즈플레이,,,,,재직,,,,,,false
+EMP-059,8,캄보디아,JOSEPH(요셉),Sam Sophanna(써엄 소판나),M,2022-03-01,T1_B2,,팀원,iOS,정규직원,비즈플레이,,,,,재직,,,,,,false
+EMP-060,8,캄보디아,LEGO(레고),Sokun Sonamheng(소쿤 소남행),M,2024-01-01,T1_B2,,팀원,iOS,정규직원,비즈플레이,,,,,재직,,,,,,false
+EMP-061,9,캄보디아,RATHA(라타),Chheang Ratha(치응 랏타),M,2014-03-01,T2_M2,,부장,JEX,정규직원,비즈플레이,,,,,재직,,,,,,false
+EMP-062,9,캄보디아,MARINA(마리나),Meas Marina(마이 마리나),F,2018-09-17,T2_M2,,팀원,JEX,정규직원,비즈플레이,,,,,재직,,,,,,false
+EMP-063,9,캄보디아,VIMEAN(비민),Lay Chanvimean(라이 짠위미은),F,2020-10-01,T2_M1,C,팀원,JEX,정규직원,비즈플레이,,,,,재직,,,,,,false
+EMP-064,9,캄보디아,PARKER(파커),Ek Sarayuth(엑 사라욧),M,2022-08-17,T2_B2,,팀원,JEX,정규직원,비즈플레이,,,,,재직,4/13 쿠콘웹팀으로 이동,,,,,false
+EMP-065,9,캄보디아,MIKAZA(미카자),Kong Rady(꽁 라디),F,2024-01-01,T2_B2,,팀원,JEX,정규직원,비즈플레이,,,,,재직,3월 파견예정,,,,,false
+EMP-066,9,캄보디아,SAMBATH(샘바스),Leng Sambath(렝 섬팟),M,2025-01-13,T2_B1,,팀원,JEX,정규직원,비즈플레이,,,,,재직,,,,,,false
+EMP-067,9,캄보디아,PANHA(팬하),Leng Panha(렝 빤냐),F,2025-01-13,T2_B1,,팀원,JEX,정규직원,비즈플레이,,,,,재직,,,,,,false
+EMP-068,9,캄보디아,NITA(니타),Ly Nita(리 니타),F,2025-04-21,T2_B1,,팀원,JEX,정규직원,비즈플레이,,,,,재직,,,,,,false
+EMP-069,9,캄보디아,CHHORVY(초비),Chhorm Chhorvy(처엄 처위),F,2015-03-02,T4_M2,,팀원,Publishing,정규직원,비즈플레이,,,,,재직,,,,,,false
+EMP-070,9,캄보디아,KIMHEANG(김행),Sim Kimheang(씸 김히응),M,2021-12-01,T4_M1,,팀원,Publishing,정규직원,비즈플레이,,,,,재직,1/19 예정,,,,,false
+EMP-071,10,캄보디아,DAON(다온),Bo Sreinin(보 쓰레이 닌),F,2018-03-01,T1_M2,,팀원,iOS,정규직원,비플페이,,,,,재직,,,,,,false
+EMP-072,10,캄보디아,MORRE(모르),Nin Srey Nuth(닌 쓰레이놋),F,2024-01-01,T1_B2,,팀원,iOS,정규직원,비플페이,,,,,재직,,,,,,false
+EMP-073,10,캄보디아,NIAH(니아),Thou Vanneat(투 완니엣),F,2024-01-01,T1_B2,,팀원,AOS,정규직원,비플페이,,,,,재직,,,,,,false
+EMP-074,10,캄보디아,NIRANG(니랑),Kong Thary(꽁 타리),F,2024-01-01,T1_B2,,팀원,AOS,정규직원,비플페이,,,,,재직,,,,,,false
+EMP-075,10,캄보디아,G-RANN(지란),Eath Chanry(앗 짠리),F,2022-03-01,T1_B2,C,팀원,AOS,정규직원,비플페이,,,,,재직,1/12 R&D → 비플페이 배치,,,,,false
+EMP-076,1,캄보디아,TIMO(티모),Sum Taimo(쑴 따이모),M,2023-07-10,PJ_B2,,팀원,UX/UI,파견,경리나라,,,,,재직,서울 (25.08.03 ~26.06.30),2025-08-03,2026-06-30,서울,경리나라,false
+EMP-077,11,캄보디아,PETER(피터),Thach Parinhnha(타앚 빠리냐),M,2021-09-13,PJ_M1,C,팀원,AOS,파견,웹케시,,,,,재직,부산(24.08.10~26.08.11),2024-08-10,2026-08-11,부산,웹케시,false
+EMP-078,4,캄보디아,SOCHEAT(소챗-파견),Hun Socheat(혼 쏘억찌엇),M,2020-10-01,PJ_M1,C,팀원,Coocon Web,파견,쿠콘,,,,,재직,부산 (24.09.01~26.05.30),2024-09-01,2026-05-30,부산,쿠콘,false
+EMP-079,4,캄보디아,NEAT(닛),Hak Sreyneat(학 스레이니읃),F,2023-01-01,PJ_B2,B,팀원,Coocon Web,파견,쿠콘,,,,,재직,부산 (24.09.01~26.05.30) 연장준비,2024-09-01,2026-05-30,부산,쿠콘,true
+EMP-080,3,캄보디아,KONG(콩),Svay Kong(쓰와이 꽁),M,2020-10-01,PJ_M1,C,팀원,Coocon Data,파견,쿠콘,,,,,재직,부산(25.08.23~26.07.31),2025-08-23,2026-07-31,부산,쿠콘,false
+EMP-081,3,캄보디아,VARAK(바락),In Thythavarak(언 디다워라억),M,2020-10-01,PJ_M1,C,팀원,Coocon Data,파견,쿠콘,,,,,재직,부산(25.08.23~26.07.31),2025-08-23,2026-07-31,부산,쿠콘,false
+EMP-082,3,캄보디아,SINA(시나),Sem Sina(싸엠 씨나),F,2024-01-01,PJ_B2,B,팀원,Coocon Data,파견,쿠콘,,,,,재직,서울(25.08.23~26.07.31),2025-08-23,2026-07-31,서울,쿠콘,false
+EMP-083,12,캄보디아,KAJI(카지),Morm Sophen(머엄 쏘펜),M,2022-03-07,PJ_B2,,팀원,DevOps,파견,쿠콘,,,,,재직,서울(25.09.06~26.08.25),2025-09-06,2026-08-25,서울,쿠콘,false
+EMP-084,12,캄보디아,JULIAN(줄리안),Poret Rithynea(뽀럣 리티니아),M,2023-01-02,PJ_B2,,팀원,DevOps,파견,쿠콘,,,,,재직,서울(25.09.06~26.08.25),2025-09-06,2026-08-25,서울,쿠콘,false
+EMP-085,13,캄보디아,TERRY(테리),Thoeun Thira Vuthin(트은 티라워우틴),M,2023-08-14,PJ_B2,,팀원,WEB,파견,비즈플레이,,,,,재직,서울(25.10.27~26.09.30)?,2025-10-27,2026-09-30,서울,비즈플레이,false
+EMP-086,13,캄보디아,HENRY(핸리),Hen Heang(히엔 히엉),M,2024-01-01,PJ_B2,,팀원,WEB,파견,비즈플레이,,,,,재직,서울(25.10.27~26.09.30)?,2025-10-27,2026-09-30,서울,비즈플레이,false
+EMP-087,14,캄보디아,(Channa)(짠나),(Neng Channa)(넹 짠나),M,2014-03-01,T3_M2,,부장,WEB,정규직원,코사인_로컬비즈,,,,,재직,,,,,,false
+EMP-088,14,캄보디아,SEYHA(세이하),Phan Seyha(파안 쎄이하),M,2021-03-09,T3_M1,,팀원,WEB,정규직원,코사인_로컬비즈,,,,,재직,,,,,,false
+EMP-089,14,캄보디아,JOTTI(조티),Hen Ty(헨 띠),M,2024-01-01,T3_B2,,팀원,WEB,정규직원,코사인_로컬비즈,,,,,재직,1/01 비즈플레이 B2B웹팀 → 로컬상품팀 배치,,,,,false
+EMP-090,14,캄보디아,Y맹스아,Y Mengsea(Y 맹스아),M,2026-02-01,T2_B1,,인턴,WEB,인턴,코사인_로컬비즈,,,,,재직,2/01 입사,,,,,false
+EMP-091,14,캄보디아,소체트라,Norn So chetra(노른 소 체트라),M,2026-02-01,T2_B1,,인턴,WEB,인턴,코사인_로컬비즈,,,,,재직,2/01 입사,,,,,false
+EMP-092,14,캄보디아,김레앙,Keo Kimleang(카오 김리응),M,2026-02-01,T2_B1,,인턴,WEB,인턴,코사인_로컬비즈,,,,,재직,2/01 입사,,,,,false
+EMP-093,14,캄보디아,소마니,Hoeurn Somany(흔 소마니),M,2026-02-01,T2_B1,,인턴,WEB,인턴,코사인_로컬비즈,,,,,재직,2/01 입사,,,,,false
+EMP-094,15,캄보디아,CHHON(처언),Chhaeuy Chhon(츠이 처언),M,2013-03-01,,,부장,IT Infra,정규직원,코사인_로컬비즈,,,,,재직,,,,,,false
+EMP-095,15,캄보디아,DETH(데스),Korng Lydeth(꽁 리뎃),M,2014-03-01,,,팀원,IT Infra,정규직원,코사인_로컬비즈,,,,,재직,,,,,,false
+EMP-096,15,캄보디아,KARL(칼),Tham Sanfann(탐 산환),M,2022-03-01,,,팀원,Network,정규직원,코사인_로컬비즈,,,,,재직,,,,,,false
+EMP-097,15,캄보디아,PUOYY(포우이),Try Puoyy(뜨리 뽀우이),M,2023-01-02,,,팀원,DevOps,정규직원,코사인_로컬비즈,,,,,재직,,,,,,false
+EMP-098,15,캄보디아,SORA(소라),Penh Sokra(펜 쏙라),M,2025-09-08,,,팀원,,정규직원,코사인_로컬비즈,,,,,재직,1/12 R&D → IT인프라 배치,,,,,false
+EMP-099,16,캄보디아,Borey(보레이),Nhim Chanborey(녀음 짠보레이),M,2017-04-01,T4_M2,,부장,DESIGN,정규직원,코사인_로컬비즈,,,,,재직,,,,,,false
+EMP-100,16,캄보디아,ANGIE(앤지),Vin AnGie(빈 엔지),F,2025-02-03,T4_B1,,팀원,DESIGN,정규직원,코사인_로컬비즈,,,,,재직,로컬상품팀 지원,,,,,false
+EMP-101,16,캄보디아,NIKA(니카),Soush Monika(쑤어스 모니까),F,2022-03-01,T4_B2,,팀원,DESIGN,정규직원,코사인_로컬비즈,,,,,재직,로컬상품팀 지원,,,,,false
+EMP-102,16,캄보디아,SCOTT(스콧),Chrek Sophanith(츠륵 쏘파늣),M,2021-03-09,T4_M1,,팀원,Publishing,정규직원,코사인_로컬비즈,,,,,재직,로컬상품팀 지원,,,,,false
+EMP-103,16,캄보디아,SEAK(시크),Pheak Seangseak(페익 쎄잉쎄악),F,2020-10-07,T4_M1,,팀원,Publishing,정규직원,코사인_로컬비즈,,,,,재직,,,,,,false
+EMP-104,16,캄보디아,CHHAIYA(차이야),It Chhaiya(잇 차이야),F,2024-09-16,T4_B1,,팀원,Publishing,정규직원,코사인_로컬비즈,,,,,재직,로컬상품팀 지원,,,,,false
+EMP-105,17,캄보디아,RYAN(라이안),Song Chan Moni(써엉 짠모니),M,2022-03-01,T2_B2,,팀장,JEX,파견준비,웹케시글로벌,,,,,재직,,,,,웹케시글로벌,false
+EMP-106,17,캄보디아,MAX(맥스),Hourt Vongsa(훗 워웅사),M,2022-03-01,T2_B2,,팀원,JEX,정규직원,웹케시글로벌,,,,,재직,,,,,,false
+EMP-107,17,캄보디아,DAVID(데이비드),Chheang Mengchhun(치엥 맹촌),M,2024-01-01,T2_B2,,팀원,JEX,정규직원,웹케시글로벌,,,,,재직,,,,,,false
+EMP-108,17,캄보디아,SIMON(시몬),Pho Somnang(포 썸나앙),M,2024-01-01,T2_B2,,팀원,JEX,정규직원,웹케시글로벌,,,,,재직,1/01 배치 (퇴사자 대체),,,,,false
+EMP-109,17,캄보디아,SONNY(소니),Ran Sokny(러언 썩니),M,2021-09-13,T2_M1,,팀원,JEX,정규직원,웹케시글로벌,,,,,재직,,,,,,false
+EMP-110,17,캄보디아,ARTHUR(아서),Tith Ouddom(띳 우덤),M,2024-01-01,T2_B2,,팀원,JEX,정규직원,웹케시글로벌,,,,,재직,,,,,,false
+EMP-111,18,캄보디아,JICKY(지키),Chan Youvita(짠 유위따),M,2021-04-01,T4_M1,,팀원,QA,정규직원,R&D,,,,,재직,,,,,,false
+EMP-112,18,캄보디아,ALEX(알렉스),Bong Kokkheang(빠엉 꺽키앙),M,2022-03-01,T1_B2,C,팀원,iOS,정규직원,R&D,,,,,재직,비플페이 지원,,,,,false
+EMP-113,18,캄보디아,SAO(사오),Sao Nang(싸으 낭),M,2023-05-01,T4_B2,,팀원,Publishing,정규직원,R&D,,,,,재직,,,,,,false
+EMP-114,18,캄보디아,THOEURN(토이언),Khouth Bunthoeurn(콧 분튼),M,2024-10-16,T4_B1,,팀원,Publishing,파견준비,R&D,,,,,재직,7월 쿠콘 파견 예정,,,,R&D,false
+EMP-115,18,캄보디아,REX(렉스),Vong Pichdaraboth(워옹 삦다라봇),M,2022-08-17,T2_B2,C,팀원,JEX,파견준비,R&D,,,,,재직,4월 마드라스체크 파견 예정,,,,R&D,false
+EMP-116,18,캄보디아,VANDA(완다),Phat Vanda(파앗 완다),F,2022-08-17,T2_B2,C,팀원,JEX,파견준비,R&D,,,,,재직,4월 마드라스체크 파견 예정,,,,R&D,false
+EMP-117,18,캄보디아,NOLAN(놀란),Mean Khaw(미은 가워),M,2020-10-01,T2_M1,B,팀원,JEX,정규직원,R&D,,,,,재직,,,,,,false
+EMP-118,18,캄보디아,SOVITA(소비타),Dara Sovita(다라 소위따),M,2023-09-01,T2_B2,,팀원,JEX,정규직원,R&D,,,,,재직,4/1 파견복귀 → 비즈플레이 B2B웹팀 이동,,,,,false
+EMP-119,18,캄보디아,MONIROIT(모니로잇),Morn Moniroit(머언 모니로앗),M,2024-01-01,T2_B2,,팀원,JEX,정규직원,R&D,,,,,재직,4/1 파견복귀 → 4/13 쿠콘웹팀 이동,,,,,false
+EMP-120,18,캄보디아,MANNY(마니),Morng Many(마니),F,2026-02-01,T1_B1,,인턴,AOS,인턴,R&D,,,,,재직,2/01 입사,,,,,false
+EMP-121,19,캄보디아,VITOU(뷔두),Lay Bunnavitou(라이 본나위뚜),M,2014-03-01,,,부장,Business,정규직원,코사인_로컬비즈,,,,,재직,,,,,,false
+EMP-122,19,캄보디아,NUT(넛),Un Lyranut(운 라놋),F,2024-03-01,,,팀원,"Design, Media",정규직원,코사인_로컬비즈,,,,,재직,,,,,,false
+EMP-123,19,캄보디아,BOPHA(보파),Sovann Sokunbopha(소반 소쿤보파),M,2024-08-12,,,팀원,Business,정규직원,코사인_로컬비즈,,,,,재직,,,,,,false
+EMP-124,19,캄보디아,LIMCHHORNG(림청),Veng Lim Chhorng(웨잉 림청),M,2023-06-19,T4_B2,,팀원,Publishing,정규직원,코사인_로컬비즈,,,,,재직,1/16 R&D → 영업/CX 배치,,,,,false
+EMP-125,19,캄보디아,MIN(민),Heng Hap(헹 합),M,2014-01-01,,,팀원,CX,정규직원,코사인_로컬비즈,,,,,재직,,,,,,false
+EMP-126,19,캄보디아,NAB(납),Kol Chamnab(껄 쩜납),M,2014-03-01,,,팀원,CX,정규직원,코사인_로컬비즈,,,,,재직,,,,,,false
+EMP-127,20,캄보디아,YAN(얀),Suon Yanchhuong(쑤언 얀충),M,2013-03-01,,,부장,CX,정규직원,코사인_로컬비즈,,,,,재직,,,,,,false
+EMP-128,20,캄보디아,PHATH(팟),San Phath(써언 팟),M,2014-03-01,T3_M1,,팀원,WEB,정규직원,코사인_로컬비즈,,,,,재직,신한은행 파견 중,,,,,false
+EMP-129,20,캄보디아,YUOS(유어스),Yon Yuos(욘 유어),M,2018-09-17,T3_M1,,팀원,WEB,정규직원,코사인_로컬비즈,,,,,재직,PPCBank 파견 중,,,,,false
+EMP-130,20,캄보디아,RAN(란),Kol Boran(껄 보란),M,2014-01-01,,,팀원,WEB,정규직원,코사인_로컬비즈,,,,,재직,,,,,,false
+EMP-131,20,캄보디아,PHANIT(파닛),Soeuk Sophanit(스윽 소파닛),M,2024-08-12,T3_B1,,팀원,WEB,정규직원,코사인_로컬비즈,,,,,재직,,,,,,false
+EMP-132,20,캄보디아,MESSI-KH(메시KH),Pao Chinda(바워 진따),M,2020-10-01,T3_M1,,팀원,JEX,정규직원,코사인_로컬비즈,,,,,재직,1/05 R&D → 로컬아웃소싱 배치,,,,,false
+EMP-133,21,캄보디아,JANE(제인),(Dy Sovannvoleak)(디 소완볼레악),F,2013-03-01,,,부장,GM,정규직원,코사인_공통,,,,,재직,,,,,,false
+EMP-134,21,캄보디아,TYNA(티나),Chum Savry(쫌 싸워리),F,2014-11-13,,,팀원,GM,정규직원,코사인_공통,,,,,재직,,,,,,false
+EMP-135,21,캄보디아,Dok Thavy,Dok Thavy (도옥 타위),F,2025-10-08,,,팀원,GM,정규직원,코사인_공통,,,,,재직,,,,,,false
+EMP-136,21,캄보디아,ROTHA(로타),Heang Rotha(히응 로왓타),M,2014-07-01,,,팀원,GA,정규직원,코사인_공통,,,,,재직,,,,,,false
+EMP-137,21,캄보디아,SYTHA(시타),Moeun Sytha(무은 시타),M,2015-03-10,,,팀원,GA,정규직원,코사인_공통,,,,,재직,,,,,,false
+EMP-138,21,캄보디아,CHANNY(채니),Min Channy(먼 짠니),M,2013-08-06,,,팀원,GA,정규직원,코사인_공통,,,,,재직,,,,,,false
+EMP-139,21,캄보디아,KOSAL(코살),Khun Kosal(쿤 꼬쌀),M,2023-03-01,,,팀원,GA,정규직원,코사인_공통,,,,,재직,,,,,,false
+EMP-140,22,캄보디아,RANY(라니),Pum Rany(뽐 라니),F,2013-03-01,,,부장,Account,정규직원,코사인_공통,,,,,재직,,,,,,false
+EMP-141,22,캄보디아,ALICE(엘리스),Sann Puthy(산 뿓티),F,2013-06-17,,,팀원,Account,정규직원,코사인_공통,,,,,재직,,,,,,false
+EMP-142,22,캄보디아,LILY(릴리),Ly Sreylin(리 쓰레이린),F,2021-03-29,,,팀원,Account,정규직원,코사인_공통,,,,,재직,,,,,,false
