@@ -50,9 +50,9 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
    apex emphasis comes from scale + halo only. Approaching either horizon, a Gaussian blur
    ramps up so the icon appears to "speed past" the screen edge instead of just vanishing. */
 .tech-icon{
-  position:absolute;left:50%;bottom:60px;z-index:1;
+  position:absolute;left:50%;bottom:30px;z-index:1;
   width:60px;height:60px;margin:-30px 0 0 -30px;
-  offset-path:path('M -900 0 A 900 280 0 1 0 900 0 A 900 280 0 1 0 -900 0');
+  offset-path:path('M -900 0 A 900 250 0 1 1 900 0 A 900 250 0 1 1 -900 0');
   offset-rotate:0deg;
   animation:tech-orbit 90s linear infinite;
   animation-delay:var(--delay,0s);
@@ -81,17 +81,17 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
   shape-rendering:geometricPrecision;
 }
 @keyframes tech-orbit{
-  /* LEFT HORIZON — heavy blur + low opacity. Filter only contains blur (no drop-shadow) so the apex frames stay crisp. */
-  0%   {offset-distance:0%;   transform:scale(1) translateZ(0); opacity:.10; filter:blur(16px);}
-   5%  {offset-distance:5%;   transform:scale(1) translateZ(0); opacity:.30; filter:blur(9px); }
-  /* CLEAR ZONE — every keyframe in this band uses blur(0) and integer-multiple scale (1× or 1.5× of 60px = 60 or 90, both whole). */
-  12%  {offset-distance:12%;  transform:scale(1) translateZ(0); opacity:1;   filter:blur(0);}
-  25%  {offset-distance:25%;  transform:scale(1.5) translateZ(0); opacity:1; filter:blur(0);}     /* APEX — 60×1.5 = 90px, integer */
-  38%  {offset-distance:38%;  transform:scale(1) translateZ(0); opacity:1;   filter:blur(0);}
-  /* RIGHT HORIZON — mirror. */
-  45%  {offset-distance:45%;  transform:scale(1) translateZ(0); opacity:.30; filter:blur(9px); }
-  50%  {offset-distance:50%;  transform:scale(1) translateZ(0); opacity:.10; filter:blur(16px);}
-  100% {offset-distance:100%; transform:scale(1) translateZ(0); opacity:.10; filter:blur(16px);}
+  /* LEFT HORIZON — fade in (no blur, icons stay crisp throughout). */
+  0%   {offset-distance:0%;   transform:scale(1) translateZ(0); opacity:0;   filter:none;}
+   5%  {offset-distance:5%;   transform:scale(1) translateZ(0); opacity:.55; filter:none;}
+  /* CLEAR ZONE — full opacity, with a small scale bump at apex for emphasis. */
+  12%  {offset-distance:12%;  transform:scale(1) translateZ(0); opacity:1;   filter:none;}
+  25%  {offset-distance:25%;  transform:scale(1.25) translateZ(0); opacity:1; filter:none;}     /* APEX */
+  38%  {offset-distance:38%;  transform:scale(1) translateZ(0); opacity:1;   filter:none;}
+  /* RIGHT HORIZON — mirror fade-out. */
+  45%  {offset-distance:45%;  transform:scale(1) translateZ(0); opacity:.55; filter:none;}
+  50%  {offset-distance:50%;  transform:scale(1) translateZ(0); opacity:0;   filter:none;}
+  100% {offset-distance:100%; transform:scale(1) translateZ(0); opacity:0;   filter:none;}
 }
 @media (prefers-reduced-motion: reduce){.tech-icon{animation:none;}}
 .lhint{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:14px 16px;margin-top:4px;}
@@ -1012,8 +1012,10 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
     <div class="qmodal-body">
       <div class="qmodal-emp-big" id="moveDeptEmp"></div>
       <div class="qmodal-curr" id="moveDeptCurrent"></div>
-      <label class="qmodal-lbl" for="moveDeptSelect">새 부서 선택</label>
+      <label class="qmodal-lbl" for="moveDeptSelect">새 센터 선택</label>
       <select class="qmodal-input" id="moveDeptSelect" onchange="onMoveDeptChange()"></select>
+      <label class="qmodal-lbl" for="moveBuSelect" id="moveBuLbl" style="display:none">부/실 선택</label>
+      <select class="qmodal-input" id="moveBuSelect" style="display:none" onchange="onMoveBuChange()"></select>
       <label class="qmodal-lbl" for="moveTeamSelect" id="moveTeamLbl" style="display:none">팀 선택</label>
       <select class="qmodal-input" id="moveTeamSelect" style="display:none"></select>
       <label class="qmodal-lbl" for="moveDeptDate">발령일</label>
@@ -2874,14 +2876,23 @@ async function confirmResign(){
   }
 }
 
-// ── 부서 이동 — opens custom modal with dept/team cascade + future-date scheduling ──
-const DEPT_TEAMS = {
-  '쿠콘':         ['Team 1','Team 2'],
-  '비즈플레이':   ['Team 1','Team 2'],
-  'R&D 지원센터': ['Team 1','Team 2'],
-  '경영지원':     ['Team 1','Team 2'],
-  '영업본부':     ['Team 1','Team 2'],
-};
+// ── 부서 이동 — opens custom modal with center/bu/team cascade + future-date scheduling ──
+// Build the org tree dynamically from real employee data:
+//   { center: { bu: [team, team, ...], ... }, ... }
+// Falls back to '(직속)' as a synthetic BU when a center has teams but no BU.
+function buildOrgTree(){
+  const tree={};
+  for(const e of emps){
+    const c=(e.center||'').trim(); if(!c) continue;
+    if(!tree[c]) tree[c]={};
+    const b=(e.bu||'').trim() || '(직속)';
+    if(!tree[c][b]) tree[c][b]=new Set();
+    if(e.team) tree[c][b].add(e.team.trim());
+  }
+  // Convert Sets → sorted arrays
+  for(const c in tree) for(const b in tree[c]) tree[c][b]=[...tree[c][b]].sort();
+  return tree;
+}
 
 let _moveDeptIdx=null;
 async function quickMoveDept(idx){
@@ -2894,25 +2905,52 @@ async function quickMoveDept(idx){
   document.getElementById('moveDeptEmp').textContent=`${e.nick||e.name||''}`;
   const cur=[e.center,e.bu,e.team].filter(Boolean).join(' › ')||'(부서 없음)';
   document.getElementById('moveDeptCurrent').textContent=`현재: ${cur}`;
+  // Build the live org tree from real employee data each time the modal opens
+  window._orgTree = buildOrgTree();
   const sel=document.getElementById('moveDeptSelect');
-  sel.innerHTML='<option value="">-- 선택 --</option>'+Object.keys(DEPT_TEAMS).map(d=>`<option value="${esc(d)}"${e.center===d?' selected':''}>${esc(d)}</option>`).join('');
+  sel.innerHTML='<option value="">-- 선택 --</option>'+
+    Object.keys(window._orgTree).sort().map(d=>
+      `<option value="${esc(d)}"${e.center===d?' selected':''}>${esc(d)}</option>`).join('');
   document.getElementById('moveDeptDate').value=getTodayStr();
   document.getElementById('moveDeptNote').value='';
   document.getElementById('moveDeptDateHint').style.display='none';
-  // Initialise team dropdown based on currently selected dept (none by default for a fresh open).
-  onMoveDeptChange();
+  // Initialise BU + team dropdowns based on currently selected center
+  onMoveDeptChange(e.bu, e.team);
   document.getElementById('moveDeptModal').style.display='flex';
 }
-function onMoveDeptChange(){
-  const dept=document.getElementById('moveDeptSelect').value;
+
+// Center changed → repopulate BU dropdown
+function onMoveDeptChange(preselectBu, preselectTeam){
+  const center=document.getElementById('moveDeptSelect').value;
+  const buSel=document.getElementById('moveBuSelect');
+  const buLbl=document.getElementById('moveBuLbl');
   const teamSel=document.getElementById('moveTeamSelect');
   const teamLbl=document.getElementById('moveTeamLbl');
-  if(!dept){
-    teamSel.style.display='none'; teamLbl.style.display='none';
-    teamSel.innerHTML=''; return;
+  if(!center){
+    buSel.style.display='none'; buLbl.style.display='none'; buSel.innerHTML='';
+    teamSel.style.display='none'; teamLbl.style.display='none'; teamSel.innerHTML='';
+    return;
   }
-  const teams=DEPT_TEAMS[dept]||[];
-  teamSel.innerHTML='<option value="">-- 선택 --</option>'+teams.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');
+  const bus=Object.keys(window._orgTree[center]||{}).sort();
+  buSel.innerHTML='<option value="">-- 선택 --</option>'+
+    bus.map(b=>`<option value="${esc(b==='(직속)'?'':b)}"${preselectBu===b||(preselectBu===''&&b==='(직속)')?' selected':''}>${esc(b)}</option>`).join('');
+  buLbl.style.display=''; buSel.style.display='';
+  onMoveBuChange(preselectTeam);
+}
+
+// BU changed → repopulate Team dropdown
+function onMoveBuChange(preselectTeam){
+  const center=document.getElementById('moveDeptSelect').value;
+  const buRaw=document.getElementById('moveBuSelect').value;
+  const bu=buRaw||'(직속)';
+  const teamSel=document.getElementById('moveTeamSelect');
+  const teamLbl=document.getElementById('moveTeamLbl');
+  if(!center){
+    teamSel.style.display='none'; teamLbl.style.display='none'; teamSel.innerHTML=''; return;
+  }
+  const teams=(window._orgTree[center]||{})[bu]||[];
+  teamSel.innerHTML='<option value="">-- 선택 --</option>'+
+    teams.map(t=>`<option value="${esc(t)}"${preselectTeam===t?' selected':''}>${esc(t)}</option>`).join('');
   teamLbl.style.display=''; teamSel.style.display='';
 }
 function closeMoveDeptModal(){
@@ -2933,25 +2971,29 @@ async function confirmMoveDept(){
   if(_moveDeptIdx===null) return;
   const e=emps[_moveDeptIdx]; if(!e) return;
   const newDept=document.getElementById('moveDeptSelect').value;
-  if(!newDept){toast('새 부서를 선택하세요','err');return;}
+  if(!newDept){toast('새 센터를 선택하세요','err');return;}
+  const newBu=document.getElementById('moveBuSelect').value||'';
   const newTeam=document.getElementById('moveTeamSelect').value||'';
   const dt=document.getElementById('moveDeptDate').value;
   if(!dt){toast('발령일을 선택하세요','err');return;}
   const noteIn=document.getElementById('moveDeptNote').value.trim();
   const isFuture = dt > getTodayStr();
   const nowIso=new Date().toISOString();
+  // Pretty path used in the note (Center › BU › Team), skipping empty parts
+  const path=[newDept,newBu,newTeam].filter(Boolean).join('/');
   // Build the note tail. We do NOT auto-insert "이동 예정" into note — the 비고 column derives that
   // text at render time from pending_dept/effective_date so it stays in sync if the schedule changes.
   const newNote = noteIn
-    ? (e.note ? `${e.note}\n[${dt}] 부서 이동 (${newDept}${newTeam?'/'+newTeam:''}): ${noteIn}` : `[${dt}] 부서 이동 (${newDept}${newTeam?'/'+newTeam:''}): ${noteIn}`)
+    ? (e.note ? `${e.note}\n[${dt}] 부서 이동 (${path}): ${noteIn}` : `[${dt}] 부서 이동 (${path}): ${noteIn}`)
     : (e.note||null);
   let updates;
   if(isFuture){
-    // Schedule for later. Don't touch the main center/team yet.
-    updates={ pending_dept:newDept, pending_team:newTeam||null, effective_date:dt, note:newNote, last_updated_at:nowIso };
+    // Schedule for later. Don't touch the main center/bu/team yet.
+    // Note: pending_bu is stored if the column exists; otherwise it's encoded into the note above.
+    updates={ pending_dept:newDept, pending_bu:newBu||null, pending_team:newTeam||null, effective_date:dt, note:newNote, last_updated_at:nowIso };
   } else {
     // Apply immediately. Clear any previously-pending transfer.
-    updates={ center:newDept, bu:'', team:newTeam||'', pending_dept:null, pending_team:null, effective_date:null, note:newNote, last_updated_at:nowIso };
+    updates={ center:newDept, bu:newBu||'', team:newTeam||'', pending_dept:null, pending_bu:null, pending_team:null, effective_date:null, note:newNote, last_updated_at:nowIso };
   }
   setBtnLoading('moveDeptSave', true);
   try{
@@ -2963,10 +3005,10 @@ async function confirmMoveDept(){
       return;
     }
     if(isFuture){
-      e.pendingDept=newDept; e.pendingTeam=newTeam||''; e.effectiveDate=dt;
+      e.pendingDept=newDept; e.pendingBu=newBu||''; e.pendingTeam=newTeam||''; e.effectiveDate=dt;
     } else {
-      e.center=newDept; e.bu=''; e.team=newTeam||'';
-      e.pendingDept=''; e.pendingTeam=''; e.effectiveDate='';
+      e.center=newDept; e.bu=newBu||''; e.team=newTeam||'';
+      e.pendingDept=''; e.pendingBu=''; e.pendingTeam=''; e.effectiveDate='';
     }
     e.note=newNote||''; e.lastUpdatedAt=nowIso;
     closeMoveDeptModal();
