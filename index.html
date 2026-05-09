@@ -338,6 +338,8 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.01
 .t-한국파견{background:rgba(245,208,56,.1);color:var(--yellow);}
 .t-직책{background:rgba(79,134,247,.1);color:var(--accent);}
 .t-grade{background:rgba(240,75,138,.1);color:var(--pink);font-family:"JetBrains Mono",monospace;}
+/* 원가부서 (cost-centre) tag — neutral, easy to scan, no full path. */
+.t-wonka{background:rgba(79,134,247,.08);color:var(--accent);border:1px solid rgba(79,134,247,.18);font-weight:700;}
 /* AVATAR */
 .av{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
 .avM{background:rgba(79,134,247,.16);color:var(--accent);border:1px solid rgba(79,134,247,.28);}
@@ -1927,7 +1929,7 @@ function rl(){
       <td>${e.jikchak?`<span class="tag t-직책">${e.jikchak}</span>`:"-"}</td>
       <td style="color:var(--text2)">${e.jikmu||"-"}</td>
       <td><span class="tag t-${(e.type||"").replace(/\s/g,"")}">${e.type||"-"}</span></td>
-      <td>${e.wonka||"-"}</td>
+      <td>${e.wonka?`<span class="tag t-wonka">${esc(e.wonka)}</span>`:"-"}</td>
       <td class="mono" style="color:var(--text3)">${e.join?calcYeon(e.join)+"년":"-"}</td>
       ${(()=>{const pend=pendingTransferLabel(e);const noteText=pend?(e.note?pend+' · '+e.note:pend):(e.note||'-');const col=(pend||e.note)?'var(--orange)':'var(--text3)';return `<td style="color:${col};max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(noteText)}">${esc(noteText)}</td>`;})()}
     </tr>`;
@@ -2991,9 +2993,62 @@ document.addEventListener('change',(ev)=>{
   }
 });
 
+// ============================================================
+// CENTER → WONKA (원가부서) MAPPING
+// When an employee transfers, the cost-centre is auto-derived from
+// the new (center, bu, team). Returning '' lets the caller decide
+// whether to keep the existing wonka untouched.
+// ============================================================
+function centerToWonka(center, bu, team){
+  // 아웃소싱/파견센터 — BU drives the cost-centre, with a special case
+  // for 경리나라팀 which historically posts to '경리나라'.
+  if(center === '아웃소싱/파견센터'){
+    if(team === '경리나라팀') return '경리나라';
+    return bu || '';
+  }
+  // 로컬비즈니스센터 — team drives the cost-centre (영업/CX, 로컬아웃소싱, …)
+  if(center === '로컬비즈니스센터'){
+    return team || '';
+  }
+  // R&D 지원센터 — most teams charge to 'R&D', a couple have explicit overrides.
+  if(center === 'R&D 지원센터'){
+    if(team === '글로벌상품') return '웹케시글로벌';
+    if(team === '로컬상품')   return '코사인_로컬비즈';
+    return 'R&D';
+  }
+  // 경영지원센터 — single shared cost-centre.
+  if(center === '경영지원센터'){
+    return '코사인_공통';
+  }
+  return '';
+}
+
+// ============================================================
+// TRANSFER NOTE FORMATTER
+// Produces the auto-generated 비고 line in the spec format:
+//   "MM/DD OldTeam (OldCenter) → MM/DD NewTeam (NewCenter)"
+// The two dates are equal for immediate moves and differ for
+// scheduled (future) moves where dt2 = effective_date.
+// ============================================================
+function formatTransferNote(oldCenter, oldTeam, newCenter, newTeam, effectiveDate){
+  const mmdd = (d) => {
+    const dt = (d instanceof Date) ? d : new Date(d);
+    return String(dt.getMonth()+1).padStart(2,'0') + '/' + String(dt.getDate()).padStart(2,'0');
+  };
+  const today    = new Date();
+  const fromMMDD = mmdd(today);
+  const toMMDD   = effectiveDate ? mmdd(effectiveDate) : fromMMDD;
+  const fromText = (oldTeam || '미배정') + ' (' + (oldCenter || '미지정') + ')';
+  const toText   = (newTeam || '미배정') + ' (' + (newCenter || '미지정') + ')';
+  return `${fromMMDD} ${fromText} → ${toMMDD} ${toText}`;
+}
+
 async function confirmMoveDept(){
   if(_moveDeptIdx===null) return;
   const e=emps[_moveDeptIdx]; if(!e) return;
+  // Snapshot the OLD position before we overwrite it (used for the note line).
+  const oldCenter = e.center || '';
+  const oldTeam   = e.team   || '';
   const newDept=document.getElementById('moveDeptSelect').value;
   if(!newDept){toast('새 센터를 선택하세요','err');return;}
   const newBu=document.getElementById('moveBuSelect').value||'';
@@ -3003,21 +3058,26 @@ async function confirmMoveDept(){
   const noteIn=document.getElementById('moveDeptNote').value.trim();
   const isFuture = dt > getTodayStr();
   const nowIso=new Date().toISOString();
-  // Pretty path used in the note (Center › BU › Team), skipping empty parts
-  const path=[newDept,newBu,newTeam].filter(Boolean).join('/');
-  // Build the note tail. We do NOT auto-insert "이동 예정" into note — the 비고 column derives that
-  // text at render time from pending_dept/effective_date so it stays in sync if the schedule changes.
-  const newNote = noteIn
-    ? (e.note ? `${e.note}\n[${dt}] 부서 이동 (${path}): ${noteIn}` : `[${dt}] 부서 이동 (${path}): ${noteIn}`)
-    : (e.note||null);
+
+  // Auto-derive the new cost-centre (원가부서) from the destination position.
+  // Falls back to the existing wonka if the mapping returned empty.
+  const newWonka = centerToWonka(newDept, newBu, newTeam) || (e.wonka || '');
+
+  // Build the auto note line:  "MM/DD OldTeam (OldCenter) → MM/DD NewTeam (NewCenter)"
+  // The first MM/DD = today (when the move was logged), second = effective date.
+  const autoLine = formatTransferNote(oldCenter, oldTeam, newDept, newTeam, isFuture ? dt : null);
+
+  // If the user typed an additional comment, append it after a colon.
+  const compositeLine = noteIn ? `${autoLine} — ${noteIn}` : autoLine;
+  const newNote = e.note ? `${e.note}\n${compositeLine}` : compositeLine;
+
   let updates;
   if(isFuture){
     // Schedule for later. Don't touch the main center/bu/team yet.
-    // Note: pending_bu is stored if the column exists; otherwise it's encoded into the note above.
     updates={ pending_dept:newDept, pending_bu:newBu||null, pending_team:newTeam||null, effective_date:dt, note:newNote, last_updated_at:nowIso };
   } else {
-    // Apply immediately. Clear any previously-pending transfer.
-    updates={ center:newDept, bu:newBu||'', team:newTeam||'', pending_dept:null, pending_bu:null, pending_team:null, effective_date:null, note:newNote, last_updated_at:nowIso };
+    // Apply immediately. Cost-centre auto-syncs.  Pending fields are cleared.
+    updates={ center:newDept, bu:newBu||'', team:newTeam||'', wonka:newWonka||null, pending_dept:null, pending_bu:null, pending_team:null, effective_date:null, note:newNote, last_updated_at:nowIso };
   }
   setBtnLoading('moveDeptSave', true);
   try{
@@ -3031,7 +3091,7 @@ async function confirmMoveDept(){
     if(isFuture){
       e.pendingDept=newDept; e.pendingBu=newBu||''; e.pendingTeam=newTeam||''; e.effectiveDate=dt;
     } else {
-      e.center=newDept; e.bu=newBu||''; e.team=newTeam||'';
+      e.center=newDept; e.bu=newBu||''; e.team=newTeam||''; e.wonka=newWonka||'';
       e.pendingDept=''; e.pendingBu=''; e.pendingTeam=''; e.effectiveDate='';
     }
     e.note=newNote||''; e.lastUpdatedAt=nowIso;
