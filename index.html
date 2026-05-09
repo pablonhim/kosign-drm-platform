@@ -748,6 +748,10 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
             <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 부/실</span><span class="ms-caret">▾</span></button>
             <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
           </div>
+          <div class="ms-wrap" data-key="ftm" data-placeholder="전체 팀" data-onchange="rl">
+            <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 팀</span><span class="ms-caret">▾</span></button>
+            <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
+          </div>
           <div class="ms-wrap" data-key="fw" data-placeholder="전체 원가부서" data-onchange="rl">
             <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 원가부서</span><span class="ms-caret">▾</span></button>
             <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
@@ -1828,10 +1832,36 @@ function rd(){
   })();
 }
 
+// ============================================================
+// Hierarchical filter cascade: Center → 부/실 → 팀
+// When a Center is selected, prune 부/실 options to children only.
+// When 부/실 is selected, prune 팀 options to children only.
+// "All checked" or "none checked" is treated as "no filter" (per
+// msSelected's contract), so selecting a Center alone naturally
+// includes every BU and Team beneath it.
+// ============================================================
+function rebuildCascadingFilters(){
+  const fcSet = msSelected("fc");
+  const fbSet = msSelected("fb");
+
+  // Pool of employees that would be visible at the current Center pruning.
+  const poolForBu = devEmps().filter(e => !fcSet || fcSet.has(e.center));
+  const buOptions = [...new Set(poolForBu.map(e => e.bu).filter(Boolean))].sort();
+  msPopulate("fb", buOptions);
+
+  // Re-read the BU set AFTER repopulating (some checked BUs may have disappeared).
+  const fbSetAfter = msSelected("fb");
+  const poolForTeam = poolForBu.filter(e => !fbSetAfter || fbSetAfter.has(e.bu));
+  const teamOptions = [...new Set(poolForTeam.map(e => e.team).filter(Boolean))].sort();
+  msPopulate("ftm", teamOptions);
+}
+
 function pf(){
   // Multi-select filters on 전체 인력 / 아웃소싱 / R&D — preserve the user's current checkbox state on every refresh.
   msPopulate("fc", [...new Set(devEmps().map(e=>e.center).filter(Boolean))].sort());
-  msPopulate("fb", [...new Set(devEmps().map(e=>e.bu).filter(Boolean))].sort());
+  // 부/실 + 팀 are populated with cascade respect. (rebuildCascadingFilters reads
+  //   the current center selection and prunes accordingly.)
+  rebuildCascadingFilters();
   msPopulate("fw", [...new Set(devEmps().map(e=>e.wonka).filter(Boolean))].sort());
   // 고용형태: dynamic types + the special 퇴사 sentinel.
   // 퇴사 is unchecked by default — the table loads showing only active staff; users opt-in by checking it.
@@ -1860,9 +1890,14 @@ function sortBy(k){
 
 function rl(){
   const q=(document.getElementById("sq")?.value||"").toLowerCase();
+  // Reconcile cascading filters before reading their selected sets, so the
+  // 부/실 and 팀 dropdowns only ever offer values that exist under the
+  // currently-selected centers / 부/실.
+  rebuildCascadingFilters();
   // Multi-select filters: each returns a Set of checked values, or null when "전체" (all selected).
   const fcSet=msSelected("fc");
   const fbSet=msSelected("fb");
+  const ftmSet=msSelected("ftm");
   const fwSet=msSelected("fw");
   const ftSet=msSelected("ft");
   const fpSet=msSelected("fp");
@@ -1880,11 +1915,12 @@ function rl(){
   let list=devEmps().filter(e=>{
     const ok=!q||[e.nick,e.name,e.jikmu,e.team,e.bu,e.center,e.wonka,e.note,e.localMgr,e.director,e.deptHead,e.dispatchCity,e.dispatchClient].some(s=>(s||"").toLowerCase().includes(q));
     return ok
-      && (!fcSet || fcSet.has(e.center))
-      && (!fbSet || fbSet.has(e.bu))
-      && (!fwSet || fwSet.has(e.wonka))
+      && (!fcSet  || fcSet.has(e.center))
+      && (!fbSet  || fbSet.has(e.bu))
+      && (!ftmSet || ftmSet.has(e.team))
+      && (!fwSet  || fwSet.has(e.wonka))
       && ftMatches(e)
-      && (!fpSet || fpSet.has(e.jikchak));
+      && (!fpSet  || fpSet.has(e.jikchak));
   });
   // Always push Resigned to the bottom; secondary key = the column the user clicked.
   const isResigned=e=>String(e.status||'').toLowerCase()==='resigned';
