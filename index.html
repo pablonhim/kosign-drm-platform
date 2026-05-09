@@ -1460,6 +1460,12 @@ function startApp(){
   loadEmps().then(async ()=>{
 
     await applyPendingTransfers();
+
+    // Retroactively sync 원가부서 (cost-centre) for every employee whose
+    // stored value doesn't match the centerToWonka() rule. Idempotent —
+    // a no-op once everyone is in sync, so it's safe to run on every boot.
+    await syncWonkaForAllEmployees();
+
     updateAll();
 
     // Always land on the dashboard after login — explicit redirect, not relying on default-active state.
@@ -1929,7 +1935,7 @@ function rl(){
       <td>${e.jikchak?`<span class="tag t-직책">${e.jikchak}</span>`:"-"}</td>
       <td style="color:var(--text2)">${e.jikmu||"-"}</td>
       <td><span class="tag t-${(e.type||"").replace(/\s/g,"")}">${e.type||"-"}</span></td>
-      <td>${e.wonka?`<span class="tag t-wonka">${esc(e.wonka)}</span>`:"-"}</td>
+      <td>${e.wonka?`<span class="tag t-wonka">${esc(displayWonka(e.wonka))}</span>`:"-"}</td>
       <td class="mono" style="color:var(--text3)">${e.join?calcYeon(e.join)+"년":"-"}</td>
       ${(()=>{const pend=pendingTransferLabel(e);const noteText=pend?(e.note?pend+' · '+e.note:pend):(e.note||'-');const col=(pend||e.note)?'var(--orange)':'var(--text3)';return `<td style="color:${col};max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(noteText)}">${esc(noteText)}</td>`;})()}
     </tr>`;
@@ -2994,6 +3000,19 @@ document.addEventListener('change',(ev)=>{
 });
 
 // ============================================================
+// DISPLAY HELPER — strip any legacy path-style prefix from a wonka
+// value so the table only ever shows the final segment.
+// e.g. "로컬비즈니스센터 > 영업/CX" → "영업/CX"
+// (We split on > and › only — '/' is preserved because '영업/CX'
+//  is a legitimate single-segment value.)
+// ============================================================
+function displayWonka(w){
+  if(!w) return '-';
+  const parts = String(w).split(/[>›]/).map(s => s.trim()).filter(Boolean);
+  return parts[parts.length - 1] || w;
+}
+
+// ============================================================
 // CENTER → WONKA (원가부서) MAPPING
 // When an employee transfers, the cost-centre is auto-derived from
 // the new (center, bu, team). Returning '' lets the caller decide
@@ -3041,6 +3060,73 @@ function formatTransferNote(oldCenter, oldTeam, newCenter, newTeam, effectiveDat
   const fromText = (oldTeam || '미배정') + ' (' + (oldCenter || '미지정') + ')';
   const toText   = (newTeam || '미배정') + ' (' + (newCenter || '미지정') + ')';
   return `${fromMMDD} ${fromText} → ${toMMDD} ${toText}`;
+}
+
+// ============================================================
+// RETROACTIVE WONKA SYNC
+// Runs once on page load. Walks every employee, and for any whose
+// stored 원가부서 doesn't match what centerToWonka() expects given
+// their current (center, bu, team), corrects it in both the local
+// emps[] array and Supabase. Adds a "MM/DD Old → MM/DD New" line
+// to the 비고 field for each correction so the change is auditable.
+// Idempotent — a no-op once everyone is in sync.
+// ============================================================
+async function syncWonkaForAllEmployees(){
+  if(!emps.length) return;
+
+  const today = new Date();
+  const todayMMDD =
+    String(today.getMonth()+1).padStart(2,'0') + '/' +
+    String(today.getDate()).padStart(2,'0');
+
+  const corrections = [];
+  for(const e of emps){
+    if(!e.empId) continue;
+    const expected = centerToWonka(e.center, e.bu, e.team);
+    if(!expected) continue;                  // No rule for this org position
+    if(expected === (e.wonka||'')) continue; // Already correct
+
+    const oldWonka = e.wonka || '미지정';
+    const historyLine = `${todayMMDD} ${oldWonka} → ${todayMMDD} ${expected}`;
+    const newNote = e.note ? `${e.note}\n${historyLine}` : historyLine;
+    corrections.push({ emp:e, oldWonka, newWonka:expected, newNote });
+  }
+
+  if(!corrections.length){
+    console.log('[Wonka sync] All', emps.length, 'employees already in sync.');
+    return;
+  }
+
+  console.log('[Wonka sync]', corrections.length, 'correction(s) to apply:',
+    corrections.map(c => `${c.emp.empId}: ${c.oldWonka} → ${c.newWonka}`));
+
+  // Apply locally first so the UI reflects corrected data immediately.
+  for(const c of corrections){
+    c.emp.wonka = c.newWonka;
+    c.emp.note  = c.newNote;
+  }
+
+  // Persist in parallel — only the changed columns (no full-row upsert).
+  const nowIso = new Date().toISOString();
+  const results = await Promise.allSettled(corrections.map(c =>
+    sb.from('employees')
+      .update({ wonka:c.newWonka, note:c.newNote, last_updated_at:nowIso })
+      .eq('emp_id', c.emp.empId)
+  ));
+
+  const failed = results.filter(r =>
+    r.status === 'rejected' || (r.value && r.value.error)
+  ).length;
+
+  if(failed){
+    console.warn('[Wonka sync]', failed, 'updates FAILED');
+    if(typeof toast === 'function')
+      toast(`원가부서 동기화: ${corrections.length - failed}건 성공 / ${failed}건 실패`, 'err');
+  } else {
+    console.log('[Wonka sync] Done — updated', corrections.length, 'rows');
+    if(typeof toast === 'function')
+      toast(`원가부서 자동 동기화: ${corrections.length}명`, 'ok');
+  }
 }
 
 async function confirmMoveDept(){
