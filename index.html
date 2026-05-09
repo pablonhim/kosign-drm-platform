@@ -2017,8 +2017,8 @@ function renderOrgChart(){
     '로컬비즈니스센터':'#3b82f6','R&D Cost센터':'#a855f7','경영지원센터':'#10b981'
   };
 
-  // execData에서 법인장/부법인장 동적으로 읽기
-  const execs = execData && execData.length ? execData : [{name:'설욱환',title:'법인장'},{name:'최기종',title:'부법인장'}];
+  // execData에서 대표/부대표 동적으로 읽기
+  const execs = execData && execData.length ? execData : [{name:'설욱환',title:'대표'},{name:'최기종',title:'부대표'}];
 
   function subRows(center){
     const {sub}=cdata[center];
@@ -2300,12 +2300,25 @@ const DEFAULT_ORG={
 const ORG_SK2="cosine_org_v3";
 const EXEC_SK="cosine_exec_v1";
 const DEFAULT_EXECS=[
-  {id:"exec-1",name:"설욱환",title:"법인장"},
-  {id:"exec-2",name:"최기종",title:"부법인장"}
+  {id:"exec-1",name:"설욱환",title:"대표"},
+  {id:"exec-2",name:"최기종",title:"부대표"}
 ];
 function loadExecs(){
   const r=localStorage.getItem(EXEC_SK);
-  return r?JSON.parse(r):DEFAULT_EXECS.map(e=>({...e}));
+  if(!r) return DEFAULT_EXECS.map(e=>({...e}));
+  // One-time title migration for any existing browsers carrying legacy values.
+  // 법인장 → 대표, 부법인장 → 부대표.
+  const arr = JSON.parse(r);
+  let migrated = false;
+  for(const e of arr){
+    if(e.title === '법인장'){    e.title = '대표';    migrated = true; }
+    if(e.title === '부법인장'){  e.title = '부대표';  migrated = true; }
+  }
+  if(migrated){
+    localStorage.setItem(EXEC_SK, JSON.stringify(arr));
+    console.log('[Migration] Updated exec titles in localStorage: 법인장→대표, 부법인장→부대표');
+  }
+  return arr;
 }
 function saveExecs(execs){localStorage.setItem(EXEC_SK,JSON.stringify(execs));}
 let execData=null;
@@ -2520,7 +2533,7 @@ function selExec(id){
       <button class="btn btnd" onclick="deleteExec('${id}')">삭제</button>
     </div>`:'<div style="color:var(--text3);font-size:12px">조회 전용 권한입니다</div>'}
     <div style="font-size:11px;color:var(--text3);padding:14px;background:var(--bg3);border-radius:8px;line-height:1.8">
-      💡 법인장·부법인장은 인력 목록과 별개로 관리됩니다.<br>
+      💡 대표·부대표는 인력 목록과 별개로 관리됩니다.<br>
       조직도 차트뷰에서 최상위 노드로 표시됩니다.
     </div>`;
 }
@@ -2528,7 +2541,7 @@ function selExec(id){
 function addExecPrompt(){
   const name=prompt('이름을 입력하세요');
   if(!name||!name.trim())return;
-  const title=prompt('직책을 입력하세요 (예: 법인장, 부법인장, 이사)');
+  const title=prompt('직책을 입력하세요 (예: 대표, 부대표, 이사)');
   if(!title||!title.trim())return;
   const newEx={id:'exec-'+Date.now(),name:name.trim(),title:title.trim()};
   execData.push(newEx);
@@ -2680,11 +2693,65 @@ function applyTeamManagers(center, bu, team){
   renderTeamPanel(center,bu,team);
 }
 
+// ============================================================
+// 조직관리 — sort helpers
+// ============================================================
+// Hierarchy seniority for default sort + 직책 ranking.
+// Higher in this list = appears first.
+const JIKCHAK_ORDER = ['대표','부대표','CEO','임원','센터장','부장','팀장','리더','팀원'];
+function jikchakRank(j){ const i = JIKCHAK_ORDER.indexOf(j||''); return i === -1 ? 99 : i; }
+
+// Skill grade ranking — parses 'T2_M1', 'PJ_M2', etc.
+// Ascending = lower skill → higher skill.
+function gradeRank(g){
+  if(!g) return 9999;
+  const m = String(g).match(/^([A-Z]+)(\d*)_?([BM])?(\d*)$/);
+  if(!m) return 9999;
+  const tierLetters = m[1];
+  const tier = (tierLetters === 'PJ') ? 5 : (parseInt(m[2]||'0',10) || 0);
+  const sub  = (m[3] === 'M') ? 1 : 0;
+  const sub2 = parseInt(m[4]||'0',10);
+  return tier*100 + sub*10 + sub2;
+}
+
+// Sort state for the team panel — persists across team selections.
+let _orgSortKey = 'default';     // 'default' | 'name' | 'grade'
+let _orgSortDir = 1;              // 1 ascending, -1 descending
+
+function sortOrgMembers(mbs){
+  const arr = [...mbs];
+  if(_orgSortKey === 'name'){
+    arr.sort((a,b) => _orgSortDir * (a.name||'').localeCompare(b.name||''));
+  } else if(_orgSortKey === 'grade'){
+    arr.sort((a,b) => _orgSortDir * (gradeRank(a.grade) - gradeRank(b.grade)));
+  } else {
+    // default: by 직책 hierarchy, then by 입사일 ascending (earliest first)
+    arr.sort((a,b) => {
+      const pr = jikchakRank(a.jikchak) - jikchakRank(b.jikchak);
+      if(pr !== 0) return pr;
+      const ad = a.join || '9999-12-31';
+      const bd = b.join || '9999-12-31';
+      return ad.localeCompare(bd);
+    });
+  }
+  return arr;
+}
+
+// Click handler for sortable headers — toggles direction or switches key.
+function setOrgSort(key){
+  if(_orgSortKey === key){ _orgSortDir = -_orgSortDir; }
+  else                   { _orgSortKey = key; _orgSortDir = 1; }
+  if(orgSel && orgSel.team){
+    renderTeamPanel(orgSel.center, orgSel.bu, orgSel.team);
+  }
+}
+
 function renderTeamPanel(center,bu,team){
   const body=document.getElementById('org-edit-body');
   const _isResigned=e=>String(e.status||'').toLowerCase()==='resigned';
   // 조직 관리 view filters out resigned employees entirely; this list only shows active staff.
-  const mbs=emps.filter(e=>!_isResigned(e) && e.center===center && (bu?e.bu===bu:true) && e.team===team);
+  const mbsRaw=emps.filter(e=>!_isResigned(e) && e.center===center && (bu?e.bu===bu:true) && e.team===team);
+  const mbs=sortOrgMembers(mbsRaw);
   const ce=CU?.canEdit;
   const ar=(k)=>`<span style="color:var(--text3);font-size:10px">▲</span>`;
   body.innerHTML=`
@@ -2729,9 +2796,9 @@ function renderTeamPanel(center,bu,team){
     <div class="ox">
       <table style="width:100%;border-collapse:collapse">
         <thead><tr>
-          <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap">본명</th>
+          <th onclick="setOrgSort('name')" style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none" title="본명으로 정렬">본명${_orgSortKey==='name'?(_orgSortDir===1?' ▲':' ▼'):''}</th>
           <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap">호칭</th>
-          <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border)">등급</th>
+          <th onclick="setOrgSort('grade')" style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border);cursor:pointer;user-select:none" title="등급으로 정렬">등급${_orgSortKey==='grade'?(_orgSortDir===1?' ▲':' ▼'):''}</th>
           <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border)">직책</th>
           <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border)">직무</th>
           <th style="background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border)">고용형태</th>
