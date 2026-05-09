@@ -85,10 +85,11 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
    ramps up so the icon appears to "speed past" the screen edge instead of just vanishing. */
 .tech-icon{
   position:absolute;left:50%;bottom:30px;z-index:1;
-  width:60px;height:60px;margin:-30px 0 0 -30px;
-  offset-path:path('M -900 0 A 900 250 0 1 1 900 0 A 900 250 0 1 1 -900 0');
+  width:64px;height:64px;margin:-32px 0 0 -32px;
+  /* Tightened orbit: rx 900→500, ry 250→170. More compact, less scattered. */
+  offset-path:path('M -500 0 A 500 170 0 1 1 500 0 A 500 170 0 1 1 -500 0');
   offset-rotate:0deg;
-  animation:tech-orbit 90s linear infinite;
+  animation:tech-orbit 88s linear infinite;
   animation-delay:var(--delay,0s);
   /* Pixel-perfect rendering hints: force GPU layer + crisp transforms, prevent sub-pixel rasterization. */
   will-change:transform, filter;
@@ -99,17 +100,22 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
   width:100%;height:100%;
   /* All bubbles are white — the brand colour from --bg becomes the FG (text/SVG fill) */
   background:#fff;
-  border:1px solid rgba(20,30,60,.08);
+  border:1px solid rgba(20,30,60,.10);
   border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  font-size:15px;font-weight:800;
+  text-align:center;
+  font-size:12px;font-weight:800;
+  line-height:1.05;
+  padding:0 4px;
   color:var(--bg, #1a2240);
   font-family:"Inter","Noto Sans KR",sans-serif;
-  letter-spacing:-0.3px;
+  letter-spacing:-0.2px;
   /* Slightly stronger shadow so white discs read against a white backdrop. */
   box-shadow:0 6px 18px rgba(40,60,120,.16), 0 1px 3px rgba(0,0,0,.08);
   image-rendering:-webkit-optimize-contrast;
 }
+/* Tighter font for two-line labels (Coocon Data, Coocon Web, Design Media, IT Infra) */
+.tech-icon-inner.label-2{font-size:10px;letter-spacing:-0.1px;}
 .tech-icon-inner svg{
   width:30px;height:30px;
   /* SVGs are vector — they scale infinitely sharp. shape-rendering forces crisp edges on path strokes. */
@@ -519,38 +525,18 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
 <div id="LP">
   <div class="login-glow" aria-hidden="true"></div>
   <div class="tech-bg" aria-hidden="true">
-    <div class="tech-icon" style="--delay:-0s"><div class="tech-icon-inner" style="--bg:#F7DF1E;--fg:#000" title="JavaScript">JS</div></div>
-    <div class="tech-icon" style="--delay:-7.5s"><div class="tech-icon-inner" style="--bg:#3178C6;--fg:#fff" title="TypeScript">TS</div></div>
-    <div class="tech-icon" style="--delay:-15s"><div class="tech-icon-inner" style="--bg:#149ECA;--fg:#fff" title="React">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
-        <ellipse cx="12" cy="12" rx="10" ry="3.8"/>
-        <ellipse cx="12" cy="12" rx="10" ry="3.8" transform="rotate(60 12 12)"/>
-        <ellipse cx="12" cy="12" rx="10" ry="3.8" transform="rotate(-60 12 12)"/>
-        <circle cx="12" cy="12" r="1.7" fill="currentColor"/>
-      </svg>
-    </div></div>
-    <div class="tech-icon" style="--delay:-22.5s"><div class="tech-icon-inner" style="--bg:#42B883;--fg:#fff" title="Vue.js">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true">
-        <path d="M3 4 h4 l5 8 l5-8 h4 l-9 16 z"/>
-      </svg>
-    </div></div>
-    <div class="tech-icon" style="--delay:-30s"><div class="tech-icon-inner" style="--bg:#DD0031;--fg:#fff" title="Angular">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">
-        <path d="M12 2 L21 5 L19 18 L12 22 L5 18 L3 5 z"/>
-        <path d="M9 16 L12 8 L15 16 M10 14 H14"/>
-      </svg>
-    </div></div>
-    <div class="tech-icon" style="--delay:-37.5s"><div class="tech-icon-inner" style="--bg:#000;--fg:#fff" title="Next.js">Nx</div></div>
-    <div class="tech-icon" style="--delay:-45s"><div class="tech-icon-inner" style="--bg:#339933;--fg:#fff" title="Node.js">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
-        <path d="M12 2 L21 7 V17 L12 22 L3 17 V7 z"/>
-      </svg>
-    </div></div>
-    <div class="tech-icon" style="--delay:-52.5s"><div class="tech-icon-inner" style="--bg:#3776AB;--fg:#FFD43B" title="Python">Py</div></div>
-    <div class="tech-icon" style="--delay:-60s"><div class="tech-icon-inner" style="--bg:#ED8B00;--fg:#fff" title="Java">Jv</div></div>
-    <div class="tech-icon" style="--delay:-67.5s"><div class="tech-icon-inner" style="--bg:#00ADD8;--fg:#fff" title="Go">Go</div></div>
-    <div class="tech-icon" style="--delay:-75s"><div class="tech-icon-inner" style="--bg:#CE422B;--fg:#fff" title="Rust">Rs</div></div>
-    <div class="tech-icon" style="--delay:-82.5s"><div class="tech-icon-inner" style="--bg:#9B4F96;--fg:#fff" title="C#">C#</div></div>
+    <!-- 11 skill categories — 88s loop, ~8s offset between each -->
+    <div class="tech-icon" style="--delay:-0s"><div class="tech-icon-inner" style="--bg:#4f86f7" title="JEX">JEX</div></div>
+    <div class="tech-icon" style="--delay:-8s"><div class="tech-icon-inner label-2" style="--bg:#7c52e0" title="Coocon Data">Coocon<br>Data</div></div>
+    <div class="tech-icon" style="--delay:-16s"><div class="tech-icon-inner label-2" style="--bg:#1aa8d4" title="Coocon Web">Coocon<br>Web</div></div>
+    <div class="tech-icon" style="--delay:-24s"><div class="tech-icon-inner" style="--bg:#e08a20" title="WEB">WEB</div></div>
+    <div class="tech-icon" style="--delay:-32s"><div class="tech-icon-inner" style="--bg:#339933" title="AOS">AOS</div></div>
+    <div class="tech-icon" style="--delay:-40s"><div class="tech-icon-inner" style="--bg:#1a2240" title="iOS">iOS</div></div>
+    <div class="tech-icon" style="--delay:-48s"><div class="tech-icon-inner" style="--bg:#e03f3f" title="QA">QA</div></div>
+    <div class="tech-icon" style="--delay:-56s"><div class="tech-icon-inner" style="--bg:#0e7c66" title="DevOps">DevOps</div></div>
+    <div class="tech-icon" style="--delay:-64s"><div class="tech-icon-inner label-2" style="--bg:#c8a800" title="IT Infra">IT<br>Infra</div></div>
+    <div class="tech-icon" style="--delay:-72s"><div class="tech-icon-inner" style="--bg:#4338ca" title="Network">Network</div></div>
+    <div class="tech-icon" style="--delay:-80s"><div class="tech-icon-inner label-2" style="--bg:#d43077" title="Design, Media">Design<br>Media</div></div>
   </div>
   <div class="lbox">
     <div class="llogo">
