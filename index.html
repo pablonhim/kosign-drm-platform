@@ -51,7 +51,6 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
    Sits behind the tech-icon orbit (z-index:0 vs tech-bg's z-index:1). */
 .login-glow{
   position:absolute;left:50%;bottom:0;
-  transform:translate(-50%, 60%);
   width:140vw;height:55vh;
   border-radius:50%;
   background:radial-gradient(ellipse at center,
@@ -64,6 +63,22 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
   filter:blur(28px);
   pointer-events:none;
   z-index:0;
+  /* Slow breathing — expand/contract + tiny opacity sway, infinite. */
+  animation:glow-breathe 13s ease-in-out infinite;
+  transform-origin:50% 100%;
+}
+@keyframes glow-breathe{
+  0%, 100% {
+    transform:translate(-50%, 60%) scale(1);
+    opacity:1;
+  }
+  50% {
+    transform:translate(-50%, 56%) scale(1.08);
+    opacity:.78;
+  }
+}
+@media (prefers-reduced-motion: reduce){
+  .login-glow{animation:none; transform:translate(-50%,60%);}
 }
 /* Each badge rides the same wide, gentle arc. Icons stay at 100% opacity throughout —
    apex emphasis comes from scale + halo only. Approaching either horizon, a Gaussian blur
@@ -82,16 +97,17 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
 }
 .tech-icon-inner{
   width:100%;height:100%;
-  background:var(--bg,#fff);
+  /* All bubbles are white — the brand colour from --bg becomes the FG (text/SVG fill) */
+  background:#fff;
+  border:1px solid rgba(20,30,60,.08);
   border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  font-size:15px;font-weight:800;color:var(--fg,#1a2240);
+  font-size:15px;font-weight:800;
+  color:var(--bg, #1a2240);
   font-family:"Inter","Noto Sans KR",sans-serif;
   letter-spacing:-0.3px;
-  /* Box-shadow halo (NOT drop-shadow filter) — box-shadow is composited sharply by the GPU,
-     while drop-shadow inside filter chains forces a raster step that can soften transformed content. */
-  box-shadow:0 4px 14px rgba(79,134,247,.22), 0 1px 3px rgba(0,0,0,.08);
-  /* Crisp-edge hint for raster fallback paths (no effect on SVG/CSS-rendered text but doesn't hurt). */
+  /* Slightly stronger shadow so white discs read against a white backdrop. */
+  box-shadow:0 6px 18px rgba(40,60,120,.16), 0 1px 3px rgba(0,0,0,.08);
   image-rendering:-webkit-optimize-contrast;
 }
 .tech-icon-inner svg{
@@ -100,17 +116,19 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
   shape-rendering:geometricPrecision;
 }
 @keyframes tech-orbit{
-  /* LEFT HORIZON — fade in (no blur, icons stay crisp throughout). */
-  0%   {offset-distance:0%;   transform:scale(1) translateZ(0); opacity:0;   filter:none;}
-   5%  {offset-distance:5%;   transform:scale(1) translateZ(0); opacity:.55; filter:none;}
-  /* CLEAR ZONE — full opacity, with a small scale bump at apex for emphasis. */
-  12%  {offset-distance:12%;  transform:scale(1) translateZ(0); opacity:1;   filter:none;}
-  25%  {offset-distance:25%;  transform:scale(1.25) translateZ(0); opacity:1; filter:none;}     /* APEX */
-  38%  {offset-distance:38%;  transform:scale(1) translateZ(0); opacity:1;   filter:none;}
-  /* RIGHT HORIZON — mirror fade-out. */
-  45%  {offset-distance:45%;  transform:scale(1) translateZ(0); opacity:.55; filter:none;}
-  50%  {offset-distance:50%;  transform:scale(1) translateZ(0); opacity:0;   filter:none;}
-  100% {offset-distance:100%; transform:scale(1) translateZ(0); opacity:0;   filter:none;}
+  /* LEFT HORIZON — emerging from haze: blur ramps DOWN as opacity ramps UP. */
+  0%   {offset-distance:0%;   transform:scale(.85) translateZ(0); opacity:0;   filter:blur(14px);}
+   5%  {offset-distance:5%;   transform:scale(.92) translateZ(0); opacity:.45; filter:blur(7px);}
+   9%  {offset-distance:9%;   transform:scale(.98) translateZ(0); opacity:.85; filter:blur(2px);}
+  /* CLEAR ZONE — fully crisp, with a small scale bump at apex for emphasis. */
+  14%  {offset-distance:14%;  transform:scale(1)    translateZ(0); opacity:1;  filter:blur(0);}
+  25%  {offset-distance:25%;  transform:scale(1.25) translateZ(0); opacity:1;  filter:blur(0);}    /* APEX */
+  36%  {offset-distance:36%;  transform:scale(1)    translateZ(0); opacity:1;  filter:blur(0);}
+  /* RIGHT HORIZON — mirror dissolve: blur ramps UP as opacity ramps DOWN. */
+  41%  {offset-distance:41%;  transform:scale(.98) translateZ(0); opacity:.85; filter:blur(2px);}
+  45%  {offset-distance:45%;  transform:scale(.92) translateZ(0); opacity:.45; filter:blur(7px);}
+  50%  {offset-distance:50%;  transform:scale(.85) translateZ(0); opacity:0;   filter:blur(14px);}
+  100% {offset-distance:100%; transform:scale(.85) translateZ(0); opacity:0;   filter:blur(14px);}
 }
 @media (prefers-reduced-motion: reduce){.tech-icon{animation:none;}}
 .lhint{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:14px 16px;margin-top:4px;}
