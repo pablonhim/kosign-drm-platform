@@ -388,6 +388,30 @@ tr.row-resigned .av{filter:grayscale(100%) brightness(.92);}
 .flab{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
 .fi{background:#fff;border:1px solid var(--border2);border-radius:7px;padding:8px 10px;color:var(--text);font-size:12px;outline:none;font-family:"Noto Sans KR",sans-serif;width:100%;transition:border-color .12s;}
 .fi:focus{border-color:var(--accent);}
+/* Password real-time validation UI */
+.pw-meter{margin-top:8px;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.pw-meter-fill{height:100%;width:0;background:transparent;border-radius:2px;transition:width .25s ease,background-color .25s ease;}
+.pw-meter-fill.s1{width:33%;background:#e34d4d;}
+.pw-meter-fill.s2{width:66%;background:#e6b800;}
+.pw-meter-fill.s3{width:100%;background:#33b86b;}
+.pw-meter-label{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-top:4px;color:var(--text3);transition:color .2s;}
+.pw-meter-label.s1{color:#e34d4d;}
+.pw-meter-label.s2{color:#c79500;}
+.pw-meter-label.s3{color:#2aa05c;}
+.pw-check-list{margin-top:8px;display:flex;flex-direction:column;gap:4px;}
+.pw-check{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);transition:color .2s;}
+.pw-check .pw-check-txt{position:relative;transition:color .2s;}
+.pw-check .pw-check-txt::after{content:"";position:absolute;left:0;right:100%;top:50%;height:1px;background:currentColor;transition:right .3s ease;}
+.pw-check.ok{color:#2aa05c;}
+.pw-check.ok .pw-check-txt::after{right:0;}
+.pw-check-icon{width:14px;height:14px;flex:none;position:relative;}
+.pw-check-icon svg{width:100%;height:100%;display:block;}
+.pw-check-icon .ic-line{stroke:currentColor;stroke-width:2;stroke-linecap:round;fill:none;transition:stroke-dashoffset .35s ease,opacity .2s;stroke-dasharray:14;}
+.pw-check-icon .ic-cross-a,.pw-check-icon .ic-cross-b{stroke-dashoffset:0;}
+.pw-check-icon .ic-check{stroke-dashoffset:14;}
+.pw-check.ok .pw-check-icon .ic-cross-a,
+.pw-check.ok .pw-check-icon .ic-cross-b{stroke-dashoffset:14;}
+.pw-check.ok .pw-check-icon .ic-check{stroke-dashoffset:0;}
 .fgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
 .s2{grid-column:span 2;}.s3{grid-column:span 3;}
 .mfoot{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;border-top:1px solid var(--border);padding-top:14px;}
@@ -906,13 +930,29 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
               <div class="fg" style="margin-bottom:12px">
                 <div class="flab">비밀번호 *</div>
                 <div class="lpw-wrap">
-                  <input class="fi" id="uf-pw" type="password" placeholder="비밀번호" autocomplete="new-password">
+                  <input class="fi" id="uf-pw" type="password" placeholder="비밀번호" autocomplete="new-password" oninput="ufPwValidate(this.value)">
                   <button type="button" class="lpw-eye" id="ufPwEye" onclick="togglePassword('uf-pw','ufPwEyeIcon')" aria-label="비밀번호 표시/숨기기" tabindex="-1">
                     <svg id="ufPwEyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                       <circle cx="12" cy="12" r="3"/>
                     </svg>
                   </button>
+                </div>
+                <div class="pw-meter"><div class="pw-meter-fill" id="uf-pw-meter"></div></div>
+                <div class="pw-meter-label" id="uf-pw-meter-label">강도</div>
+                <div class="pw-check-list" id="uf-pw-checklist">
+                  <div class="pw-check" data-rule="len"><span class="pw-check-icon">
+                    <svg viewBox="0 0 16 16"><path class="ic-line ic-cross-a" d="M4 4 L12 12"/><path class="ic-line ic-cross-b" d="M12 4 L4 12"/><path class="ic-line ic-check" d="M3 8.5 L7 12 L13 5"/></svg>
+                  </span><span class="pw-check-txt">최소 8자 이상</span></div>
+                  <div class="pw-check" data-rule="num"><span class="pw-check-icon">
+                    <svg viewBox="0 0 16 16"><path class="ic-line ic-cross-a" d="M4 4 L12 12"/><path class="ic-line ic-cross-b" d="M12 4 L4 12"/><path class="ic-line ic-check" d="M3 8.5 L7 12 L13 5"/></svg>
+                  </span><span class="pw-check-txt">숫자 포함</span></div>
+                  <div class="pw-check" data-rule="spc"><span class="pw-check-icon">
+                    <svg viewBox="0 0 16 16"><path class="ic-line ic-cross-a" d="M4 4 L12 12"/><path class="ic-line ic-cross-b" d="M12 4 L4 12"/><path class="ic-line ic-check" d="M3 8.5 L7 12 L13 5"/></svg>
+                  </span><span class="pw-check-txt">특수문자 포함 (!@#$%^&amp;*())</span></div>
+                  <div class="pw-check" data-rule="upr"><span class="pw-check-icon">
+                    <svg viewBox="0 0 16 16"><path class="ic-line ic-cross-a" d="M4 4 L12 12"/><path class="ic-line ic-cross-b" d="M12 4 L4 12"/><path class="ic-line ic-check" d="M3 8.5 L7 12 L13 5"/></svg>
+                  </span><span class="pw-check-txt">대문자 포함</span></div>
                 </div>
               </div>
               <div class="fg" style="margin-bottom:12px" id="uf-name-wrap">
@@ -1424,6 +1464,36 @@ function togglePassword(inputId, iconId){
   if(!inp||!icon) return;
   if(inp.type==="password"){ inp.type="text";    icon.innerHTML=_EYE_OFF; }
   else                     { inp.type="password";icon.innerHTML=_EYE_OPEN; }
+}
+// Real-time password validation for the user-form #uf-pw field.
+// Caret (^) is intentionally a literal here — placing it anywhere except the
+// very start of a character class avoids the regex negation meaning.
+function ufPwValidate(v){
+  v = v || '';
+  const rules = {
+    len: v.length >= 8,
+    num: /[0-9]/.test(v),
+    spc: /[!@#$%&*()^]/.test(v),
+    upr: /[A-Z]/.test(v),
+  };
+  const list = document.getElementById('uf-pw-checklist');
+  if(list){
+    list.querySelectorAll('.pw-check').forEach(el=>{
+      const k = el.getAttribute('data-rule');
+      el.classList.toggle('ok', !!rules[k]);
+    });
+  }
+  const met = Object.values(rules).filter(Boolean).length;
+  const fill = document.getElementById('uf-pw-meter');
+  const lbl  = document.getElementById('uf-pw-meter-label');
+  if(fill && lbl){
+    fill.classList.remove('s1','s2','s3');
+    lbl.classList.remove('s1','s2','s3');
+    if(met === 0){ lbl.textContent='강도'; }
+    else if(met === 1){ fill.classList.add('s1'); lbl.classList.add('s1'); lbl.textContent='약함'; }
+    else if(met <= 3){ fill.classList.add('s2'); lbl.classList.add('s2'); lbl.textContent='보통'; }
+    else { fill.classList.add('s3'); lbl.classList.add('s3'); lbl.textContent='강함'; }
+  }
 }
 // Reset the login form. Password is always cleared. ID is restored from localStorage if "Remember ID" was last checked.
 function initLoginFields(){
@@ -3681,6 +3751,7 @@ function resetUserForm(){
   if(hid)hid.value='';
   document.getElementById('uf-id').value='';
   document.getElementById('uf-pw').value='';
+  ufPwValidate('');
   // Always reset the password field back to hidden when the form opens/clears.
   const pwInp=document.getElementById('uf-pw'); if(pwInp) pwInp.type='password';
   const pwIcon=document.getElementById('ufPwEyeIcon'); if(pwIcon) pwIcon.innerHTML=_EYE_OPEN;
@@ -3722,6 +3793,7 @@ async function editUser(i){
   }
   document.getElementById('uf-id').value=u.id;
   document.getElementById('uf-pw').value=u.pw;
+  ufPwValidate(u.pw||'');
   document.getElementById('uf-role').value=u.role;
 }
 async function saveUser(){
