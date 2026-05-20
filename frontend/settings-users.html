@@ -729,7 +729,7 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
     <aside class="sidebar">
       <nav class="nav" style="display:flex;flex-direction:column;height:100%;">
         <div style="flex:1;overflow-y:auto;">
-          <div class="navi active" id="nav-dashboard" onclick="showPage('dashboard')">
+          <div class="navi" id="nav-dashboard" onclick="showPage('dashboard')">
             <svg class="navi-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <rect x="3" y="3" width="7" height="9" rx="1.2"/>
               <rect x="14" y="3" width="7" height="5" rx="1.2"/>
@@ -795,7 +795,7 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
             </svg>
             <span data-i18n="nav.settings_org">조직 관리</span>
           </div>
-          <div class="navi" id="nav-settings-users" onclick="showPage('settings-users')">
+          <div class="navi active" id="nav-settings-users" onclick="showPage('settings-users')">
             <svg class="navi-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="8" r="4"/>
               <path d="M4 21v-1a8 8 0 0 1 16 0v1"/>
@@ -831,123 +831,20 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
         </div>
       </div>
       <!-- DASHBOARD -->
-      <div class="page active" id="page-dashboard">
-        <div class="sg" id="sg"></div>
-        <div style="display:flex;gap:12px;margin-bottom:16px;align-items:stretch">
-          <div class="section" style="flex:1;display:flex;flex-direction:column;"><div class="sh" style="flex-shrink:0"><span class="sht">아웃소싱/파견 현황</span></div><div class="sp" id="ch-wonka" style="flex:1;padding:16px 18px;overflow-y:auto;"></div></div>
-          <div class="section" style="flex:1;display:flex;flex-direction:column;"><div class="sh" style="flex-shrink:0"><span class="sht">보유기술 현황</span></div><div class="sp" id="ch-type" style="flex:1;padding:16px 18px;overflow-y:auto;"></div></div>
-        </div>
-      </div>
+      
       <!-- LIST -->
-      <div class="page" id="page-list">
-        <!-- 검색조건: 표 밖 -->
-        <div class="filter-row">
-          <div class="ref-date-wrap">
-            <span style="font-size:11px;color:var(--text3);font-weight:700;letter-spacing:.3px">기준일자</span>
-            <input type="date" id="refDate" onchange="rl()" style="width:130px">
-          </div>
-          <div class="srch"><span>🔍</span><input id="sq" placeholder="이름, 호칭, 직무, 비고..." oninput="rl();updateSearchClear()"><button type="button" class="srch-clear" id="sqClear" onclick="clearSearch()" aria-label="검색 지우기">✕</button></div>
-          <div class="ms-wrap" data-key="fc" data-placeholder="전체 센터" data-onchange="rl">
-            <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 센터</span><span class="ms-caret">▾</span></button>
-            <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
-          </div>
-          <div class="ms-wrap" data-key="fb" data-placeholder="전체 부/실" data-onchange="rl">
-            <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 부/실</span><span class="ms-caret">▾</span></button>
-            <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
-          </div>
-          <div class="ms-wrap" data-key="ftm" data-placeholder="전체 팀" data-onchange="rl">
-            <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 팀</span><span class="ms-caret">▾</span></button>
-            <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
-          </div>
-          <div class="ms-wrap" data-key="fw" data-placeholder="전체 원가부서" data-onchange="rl">
-            <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 원가부서</span><span class="ms-caret">▾</span></button>
-            <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
-          </div>
-          <div class="ms-wrap" data-key="ft" data-placeholder="전체 고용형태" data-onchange="rl">
-            <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 고용형태</span><span class="ms-caret">▾</span></button>
-            <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
-          </div>
-          <div class="ms-wrap" data-key="fp" data-placeholder="전체 직책" data-onchange="rl">
-            <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 직책</span><span class="ms-caret">▾</span></button>
-            <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
-          </div>
-          <button class="btn btng" onclick="exportExcel()" style="background:rgba(24,169,110,.08);border-color:rgba(24,169,110,.25);color:var(--green)">📥 Excel</button>
-        </div>
-        <!-- 테이블만 섹션 카드 안에 -->
-        <div class="section">
-          <div class="ox"><table id="etbl"></table></div>
-          <div id="ee" class="empty" style="display:none">🔍 검색 결과 없음</div>
-          <div id="ecnt" style="padding:8px 16px;font-size:11px;color:var(--text3);border-top:1px solid var(--border)"></div>
-        </div>
-      </div>
+      
 
       <!-- DISPATCH PAGE -->
-      <div class="page" id="page-dispatch">
-        <!-- 필터 (표 밖) -->
-        <div class="filter-row">
-          <div class="ref-date-wrap">
-            <span style="font-size:11px;color:var(--text3);font-weight:700;letter-spacing:.3px">기준일자</span>
-            <input type="date" id="dsp-refDate" onchange="renderDispatchTable()" style="width:130px">
-          </div>
-          <div class="ms-wrap" data-key="dsp-city" data-placeholder="전체 도시" data-onchange="renderDispatchTable">
-            <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 도시</span><span class="ms-caret">▾</span></button>
-            <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
-          </div>
-          <div class="ms-wrap" data-key="dsp-client" data-placeholder="전체 고객사" data-onchange="renderDispatchTable">
-            <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 고객사</span><span class="ms-caret">▾</span></button>
-            <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
-          </div>
-          <select id="dsp-filter-days" onchange="renderDispatchTable()">
-            <option value="">전체</option>
-            <option value="30">D-30 이내</option>
-            <option value="60">D-60 이내</option>
-          </select>
-        </div>
-        <!-- 파견 테이블 -->
-        <div class="section">
-          <div class="ox"><table id="dispatch-tbl" class="tbl" width="100%"></table></div>
-          <div id="dispatch-empty" class="empty" style="display:none">해당하는 파견 인원이 없습니다</div>
-        </div>
-        <!-- 파견준비 -->
-        <div class="section" style="margin-top:14px">
-          <div class="sh"><span class="sht">🕐 파견준비 인원</span></div>
-          <div class="ox"><table id="dispatch-prep-tbl" class="tbl" width="100%"></table></div>
-          <div id="dispatch-prep-empty" class="empty" style="display:none">파견준비 인원이 없습니다</div>
-        </div>
-      </div>
+      
       <!-- SUMMARY -->
-      <div class="page" id="page-summary">
-        <div id="summary-body"></div>
-      </div>
+      
 
       <!-- SETTINGS ORG -->
-      <div class="page" id="page-settings-org">
-        <div style="display:grid;grid-template-columns:320px 1fr;gap:14px;height:calc(100vh - 140px)">
-          <!-- 트리 패널 -->
-          <div class="section" style="display:flex;flex-direction:column;overflow:hidden">
-            <div class="sh" style="flex-shrink:0">
-              <span class="sht">🏗️ 조직 구조</span>
-              <div style="display:flex;gap:6px;align-items:center">
-                <span id="org-save-msg" style="font-size:11px;color:var(--green)"></span>
-                <button class="btn btnp btnsm" onclick="addCenterPrompt()">＋ 센터</button>
-              </div>
-            </div>
-            <div style="flex:1;overflow-y:auto;padding:12px" id="org-tree"></div>
-          </div>
-          <!-- 편집 패널 -->
-          <div class="section" style="display:flex;flex-direction:column;overflow:hidden">
-            <div class="sh" style="flex-shrink:0"><span class="sht" id="org-edit-title">항목을 클릭하세요</span></div>
-            <div style="flex:1;overflow-y:auto;padding:16px" id="org-edit-body">
-              <div style="color:var(--text3);font-size:13px;text-align:center;padding:60px 0">
-                ← 왼쪽 트리에서 센터 / 부/실 / 팀을 클릭하면<br>수정·삭제·소속인원을 확인할 수 있어요
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      
 
       <!-- SETTINGS USERS -->
-      <div class="page" id="page-settings-users">
+      <div class="page active" id="page-settings-users">
         <div class="section" style="margin-bottom:10px">
           <div class="sh" style="justify-content:space-between">
             <span class="sht">⚙️ 표시 설정</span>
@@ -1062,47 +959,7 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
       </div>
 
       <!-- CHANGELOG (변경 이력) -->
-      <div class="page" id="page-changelog">
-        <div class="filter-row" style="margin-bottom:10px">
-          <div class="srch" style="flex:1;min-width:240px">
-            <span>🔍</span>
-            <input id="clq" placeholder="작업자·대상·내용 검색…" data-i18n-ph="cl.search_ph" oninput="renderChangelog()">
-            <button type="button" class="srch-clear" id="clqClear" onclick="document.getElementById('clq').value='';renderChangelog()" aria-label="검색 지우기">✕</button>
-          </div>
-          <select id="cl-cat" onchange="renderChangelog()" style="background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:8px 12px;font-size:12px;color:var(--text);outline:none;cursor:pointer">
-            <option value="" data-i18n="cl.cat_all">전체 분류</option>
-            <option value="조직관리" data-i18n="cl.cat.조직관리">조직관리</option>
-            <option value="사원정보" data-i18n="cl.cat.사원정보">사원정보</option>
-            <option value="비밀번호 변경" data-i18n="cl.cat.비밀번호 변경">비밀번호 변경</option>
-            <option value="사용자 관리" data-i18n="cl.cat.사용자 관리">사용자 관리</option>
-            <option value="데이터 동기화" data-i18n="cl.cat.데이터 동기화">데이터 동기화</option>
-          </select>
-          <input type="date" id="cl-from" onchange="renderChangelog()" style="width:140px" title="시작일" data-i18n-title="cl.start">
-          <input type="date" id="cl-to"   onchange="renderChangelog()" style="width:140px" title="종료일" data-i18n-title="cl.end">
-          <button class="btn btng" onclick="loadChangelog(true)" title="새로고침" data-i18n-title="btn.refresh">↻</button>
-        </div>
-        <div class="section">
-          <div class="sh">
-            <span class="sht" data-i18n="cl.title">📜 변경 이력</span>
-            <span id="cl-count" style="font-size:11px;color:var(--text3)">0건</span>
-          </div>
-          <div class="ox" style="overflow:auto">
-            <table class="tbl" id="cl-table">
-              <thead>
-                <tr>
-                  <th style="width:170px" data-i18n="cl.col_time">일시</th>
-                  <th style="width:170px" data-i18n="cl.col_actor">작업자</th>
-                  <th style="width:130px" data-i18n="cl.col_category">분류</th>
-                  <th data-i18n="cl.col_change">변경 내용</th>
-                </tr>
-              </thead>
-              <tbody id="cl-tbody">
-                <tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text3)">불러오는 중…</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+      
     </div>
   </main>
 </div>
@@ -1912,6 +1769,17 @@ function setPill(id, cnt){
 }
 const VPAGE={outsourcing:{real:'list',center:'아웃소싱/파견센터'},rnd:{real:'list',center:'R&D 지원센터'}};
 function showPage(id){
+  // ── MPA split (split_by_menu.py): if the target page isn't in this file,
+  // navigate to the matching standalone HTML page instead of toggling a
+  // non-existent <div class="page">. Filename === menu id by convention.
+  try {
+    const _currentFile_ = window.location.pathname.split('/').pop().replace('.html','');
+    if (_currentFile_ && _currentFile_ !== id) {
+      window.location.href = id + '.html';
+      return;
+    }
+  } catch (_e) { /* fall through to original behavior */ }
+
   const vp=VPAGE[id];
   const realId=vp?vp.real:id;
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
