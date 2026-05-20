@@ -4,21 +4,113 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KOSIGN DRM — 개발자인력관리</title>
+<!-- Content-Security-Policy: restricts where scripts / styles / connections may load from.
+     Even if a stored-XSS payload slips through, it can't exfiltrate to attacker domains
+     because connect-src whitelists only this origin + the Supabase project. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://tnkofdygsdxmtuiijygi.supabase.co wss://tnkofdygsdxmtuiijygi.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self';">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable.css">
+<!-- Pretendard 1.3.9 — pinned + Subresource Integrity. If jsDelivr returns
+     different bytes than this hash, the browser refuses to apply the file. -->
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable.css"
+      integrity="sha384-ibFbybJ6PggxRvIHmU1Ev0cJP1iQRYYeVs/vOrlRzPEyHM79xSfKH2pMLOlIbzJA"
+      crossorigin="anonymous">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&family=Noto+Sans+Khmer:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Supabase JS 2.39.7 — pinned to a specific patch + SRI. The previous
+     "@2" floating-major-version reference would auto-upgrade on every page
+     load, making a malicious patch in the npm package an immediate site-wide
+     compromise. Bump this version in a deliberate change, recompute the
+     integrity hash (openssl dgst -sha384 -binary | openssl base64 -A). -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"
+        integrity="sha384-tD6X9wDfTRdKpuPoHFZrVW2RXjSYSWjLBPWXxpHprWWl9eaHlwl05aRjHsiKF97n"
+        crossorigin="anonymous"></script>
 <style>
-:root{--bg:#f0f2f7;--bg2:#ffffff;--bg3:#f5f7fb;--bg4:#ebeef5;--bg5:#e2e6f0;--border:#dde2ee;--border2:#c8cfdf;--text:#1a2240;--text2:#4a5578;--text3:#8e9ab8;--accent:#4f86f7;--accent2:#3a6de0;--green:#18a96e;--orange:#e08a20;--red:#e03f3f;--purple:#7c52e0;--cyan:#1aa8d4;--yellow:#c8a800;--pink:#d43077;--r:10px;--sh:0 4px 20px rgba(80,100,160,.10);}
+/* ── Theme architecture ────────────────────────────────────────────────────
+   Light is the default (loads in :root). Dark mode activates via
+   <html data-theme="dark">, which the profile-dropdown toggle sets and
+   localStorage persists. Every surface / text / border / shadow flows
+   through these variables so the entire app re-skins on attribute change.
+   Brand accent (Supabase emerald) and status colours stay identical across
+   themes — they read well on both. */
+:root{
+  /* Surfaces — clean light canvas */
+  --bg:#f8fafc;          /* page canvas, soft gray-white */
+  --bg2:#ffffff;         /* cards, inputs, dropdowns */
+  --bg3:#f1f5f9;         /* subtle bg (filter rows, table headers) */
+  --bg4:#e2e8f0;         /* hover state */
+  --bg5:#f8fafc;         /* secondary muted */
+  /* Crisp 1px borders */
+  --border:#e2e8f0;
+  --border2:#cbd5e1;
+  /* Dark text on light surfaces */
+  --text:#0f172a;
+  --text2:#475569;
+  --text3:#94a3b8;
+  /* Brand: Supabase emerald (exact marketing shade).
+     --accent  is the saturated fill — used on .btnp, focus rings, switch ON.
+     --accent2 is the darker hover/text-on-tint shade used by .btnp:hover and
+     the sidebar's .navi.active text (dark mode overrides accent2 for contrast). */
+  --accent:#3ecf8e;
+  --accent2:#30b87a;
+  /* Status — text-grade shades for light mode. These are also the values
+     pages use as text on tinted backgrounds (e.g., .pill-green color), so
+     they need WCAG AA contrast against near-white. Each is the "-700" tier
+     of its Tailwind hue. Dark mode overrides below shift them brighter so
+     the same names still read clearly on a charcoal canvas. */
+  --green:#15803d;     /* green-700, 4.93:1 vs #fff */
+  --orange:#b45309;    /* amber-700 */
+  --red:#b91c1c;       /* red-700 */
+  --purple:#6d28d9;    /* violet-700 */
+  --cyan:#0e7490;      /* cyan-700 */
+  --yellow:#a16207;    /* yellow-700 */
+  --pink:#be185d;      /* pink-700 */
+  --r:8px;
+  --sh:0 4px 20px rgba(15,23,42,0.08);
+  --ctl-h:32px;          /* high-density Supabase-style row height */
+}
+
+/* Dark mode — pitch-black canvas, charcoal cards, white text.
+   --accent stays the same emerald-500 (it's the brand mark; reads well on
+   both light and dark). --accent2 flips to emerald-400 in dark mode so the
+   sidebar's .navi.active text (and other "subdued" emerald text uses) stays
+   readable against the dark emerald-tinted background.
+   Status colours invert to their "-400" tier — same names, but lighter so
+   they pass contrast on the dark canvas. The rgba(...) tint backgrounds
+   stay the same since their alpha-blending works in both directions. */
+[data-theme="dark"]{
+  --bg:#0e0e10;
+  --bg2:#161b22;
+  --bg3:#1c1c1c;
+  --bg4:#2a2a2a;
+  --bg5:#1f1f1f;
+  --border:#2e2e2e;
+  --border2:#404040;
+  --text:#ffffff;
+  --text2:#a1a1a1;
+  --text3:#6e6e6e;
+  --accent2:#34d399;   /* emerald-400 — readable text on dark emerald tint */
+  /* Status — lighter for dark backgrounds */
+  --green:#4ade80;     /* green-400 */
+  --orange:#fbbf24;    /* amber-400 */
+  --red:#f87171;       /* red-400 */
+  --purple:#c4b5fd;    /* violet-300 */
+  --cyan:#22d3ee;      /* cyan-400 */
+  --yellow:#facc15;    /* yellow-400 */
+  --pink:#f472b6;      /* pink-400 */
+  --sh:0 4px 20px rgba(0,0,0,0.4);
+}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;}
 body{font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;}
 /* LOGIN */
-#LP{min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding-top:14vh;background:#fff;position:relative;overflow:hidden;}
+#LP{min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding-top:14vh;background:var(--bg);position:relative;overflow:hidden;}
 .lbox{width:300px;max-width:90vw;position:relative;z-index:1;animation:fu .4s ease;}
 @keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 .llogo{text-align:left;margin-bottom:30px;}
-.lico{width:76px;height:76px;background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:20px;display:inline-flex;align-items:center;justify-content:center;color:#fff;margin-bottom:14px;box-shadow:0 10px 28px rgba(79,134,247,.30);}
+.lico{width:76px;height:76px;background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:20px;display:inline-flex;align-items:center;justify-content:center;color:#fff;margin-bottom:14px;box-shadow:0 10px 28px rgba(62,207,142,.30);}
 .lico svg{width:36px;height:36px;}
 .len{font-size:11px;color:var(--text3);letter-spacing:.4px;text-transform:uppercase;font-weight:700;line-height:1.1;}
 .lko{font-size:26px;font-weight:800;margin-top:1px;letter-spacing:-0.3px;line-height:1.15;}
@@ -28,15 +120,18 @@ body{font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variabl
 .lcheck{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);cursor:pointer;user-select:none;margin-top:-4px;}
 .lcheck input{margin:0;cursor:pointer;accent-color:var(--accent);width:14px;height:14px;}
 .li{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:11px 14px;color:var(--text);font-size:14px;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;outline:none;transition:border-color .15s,box-shadow .15s;width:100%;}
-.li:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,134,247,.14);}
+.li:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(62,207,142,.14);}
 .lpw-wrap{position:relative;}
 .lpw-wrap > input{padding-right:42px;}
 .lpw-eye{position:absolute;top:50%;right:8px;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);padding:6px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:color .15s,background .15s;}
 .lpw-eye:hover{color:var(--text2);background:rgba(255,255,255,.05);}
 .lpw-eye:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
-.lerr{background:rgba(240,92,92,.08);border:1px solid rgba(240,92,92,.25);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--red);display:none;}
+.lerr{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--red);display:none;}
 .lerr.show{display:block;}
-.lbtn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:9px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;box-shadow:0 4px 16px rgba(79,134,247,.28);transition:opacity .15s;margin-top:18px;}
+/* Supabase primary login button: solid emerald, deep-charcoal text, sharp 1px
+   border, no gradient. Hover: switch to the lighter accent2 swatch. */
+.lbtn{background:var(--accent);color:#0e0e10;border:1px solid var(--accent);border-radius:8px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;transition:background .15s,border-color .15s;margin-top:18px;}
+.lbtn:hover{background:var(--accent2);border-color:var(--accent2);}
 .lbtn:hover{opacity:.92;}
 /* Platform version label, anchored bottom-center of the screen. Auto-updated from APP_VERSION in JS. */
 .lversion{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--text3);font-family:"JetBrains Mono",monospace;letter-spacing:.5px;pointer-events:none;z-index:2;}
@@ -102,7 +197,7 @@ body{font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variabl
 .tech-icon-inner{
   width:100%;height:100%;
   /* All bubbles are white — the brand colour from --bg becomes the FG (text/SVG fill) */
-  background:#fff;
+  background:var(--bg2);
   border:1px solid rgba(20,30,60,.10);
   border-radius:50%;
   display:flex;align-items:center;justify-content:center;
@@ -154,16 +249,16 @@ body{font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variabl
 .bell-wrap{position:relative;}
 .bell-btn{width:36px;height:36px;background:none;border:1px solid transparent;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--text2);position:relative;transition:background .15s,color .15s,border-color .15s,box-shadow .15s;font-family:inherit;}
 .bell-btn:hover{background:var(--bg3);color:var(--text);}
-.bell-btn:focus-visible{outline:none;border-color:var(--accent2);box-shadow:0 0 0 2px rgba(58,109,224,.20);}
+.bell-btn:focus-visible{outline:none;border-color:var(--accent2);box-shadow:0 0 0 2px rgba(48,184,122,.20);}
 .bell-ico{width:20px;height:20px;}
 .bell-dot{position:absolute;top:7px;right:7px;width:9px;height:9px;background:var(--red);border:2px solid var(--bg2);border-radius:50%;pointer-events:none;}
-.bell-menu{position:absolute;top:calc(100% + 8px);right:0;width:340px;max-width:90vw;max-height:380px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.16);z-index:80;overflow:hidden;display:flex;flex-direction:column;}
+.bell-menu{position:absolute;top:calc(100% + 8px);right:0;width:340px;max-width:90vw;max-height:380px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.16);z-index:80;overflow:hidden;display:flex;flex-direction:column;}
 .bell-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px;font-weight:700;color:var(--text);}
 .bell-count{font-size:11px;font-weight:700;background:var(--bg3);color:var(--text2);padding:2px 8px;border-radius:10px;font-family:"JetBrains Mono",monospace;}
 .bell-list{flex:1;overflow-y:auto;padding:6px;}
 .bell-item{display:flex;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;transition:background .12s;}
 .bell-item:hover{background:var(--bg3);}
-.bell-item-ico{width:28px;height:28px;flex-shrink:0;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;background:rgba(224,138,32,.12);color:var(--orange);}
+.bell-item-ico{width:28px;height:28px;flex-shrink:0;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;background:rgba(245,158,11,.12);color:var(--orange);}
 .bell-item-body{flex:1;min-width:0;}
 .bell-item-title{font-size:12px;font-weight:600;color:var(--text);}
 .bell-item-desc{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4;}
@@ -180,10 +275,10 @@ body{font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variabl
 .profile-wrap{position:relative;}
 .profile-btn{display:flex;align-items:center;gap:9px;background:none;border:1px solid transparent;border-radius:9px;padding:4px 10px 4px 4px;cursor:pointer;font-family:inherit;color:var(--text);transition:background .12s,border-color .12s;}
 .profile-btn:hover{background:var(--bg3);}
-.profile-btn:focus-visible{outline:none;border-color:var(--accent2);box-shadow:0 0 0 2px rgba(58,109,224,.20);}
+.profile-btn:focus-visible{outline:none;border-color:var(--accent2);box-shadow:0 0 0 2px rgba(48,184,122,.20);}
 .profile-meta{text-align:left;line-height:1.15;}
 .profile-caret{width:10px;height:7px;color:var(--text3);margin-left:4px;}
-.profile-menu{position:absolute;top:calc(100% + 8px);right:0;width:220px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.16);z-index:80;padding:8px;display:none;}
+.profile-menu{position:absolute;top:calc(100% + 8px);right:0;width:220px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.16);z-index:80;padding:8px;display:none;}
 .profile-menu-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;padding:6px 10px 4px;}
 .profile-lang{width:100%;display:flex;align-items:center;justify-content:space-between;background:none;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;color:var(--text);text-align:left;transition:background .12s;}
 .profile-lang:hover{background:var(--bg3);}
@@ -192,24 +287,35 @@ body{font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variabl
 .profile-lang.is-active .profile-lang-check{visibility:visible;}
 .profile-menu-div{height:1px;background:var(--border);margin:6px 4px;}
 .profile-action{width:100%;display:flex;align-items:center;gap:8px;background:none;border:none;padding:9px 10px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;color:var(--text);text-align:left;transition:background .12s,color .12s;}
-.profile-action:hover{background:rgba(240,92,92,.08);color:var(--red);}
+.profile-action:hover{background:rgba(239,68,68,.08);color:var(--red);}
+/* Dark-mode toggle row in the profile dropdown. Uses .profile-action layout
+   but doesn't go red on hover — it just lightens slightly. The .theme-switch
+   is a pure-CSS iOS-style switch driven by [data-theme="dark"]. */
+.profile-theme{width:100%;display:flex;align-items:center;gap:8px;background:none;border:none;padding:9px 10px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;color:var(--text);text-align:left;transition:background .12s;}
+.profile-theme:hover{background:var(--bg3);}
+.profile-theme .theme-switch{margin-left:auto;width:32px;height:18px;border-radius:10px;background:var(--bg4);position:relative;transition:background .15s;flex-shrink:0;}
+.profile-theme .theme-switch::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;background:var(--bg2);border-radius:50%;transition:transform .15s,background .15s;box-shadow:0 1px 2px rgba(0,0,0,.2);}
+[data-theme="dark"] .profile-theme .theme-switch{background:var(--accent);}
+[data-theme="dark"] .profile-theme .theme-switch::after{transform:translateX(14px);background:#fff;}
+/* Placeholder text: muted, follows theme. Native default is too pale on dark. */
+.fi::placeholder,.li::placeholder,.srch input::placeholder{color:var(--text3);opacity:1;}
 .nav{padding:8px;flex:1;overflow-y:auto;}
 .navl{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:1.5px;padding:8px 10px 4px;text-transform:uppercase;}
 .navi{display:flex;align-items:center;gap:10px;padding:8px 11px;border-radius:8px;cursor:pointer;color:var(--text2);font-size:13px;font-weight:500;transition:background .12s,color .12s;margin-bottom:2px;user-select:none;}.navdiv{height:16px;}.nav-admin{background:var(--bg3);border-radius:0;padding:4px;border:none;}
 .navi:hover{background:var(--bg4);color:var(--text);}              /* slightly darker gray than the page bg */
-.navi.active{background:rgba(79,134,247,.12);color:var(--accent2);font-weight:600;}  /* two-tone: light-blue tint + deep-blue label & icon */
+.navi.active{background:rgba(62,207,142,.08);color:var(--accent2);font-weight:600;}  /* subtle emerald tint + readable emerald text (emerald-600 light / emerald-400 dark) */
 .navi-ic{width:17px;height:17px;flex-shrink:0;}                     /* outlined SVG icon, inherits color via stroke=currentColor */
 .navc{margin-left:auto;background:var(--bg4);border-radius:10px;padding:1px 7px;font-size:10px;font-family:"JetBrains Mono",monospace;color:var(--text3);}
-.navi.active .navc{background:rgba(79,134,247,.2);color:var(--accent);}
-.sum-tbl{width:100%;border-collapse:collapse;}.sum-tbl th{padding:9px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border2);background:var(--bg3);white-space:nowrap;}.sum-tbl th.tc{text-align:center;}.sum-tbl td{padding:10px 14px;font-size:12px;color:var(--text2);border-bottom:0.5px solid var(--border);vertical-align:middle;}.sum-tbl td.tc{text-align:center;}.sum-tbl .co-cell{background:var(--bg3);border-right:1px solid var(--border);border-left:3px solid var(--accent);vertical-align:middle;font-size:13px;font-weight:700;color:var(--text);}.sum-tbl tr.grp-mid td{border-bottom:0.5px dashed var(--border);}.sum-tbl tr.grp-end td{border-bottom:1px solid var(--border2);}.sum-tbl tr.grp-sub td{background:var(--bg3);}.sum-tbl tr.grp-sub .co-cell{background:var(--bg3);}.sum-tbl tr.sum-total td{background:var(--bg3);font-weight:700;font-size:13px;border-top:2px solid var(--border2);}.ref-date-wrap{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border2);border-radius:8px;height:var(--ctl-h);padding:0 12px;font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap;box-sizing:border-box;}.ref-date-wrap input[type=date]{background:none;border:none;outline:none;font-size:12px;color:var(--text);font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;cursor:pointer;}.sbfoot{padding:10px;border-top:1px solid var(--border);}
-.synbtn{width:100%;padding:9px;background:rgba(47,201,138,.07);border:1px solid rgba(47,201,138,.18);border-radius:8px;color:var(--green);font-size:12px;font-weight:600;cursor:pointer;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;transition:background .12s;display:flex;align-items:center;justify-content:center;gap:7px;}
-.synbtn:hover{background:rgba(47,201,138,.14);}
+.navi.active .navc{background:rgba(62,207,142,.2);color:var(--accent);}
+.sum-tbl{width:100%;border-collapse:collapse;}.sum-tbl th{padding:9px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border2);background:var(--bg3);white-space:nowrap;}.sum-tbl th.tc{text-align:center;}.sum-tbl td{padding:10px 14px;font-size:12px;color:var(--text2);border-bottom:0.5px solid var(--border);vertical-align:middle;}.sum-tbl td.tc{text-align:center;}.sum-tbl .co-cell{background:var(--bg3);border-right:1px solid var(--border);border-left:3px solid var(--accent);vertical-align:middle;font-size:13px;font-weight:700;color:var(--text);}.sum-tbl tr.grp-mid td{border-bottom:0.5px dashed var(--border);}.sum-tbl tr.grp-end td{border-bottom:1px solid var(--border2);}.sum-tbl tr.grp-sub td{background:var(--bg3);}.sum-tbl tr.grp-sub .co-cell{background:var(--bg3);}.sum-tbl tr.sum-total td{background:var(--bg3);font-weight:700;font-size:13px;border-top:2px solid var(--border2);}.ref-date-wrap{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;height:var(--ctl-h);padding:0 12px;font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap;box-sizing:border-box;}.ref-date-wrap input[type=date]{background:none;border:none;outline:none;font-size:12px;color:var(--text);font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;cursor:pointer;}.sbfoot{padding:10px;border-top:1px solid var(--border);}
+.synbtn{width:100%;padding:9px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);border-radius:8px;color:var(--green);font-size:12px;font-weight:600;cursor:pointer;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;transition:background .12s;display:flex;align-items:center;justify-content:center;gap:7px;}
+.synbtn:hover{background:rgba(34,197,94,.14);}
 body{overflow:hidden;}
 .main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
 .topbar{display:none;}
 .ttl{font-size:20px;font-weight:800;}.sub{font-size:12px;color:var(--text3);margin-top:4px;font-weight:400;}
 .tbr{display:flex;align-items:center;gap:9px;}
-.pill{border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700;font-family:"JetBrains Mono",monospace;}.pill-blue{background:rgba(79,134,247,.12);color:var(--accent);border:1px solid rgba(79,134,247,.2);}.pill-amber{background:rgba(224,138,32,.12);color:var(--orange);border:1px solid rgba(224,138,32,.2);}.pill-green{background:rgba(24,169,110,.12);color:var(--green);border:1px solid rgba(24,169,110,.2);}
+.pill{border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700;font-family:"JetBrains Mono",monospace;}.pill-blue{background:rgba(62,207,142,.12);color:var(--accent);border:1px solid rgba(62,207,142,.2);}.pill-amber{background:rgba(245,158,11,.12);color:var(--orange);border:1px solid rgba(245,158,11,.2);}.pill-green{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2);}
 /* Content area now hosts the active page directly; scroll is delegated to each page (or to the table inside it). */
 .content{flex:1;overflow:hidden;padding:0;display:flex;flex-direction:column;min-height:0;}
 .page{display:none;}
@@ -238,12 +344,12 @@ body{overflow:hidden;}
 tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 /* Custom multi-select dropdown (replaces native <select> filters). */
 .ms-wrap{position:relative;display:inline-block;}
-.ms-btn{background:#fff;border:1px solid var(--border2);border-radius:8px;padding:0 32px 0 14px;font-size:12px;color:var(--text);cursor:pointer;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;display:inline-flex;align-items:center;min-width:140px;max-width:240px;height:var(--ctl-h);position:relative;transition:border-color .15s,background .15s,box-shadow .15s;line-height:1;}
+.ms-btn{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:0 32px 0 14px;font-size:12px;color:var(--text);cursor:pointer;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;display:inline-flex;align-items:center;min-width:140px;max-width:240px;height:var(--ctl-h);position:relative;transition:border-color .15s,background .15s,box-shadow .15s;line-height:1;}
 .ms-btn:hover{background:var(--bg3);border-color:var(--accent2);}
 /* .is-open / focus state — handled centrally by the unified .filter-row focus rule above so all controls match. */
 .ms-btn .ms-label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;}
 .ms-btn .ms-caret{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:10px;}
-.ms-menu{display:none;position:fixed;min-width:200px;max-width:300px;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.14);z-index:60;padding:4px;max-height:340px;overflow-y:auto;}
+.ms-menu{display:none;position:fixed;min-width:200px;max-width:300px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.14);z-index:60;padding:4px;max-height:340px;overflow-y:auto;}
 .ms-menu.show{display:block;}
 .ms-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12px;color:var(--text);transition:background .12s;user-select:none;}
 .ms-item:hover{background:var(--bg3);}
@@ -281,7 +387,7 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 @keyframes skillBarGrow{from{width:0%;} to{width:var(--target-w,0%);}}
 @keyframes skillCountSlide{from{left:6px;opacity:0;} to{left:calc(var(--target-w,0%) + 6px);opacity:1;}}
 .skill-gridline{position:absolute;top:0;bottom:38px;width:1px;background:var(--border);pointer-events:none;}
-.skill-focus{position:absolute;top:0;bottom:38px;width:1px;background:rgba(79,134,247,.5);pointer-events:none;display:none;will-change:left;}
+.skill-focus{position:absolute;top:0;bottom:38px;width:1px;background:rgba(62,207,142,.5);pointer-events:none;display:none;will-change:left;}
 .skill-focus-badge{position:absolute;top:-2px;transform:translateX(-50%);background:var(--text);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;pointer-events:none;display:none;white-space:nowrap;font-family:"JetBrains Mono",monospace;box-shadow:0 1px 4px rgba(0,0,0,.18);}
 .skill-axis{position:absolute;left:0;right:0;bottom:0;height:28px;}
 .skill-axis-rule{position:absolute;left:0;right:0;top:0;height:1px;background:var(--border2);}
@@ -302,7 +408,7 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 }
 /* CONTROLS */
 .cb{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-.srch{display:flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--border2);border-radius:8px;padding:0 12px;height:var(--ctl-h);box-sizing:border-box;transition:border-color .15s,box-shadow .15s;}
+.srch{display:flex;align-items:center;gap:7px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:0 12px;height:var(--ctl-h);box-sizing:border-box;transition:border-color .15s,box-shadow .15s;}
 /* Filter bar: every child sits at exactly 40px on the same baseline. */
 .filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
 .filter-row > .ref-date-wrap,
@@ -312,8 +418,8 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 .filter-row > select,
 .filter-row > input[type="date"]{height:var(--ctl-h);box-sizing:border-box;transition:border-color .15s,box-shadow .15s;}
 .filter-row > .ref-date-wrap{padding:0 14px;}
-.filter-row > input[type="date"]{padding:0 12px;border:1px solid var(--border2);border-radius:8px;background:#fff;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;font-size:12px;color:var(--text);}
-.filter-row > select{padding:0 32px 0 12px;border:1px solid var(--border2);border-radius:8px;background:#fff;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;font-size:12px;color:var(--text);}
+.filter-row > input[type="date"]{padding:0 12px;border:1px solid var(--border2);border-radius:8px;background:var(--bg2);font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;font-size:12px;color:var(--text);}
+.filter-row > select{padding:0 32px 0 12px;border:1px solid var(--border2);border-radius:8px;background:var(--bg2);font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;font-size:12px;color:var(--text);}
 /* Crisp focus state — 1px solid deep-blue border + 2px even outer glow.
    The outline is killed entirely; box-shadow with no inset paints a perfectly uniform halo
    on all four sides, following border-radius automatically. No content reflow (border stays 1px). */
@@ -325,7 +431,7 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 .filter-row > select:focus{
   outline:none;
   border-color:var(--accent2);
-  box-shadow:0 0 0 2px rgba(58,109,224,.20);
+  box-shadow:0 0 0 2px rgba(48,184,122,.20);
 }
 /* Native input/select inside the wrappers: kill their browser default focus rings so only our wrapper stroke shows. */
 .filter-row .srch input:focus,
@@ -334,44 +440,65 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 .filter-row > select:focus{outline:none;}
 .srch input{background:none;border:none;outline:none;color:var(--text);font-size:13px;width:190px;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;}
 .srch input::placeholder{color:var(--text3);}
-select{background:#fff;border:1px solid var(--border2);border-radius:8px;padding:7px 10px;color:var(--text);font-size:12px;outline:none;cursor:pointer;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;}
+select{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;color:var(--text);font-size:12px;outline:none;cursor:pointer;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;}
 select:focus{border-color:var(--accent);}
 /* Standardized control height — inputs, selects, buttons all align at 38px so they line up perfectly in form rows. .btnsm opts out for compact in-row actions. */
-/* Unified vertical rhythm: every standalone button / input / select / multi-select
-   button / search box / ref-date pill resolves to --ctl-h. .btnsm opts out so
-   in-table action buttons stay compact. Picked 40px because the filter-row
-   controls were already 40px — change here propagates system-wide. */
-:root{--ctl-h:40px;}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:var(--ctl-h);padding:0 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;transition:all .12s;white-space:nowrap;line-height:1;}
-.btnp{background:var(--accent);color:#fff;}.btnp:hover{background:var(--accent2);}
-.btng{background:transparent;color:var(--text2);border:1px solid var(--border2);}.btng:hover{background:var(--bg3);color:var(--text);}
-.btnd{background:rgba(240,92,92,.09);color:var(--red);border:1px solid rgba(240,92,92,.2);}.btnd:hover{background:rgba(240,92,92,.18);}
+/* --ctl-h now lives in the main :root block at the top of this file alongside
+   the rest of the Supabase palette. Every standalone button / input / select /
+   multi-select button / search box / ref-date pill resolves to it. .btnsm opts
+   out so in-table action buttons stay compact. */
+/* Base .btn keeps an explicit 1px transparent border so its border-box
+   maths matches .fi exactly. Specific button variants below just swap the
+   border colour without changing geometry — heights line up perfectly.
+   Padding 0 10px and font 13px per the high-density spec. */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:var(--ctl-h);padding:0 10px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid transparent;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;transition:background .12s,color .12s,border-color .12s,box-shadow .12s,opacity .12s;white-space:nowrap;line-height:1;box-sizing:border-box;}
+/* Disabled state — overrides all .btn variants. Used for the dirty-check on
+   the org editor's save buttons (팀명 / 부/실명 / 센터명 저장). */
+.btn:disabled,.btn[disabled]{opacity:.45;cursor:not-allowed;pointer-events:none;}
+/* ── Supabase button system ──────────────────────────────────────────────
+   .btnp  primary    solid emerald, deep-charcoal text, sharp 1px border
+   .btng  secondary  sleek dark charcoal bg, light text, subtle lighten on hover
+   .btnd  destructive  unchanged red palette
+   Sharp focus rings come from .btn:focus-visible (defined elsewhere); colour
+   already routes through var(--accent), so it auto-emeralds. */
+/* Supabase primary: solid emerald (#3ecf8e) fill + crisp dark text + darker
+   hover (#30b87a via --accent2 in light; --accent2 = #34d399 lift in dark). */
+.btnp{background:var(--accent);color:#000;border:1px solid var(--accent);font-weight:700;}
+.btnp:hover{background:var(--accent2);border-color:var(--accent2);color:#000;}
+.btng{background:var(--bg3);color:var(--text);border:1px solid var(--border);}
+.btng:hover{background:var(--bg4);color:var(--text);border-color:var(--border2);}
+.btnd{background:rgba(239,68,68,.09);color:var(--red);border:1px solid rgba(239,68,68,.2);}.btnd:hover{background:rgba(239,68,68,.18);}
 .btnsm{height:auto;padding:4px 9px;font-size:11px;border-radius:6px;}
 /* TABLE */
-/* Adaptive horizontal scroll wrapper.
-   ── Table tries to fill 100% of .ox via the .tbl rule below.
-   ── Cells are nowrap, so they shrink down to their content's intrinsic
-      min-width but never break a line.
-   ── When the sum of those minimum column widths exceeds the wrapper, the
-      browser introduces a horizontal scrollbar (overflow-x:auto). Below
-      that threshold, the table sits flush at the wrapper's width.
-   No vertical cap — pages scroll naturally when row count exceeds viewport.
-   The list page keeps its own more-specific flex/overflow rule above. */
-.ox{overflow-x:auto;}
-/* Base rule for the standard .tbl class — stretches to fill its .ox parent
-   while honouring per-table border-collapse. .sum-tbl already has its own
-   width:100% declaration, so this rule only ever touches .tbl tables. */
-.tbl { width: 100%; border-collapse: collapse; }
-/* Cells never wrap. Inline column-specific overrides (e.g., 비고's max-width
-   + ellipsis-clip) still win because they're more specific. */
-.tbl th, .tbl td,
-.sum-tbl th, .sum-tbl td { white-space: nowrap; }
+/* ── Data table behaviour — UNIVERSAL, catches every table in the app.
+   Scoped by `.ox >` and `.ox td/th` so we hit #etbl (list) which has no
+   class, .tbl tables (dispatch / users / changelog / prep), and .sum-tbl
+   (summary) all at once. !important is required because earlier rules
+   (#etbl tbody td, generic td, etc.) are more specific selectors and would
+   otherwise win over a class-based nowrap.
+   ── width:max-content lets the table expand past the wrapper when columns
+      need their natural width; min-width:100% keeps it flush at the wrapper
+      when there's room. overflow-x:auto on the wrapper gives the scrollbar. */
+.ox {
+  width: 100%;
+  overflow-x: auto !important;
+  display: block;
+}
+.ox > table {
+  width: max-content !important;
+  min-width: 100%;
+  border-collapse: collapse;
+}
+.ox th,
+.ox td {
+  white-space: nowrap !important;
+}
 
 /* Defensive: any inline-styled <div> dropped directly into a table cell
    becomes inline-block so it can't introduce a structural line break.
    Scoped to [style] so it leaves classed layout primitives like .nc
    (the list page's flex avatar+name row) untouched. */
-.tbl td > div[style], .sum-tbl td > div[style] { display: inline-block; vertical-align: middle; }
+.ox td > div[style] { display: inline-block; vertical-align: middle; }
 table{width:100%;border-collapse:collapse;}
 th{background:var(--bg3);padding:9px 13px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.8px;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;}
 th:hover{color:var(--text2);}
@@ -380,18 +507,18 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.01
 .mono{font-family:"JetBrains Mono",monospace;font-size:11px;}
 /* TAGS */
 .tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap;}
-.t-정규직원{background:rgba(47,201,138,.12);color:var(--green);}
+.t-정규직원{background:rgba(34,197,94,.12);color:var(--green);}
 .t-파견{background:rgba(245,157,63,.12);color:var(--orange);}
 .t-파견준비{background:rgba(157,114,245,.12);color:var(--purple);}
 .t-인턴{background:rgba(56,196,240,.12);color:var(--cyan);}
 .t-한국파견{background:rgba(245,208,56,.1);color:var(--yellow);}
-.t-직책{background:rgba(79,134,247,.1);color:var(--accent);}
+.t-직책{background:rgba(62,207,142,.1);color:var(--accent);}
 .t-grade{background:rgba(240,75,138,.1);color:var(--pink);font-family:"JetBrains Mono",monospace;}
 /* 원가부서 (cost-centre) tag — neutral, easy to scan, no full path. */
-.t-wonka{background:rgba(79,134,247,.08);color:var(--accent);border:1px solid rgba(79,134,247,.18);font-weight:700;}
+.t-wonka{background:rgba(62,207,142,.08);color:var(--accent);border:1px solid rgba(62,207,142,.18);font-weight:700;}
 /* AVATAR */
 .av{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
-.avM{background:rgba(79,134,247,.16);color:var(--accent);border:1px solid rgba(79,134,247,.28);}
+.avM{background:rgba(62,207,142,.16);color:var(--accent);border:1px solid rgba(62,207,142,.28);}
 .avF{background:rgba(240,75,138,.1);color:var(--pink);border:1px solid rgba(240,75,138,.22);}
 .av_{background:var(--bg4);color:var(--text3);border:1px solid var(--border);}
 .nc{display:flex;align-items:center;gap:8px;}
@@ -437,10 +564,12 @@ tr.row-resigned .av{filter:grayscale(100%) brightness(.92);}
 /* Field labels: bumped from 10px → 12px and from --text3 (light gray) → --text (near-black) for high-contrast legibility above inputs. */
 .flab{font-size:12px;color:var(--text);font-weight:700;letter-spacing:.3px;text-transform:none;margin-bottom:4px;}
 /* All form inputs/selects share --ctl-h (38px) — matches .btn so they line up flush in horizontal rows. */
-.fi{background:#fff;border:1px solid var(--border2);border-radius:7px;height:var(--ctl-h);padding:0 12px;color:var(--text);font-size:13px;outline:none;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;width:100%;transition:border-color .12s;line-height:1;box-sizing:border-box;}
+.fi{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;height:var(--ctl-h);padding:0 10px;color:var(--text);font-size:13px;outline:none;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;width:100%;transition:border-color .12s,box-shadow .12s;line-height:1;box-sizing:border-box;}
 select.fi{padding-right:32px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%238e9ab8' stroke-width='1.6' fill='none' stroke-linecap='round'/></svg>");background-repeat:no-repeat;background-position:right 12px center;}
 textarea.fi{height:auto;min-height:var(--ctl-h);padding:10px 12px;line-height:1.5;}
-.fi:focus{border-color:var(--accent);}
+/* Supabase focus state — sharp 1px emerald border + tight 2px translucent glow. */
+.fi:focus,.fi:focus-visible{border-color:#3ecf8e;box-shadow:0 0 0 2px rgba(62,207,142,0.25);outline:none;}
+select.fi:focus{box-shadow:0 0 0 2px rgba(62,207,142,0.25);}
 /* Password real-time validation UI */
 .pw-meter{margin-top:8px;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
 .pw-meter-fill{height:100%;width:0;background:transparent;border-radius:2px;transition:width .25s ease,background-color .25s ease;}
@@ -481,7 +610,7 @@ textarea.fi{height:auto;min-height:var(--ctl-h);padding:10px 12px;line-height:1.
 .is-loading{position:relative;color:transparent !important;pointer-events:none;opacity:.85;}
 .is-loading::after{content:"";position:absolute;top:50%;left:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
-@keyframes rowPulse{0%{background:rgba(79,134,247,.22);box-shadow:inset 3px 0 0 var(--accent);}60%{background:rgba(79,134,247,.10);box-shadow:inset 3px 0 0 rgba(79,134,247,.5);}100%{background:transparent;box-shadow:none;}}
+@keyframes rowPulse{0%{background:rgba(62,207,142,.22);box-shadow:inset 3px 0 0 var(--accent);}60%{background:rgba(62,207,142,.10);box-shadow:inset 3px 0 0 rgba(62,207,142,.5);}100%{background:transparent;box-shadow:none;}}
 .row-pulse{animation:rowPulse 3s ease-out;}
 .qa-wrap{position:relative;display:inline-block;}
 .qa-toggle{display:inline-flex;align-items:center;gap:3px;}
@@ -494,7 +623,7 @@ textarea.fi{height:auto;min-height:var(--ctl-h);padding:10px 12px;line-height:1.
 .qa-menu button{display:flex;align-items:center;gap:8px;width:100%;text-align:left;padding:8px 10px;border:none;background:none;color:var(--text);font-size:12px;font-weight:500;border-radius:6px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .12s;}
 .qa-menu button:hover{background:var(--bg3);}
 .qa-menu button.qa-danger{color:var(--red);}
-.qa-menu button.qa-danger:hover{background:rgba(240,92,92,.10);}
+.qa-menu button.qa-danger:hover{background:rgba(239,68,68,.10);}
 .qa-menu .qa-sep{height:1px;background:var(--border);margin:3px 0;}
 .qmodal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;}
 .qmodal-back{position:absolute;inset:0;background:rgba(0,0,0,.45);}
@@ -507,11 +636,11 @@ textarea.fi{height:auto;min-height:var(--ctl-h);padding:10px 12px;line-height:1.
 .qmodal-emp{font-size:11px;color:var(--text3);padding-bottom:6px;border-bottom:1px dashed var(--border);margin-bottom:4px;}
 .qmodal-emp-big{font-size:1.2rem;color:#333;font-weight:700;line-height:1.25;}
 .qmodal-curr{font-size:1.05rem;color:#333;font-weight:500;margin-top:2px;padding-bottom:8px;border-bottom:1px dashed var(--border);margin-bottom:4px;}
-.qmodal-hint{font-size:11px;color:var(--orange);margin-top:4px;background:rgba(224,138,32,.10);border:1px solid rgba(224,138,32,.25);border-radius:8px;padding:7px 10px;}
+.qmodal-hint{font-size:11px;color:var(--orange);margin-top:4px;background:rgba(245,158,11,.10);border:1px solid rgba(245,158,11,.25);border-radius:8px;padding:7px 10px;}
 .qmodal-info{font-size:12px;color:var(--text2);background:var(--bg3);border-radius:8px;padding:8px 10px;border-left:3px solid var(--accent);}
 .qmodal-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin:8px 0 2px;}
 .qmodal-input{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color .15s,box-shadow .15s;width:100%;box-sizing:border-box;}
-.qmodal-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,134,247,.14);}
+.qmodal-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(62,207,142,.14);}
 textarea.qmodal-input{resize:vertical;min-height:56px;}
 .qmodal-foot{display:flex;gap:8px;justify-content:flex-end;padding:11px 16px;border-top:1px solid var(--border);background:var(--bg3);}
 .qmodal-foot .btn{padding:8px 16px;font-size:12px;border-radius:8px;}
@@ -712,6 +841,17 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
           <button type="button" class="profile-lang" data-lang-opt="en" onclick="setLang('en')"><span data-i18n="lang.en">English</span><span class="profile-lang-check">✓</span></button>
           <button type="button" class="profile-lang" data-lang-opt="km" onclick="setLang('km')"><span data-i18n="lang.km">ខ្មែរ</span><span class="profile-lang-check">✓</span></button>
           <div class="profile-menu-div"></div>
+          <!-- Theme toggle — flips html[data-theme] between '' (light) and 'dark'.
+               State is persisted in localStorage by toggleTheme() in the JS below. -->
+          <div class="profile-menu-label" data-i18n="profile.theme">테마</div>
+          <button type="button" class="profile-theme" id="themeToggle" onclick="toggleTheme()" role="switch" aria-checked="false">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
+            </svg>
+            <span data-i18n="profile.dark_mode">다크 모드</span>
+            <span class="theme-switch" aria-hidden="true"></span>
+          </button>
+          <div class="profile-menu-div"></div>
           <button type="button" class="profile-action" onclick="doLogout()">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -825,7 +965,7 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
           <div class="sub" id="psub">2026년 개발자 인력 현황</div>
         </div>
         <div class="tbr">
-          <div id="dispatch-head-alert" style="display:none;align-items:center;gap:6px;background:rgba(224,63,63,.1);border:1px solid rgba(224,63,63,.3);border-radius:8px;padding:5px 12px;font-size:11px;color:var(--red)">
+          <div id="dispatch-head-alert" style="display:none;align-items:center;gap:6px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:5px 12px;font-size:11px;color:var(--red)">
             <span>⚠️</span><span id="dispatch-head-txt"></span>
           </div>
         </div>
@@ -1283,42 +1423,33 @@ async function doLogin(){
   const id=document.getElementById("lid").value.trim();
   const pw=document.getElementById("lpw").value;
   const errEl=document.getElementById("lerr");
-  const failLogin=(reason)=>{
-    console.log('[Login] Failed:', reason);
+  // Single generic failure path — no diagnostic info reaches the console.
+  // Helps prevent account enumeration (attacker can't tell whether the id
+  // exists vs the password was wrong vs the DB hiccupped).
+  const failLogin=()=>{
     errEl.textContent='Invalid Credentials';
     errEl.classList.add("show");
     document.getElementById("lpw").value="";
     document.getElementById("lpw").focus();
   };
-  if(!id||!pw){ failLogin('Empty ID or password'); return; }
+  if(!id||!pw){ failLogin(); return; }
   setBtnLoading('loginBtn', true);
   try {
-    console.log('[Login] Querying users where id =', id, 'and password = (hidden)');
-    const { data, error, status } = await sb
-      .from('users')
-      .select('id,password,name,role,can_edit')
-      .eq('id', id)
-      .eq('password', pw)
-      .maybeSingle();
-    if(error){
-      console.error('[Login] Supabase returned an error. HTTP status:', status);
-      console.error('[Login] error.code   :', error.code);
-      console.error('[Login] error.message:', error.message);
-      console.error('[Login] error.hint   :', error.hint);
-      console.error('[Login] error.details:', error.details);
-      console.error('[Login] full error   :', error);
-      failLogin(error.message||'Supabase error');
+    // Server-side credential check via SECURITY DEFINER RPC (verify_login).
+    // The password is sent in the POST body, not as a URL filter, so it
+    // never lands in proxy / browser-history / CDN logs. The RPC compares
+    // bcrypt hashes server-side and returns the user row only on match.
+    // See migrations/2026_05_20_secure_login.sql.
+    const { data, error } = await sb.rpc('verify_login', { p_id: id, p_pw: pw });
+    if (error || !data || !data.length) {
+      if (error) console.error('[Login] verify_login failed');   // single generic line
+      failLogin();
       return;
     }
-    if(!data){
-      console.log('[Login] No matching row in users table. Either id="'+id+'" does not exist, or its password value does not match. Verify in the Supabase Table Editor.');
-      failLogin('No matching row');
-      return;
-    }
-    console.log('[Login] Success for user id:', data.id);
+    const u = data[0];
     errEl.classList.remove("show");
-    CU={ id:data.id, name:data.name||data.id, role:data.role||'직원', canEdit:!!data.can_edit };
-    sessionStorage.setItem("cos_s",JSON.stringify(CU));
+    CU = { id:u.id, name:u.name||u.id, role:u.role||'직원', canEdit:!!u.can_edit };
+    sessionStorage.setItem("cos_s", JSON.stringify(CU));
     // Persist or clear the "remember ID" preference based on the checkbox state at submit time.
     const _rem=document.getElementById('lremember');
     if(_rem && _rem.checked) localStorage.setItem('kosign_remember_id', id);
@@ -1419,6 +1550,7 @@ const I18N = {
     // Topbar & profile dropdown
     'topbar.notifications':'알림','topbar.logout':'로그아웃',
     'profile.language':'언어','profile.logout':'로그아웃','profile.menu':'프로필 메뉴',
+    'profile.theme':'테마','profile.dark_mode':'다크 모드',
     // Common buttons
     'btn.save':'저장','btn.cancel':'취소','btn.delete':'삭제',
     'btn.add':'추가','btn.edit':'수정','btn.search':'검색','btn.refresh':'새로고침',
@@ -1457,6 +1589,7 @@ const I18N = {
     'page.changelog.t':'Change Log','page.changelog.s':'System change history',
     'topbar.notifications':'Notifications','topbar.logout':'Sign out',
     'profile.language':'Language','profile.logout':'Sign out','profile.menu':'Profile menu',
+    'profile.theme':'Theme','profile.dark_mode':'Dark mode',
     'btn.save':'Save','btn.cancel':'Cancel','btn.delete':'Delete',
     'btn.add':'Add','btn.edit':'Edit','btn.search':'Search','btn.refresh':'Refresh',
     'cl.col_time':'Time','cl.col_actor':'Actor','cl.col_category':'Category','cl.col_change':'Change',
@@ -1493,6 +1626,7 @@ const I18N = {
     'page.changelog.t':'កំណត់ហេតុ','page.changelog.s':'ប្រវត្តិការផ្លាស់ប្តូរប្រព័ន្ធ',
     'topbar.notifications':'ការជូនដំណឹង','topbar.logout':'ចេញ',
     'profile.language':'ភាសា','profile.logout':'ចេញ','profile.menu':'ម៉ឺនុយប្រូហ្វាល់',
+    'profile.theme':'រូបរាង','profile.dark_mode':'របៀបងងឹត',
     'btn.save':'រក្សាទុក','btn.cancel':'បោះបង់','btn.delete':'លុប',
     'btn.add':'បន្ថែម','btn.edit':'កែ','btn.search':'ស្វែងរក','btn.refresh':'ផ្ទុកឡើងវិញ',
     'cl.col_time':'ពេលវេលា','cl.col_actor':'អ្នកប្រតិបត្តិ','cl.col_category':'ប្រភេទ','cl.col_change':'ការផ្លាស់ប្តូរ',
@@ -1550,6 +1684,27 @@ function setLang(lang){
     b.classList.toggle('is-active', b.getAttribute('data-lang-opt')===lang);
   });
 }
+
+// ── Theme (light / dark) ──────────────────────────────────────────────────
+// Light is the default. Dark mode flips <html data-theme="dark"> and the
+// preference persists in localStorage across reloads. CSS variables defined
+// in :root (light) and [data-theme="dark"] (dark) handle every surface.
+function setTheme(theme){
+  if (theme !== 'dark') theme = 'light';
+  if (theme === 'light') document.documentElement.removeAttribute('data-theme');
+  else                   document.documentElement.setAttribute('data-theme', 'dark');
+  localStorage.setItem('kosign_theme', theme);
+  const btn = document.getElementById('themeToggle');
+  if (btn) btn.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
+}
+function toggleTheme(){
+  const cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  setTheme(cur === 'dark' ? 'light' : 'dark');
+}
+window.setTheme = setTheme;
+window.toggleTheme = toggleTheme;
+// Restore saved preference on first paint (default: light).
+setTheme(localStorage.getItem('kosign_theme') || 'light');
 
 // Profile dropdown open/close (avatar in the topbar).
 function toggleProfileMenu(e){
@@ -1770,7 +1925,7 @@ function refreshBellAlerts(){
   count.textContent=String(alerts.length);
   if(alerts.length){
     dot.style.display='block';
-    list.innerHTML=alerts.map(a=>`<div class="bell-item" onclick="bellItemClick('${esc(a.target)}')">
+    list.innerHTML=alerts.map(a=>`<div class="bell-item" onclick="bellItemClick('${escAttr(a.target)}')">
       <div class="bell-item-ico">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/>
@@ -1778,8 +1933,8 @@ function refreshBellAlerts(){
         </svg>
       </div>
       <div class="bell-item-body">
-        <div class="bell-item-title">${esc(a.title)}</div>
-        <div class="bell-item-desc">${esc(a.desc)}</div>
+        <div class="bell-item-title">${escHtml(a.title)}</div>
+        <div class="bell-item-desc">${escHtml(a.desc)}</div>
       </div>
     </div>`).join('');
   } else {
@@ -1860,8 +2015,8 @@ function rd(){
     }
     document.getElementById("ch-wonka").innerHTML=`
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;align-items:start">
-        ${panel("아웃소싱",osTotal,"background:rgba(79,134,247,.12);color:var(--accent)",os,osEn,0)}
-        ${panel("파견",dpTotal,"background:rgba(224,138,32,.12);color:var(--orange)",dp,dpEn,1)}
+        ${panel("아웃소싱",osTotal,"background:rgba(62,207,142,.12);color:var(--accent)",os,osEn,0)}
+        ${panel("파견",dpTotal,"background:rgba(245,158,11,.12);color:var(--orange)",dp,dpEn,1)}
       </div>`;
     // ── Radial-wipe entry + count-up animations ─────────────────
     const wonka=document.getElementById('ch-wonka');
@@ -2033,7 +2188,7 @@ function pf(){
   msPopulate("fp", [...new Set(devEmps().map(e=>e.jikchak).filter(Boolean))].sort());
   populateFcenter();
   // Datalists for the employee form (still native <datalist>, unrelated to filter dropdowns).
-  const dl=(id,arr)=>{const d=document.getElementById(id);if(d)d.innerHTML=arr.map(v=>`<option value="${v}">`).join("");};
+  const dl=(id,arr)=>{const d=document.getElementById(id);if(d)d.innerHTML=arr.map(v=>`<option value="${escHtml(v)}">`).join("");};
   dl("dlc",[...new Set(emps.map(e=>e.center).filter(Boolean))]);
   dl("dlb",[...new Set(emps.map(e=>e.bu).filter(Boolean))]);
   dl("dlt",[...new Set(emps.map(e=>e.team).filter(Boolean))]);
@@ -2118,23 +2273,26 @@ function rl(){
     const idx=emps.indexOf(e);const ini=(e.name||e.nick||"?")[0];
     const cls=isResigned(e)?' class="row-resigned"':'';
     const eid=e.empId?` data-emp-id="${esc(e.empId)}"`:'';
+    // The .type-class is derived data — restrict to an allowlist so an
+    // injected employment_type can't break out into other class names.
+    const typeClass = ['정규직원','파견','파견준비','파견검토','인턴','한국파견'].includes(e.type) ? e.type : '';
     return `<tr${eid}${cls}>
-      <td style="color:var(--text3)">${e.center||"-"}</td>
-      <td>${[e.bu,e.team].filter(Boolean).join(" › ")||"-"}</td>
+      <td style="color:var(--text3)">${escHtml(e.center||"-")}</td>
+      <td>${escHtml([e.bu,e.team].filter(Boolean).join(" › ")||"-")}</td>
       <td style="cursor:pointer" onclick="openDet(${idx})">
-        <div class="nc"><div class="av av${e.gender||"_"}">${ini}</div>
-        <div class="n1">${e.name||"-"}</div></div>
+        <div class="nc"><div class="av av${e.gender||"_"}">${escHtml(ini)}</div>
+        <div class="n1">${escHtml(e.name||"-")}</div></div>
       </td>
       <td style="cursor:pointer" onclick="openDet(${idx})">
-        <div class="n1">${e.nick||"-"}</div>
+        <div class="n1">${escHtml(e.nick||"-")}</div>
       </td>
-      <td>${e.grade?`<span class="tag t-grade">${e.grade}</span>`:"-"}</td>
-      <td>${e.jikchak?`<span class="tag t-직책">${e.jikchak}</span>`:"-"}</td>
-      <td style="color:var(--text2)">${e.jikmu||"-"}</td>
-      <td><span class="tag t-${(e.type||"").replace(/\s/g,"")}">${e.type||"-"}</span></td>
-      <td>${e.wonka?`<span class="tag t-wonka">${esc(displayWonka(e.wonka))}</span>`:"-"}</td>
+      <td>${e.grade?`<span class="tag t-grade">${escHtml(e.grade)}</span>`:"-"}</td>
+      <td>${e.jikchak?`<span class="tag t-직책">${escHtml(e.jikchak)}</span>`:"-"}</td>
+      <td style="color:var(--text2)">${escHtml(e.jikmu||"-")}</td>
+      <td><span class="tag t-${typeClass}">${escHtml(e.type||"-")}</span></td>
+      <td>${e.wonka?`<span class="tag t-wonka">${escHtml(displayWonka(e.wonka))}</span>`:"-"}</td>
       <td class="mono" style="color:var(--text3)">${e.join?calcYeon(e.join)+"년":"-"}</td>
-      ${(()=>{const pend=pendingTransferLabel(e);const noteText=pend?(e.note?pend+' · '+e.note:pend):(e.note||'-');const col=(pend||e.note)?'var(--orange)':'var(--text3)';return `<td style="color:${col};max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(noteText)}">${esc(noteText)}</td>`;})()}
+      ${(()=>{const pend=pendingTransferLabel(e);const noteText=pend?(e.note?pend+' · '+e.note:pend):(e.note||'-');const col=(pend||e.note)?'var(--orange)':'var(--text3)';return `<td style="color:${col};max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(noteText)}">${escHtml(noteText)}</td>`;})()}
     </tr>`;
   }).join("")}</tbody>`;
 }
@@ -2284,8 +2442,12 @@ function openDet(idx){
   document.getElementById("dov").style.display="flex";
 }
 function renderDetTab(e,tab){
-  const dr=(k,v)=>`<div class="drow"><span class="dk">${k}</span><span class="dv">${v||"-"}</span></div>`;
-  const tt=`<span class="tag t-${(e.type||"").replace(/\s/g,"")}">${e.type||"-"}</span>`;
+  // dr() is the row-renderer used throughout the detail panel — it produces
+  // a `${label}: ${value}` row. Escape `v` because it comes from the DB.
+  const dr=(k,v)=>`<div class="drow"><span class="dk">${escHtml(k)}</span><span class="dv">${escHtml(v||"-")}</span></div>`;
+  // Allowlist the type class — only known values become a class suffix.
+  const typeClass = ['정규직원','파견','파견준비','파견검토','인턴','한국파견'].includes(e.type) ? e.type : '';
+  const tt=`<span class="tag t-${typeClass}">${escHtml(e.type||"-")}</span>`;
   const ce=CU?.canEdit;
   const idx=emps.indexOf(e);
   const tabs=`<div style="display:flex;gap:0;margin-bottom:14px;border-bottom:1px solid var(--border)">
@@ -2300,11 +2462,11 @@ function renderDetTab(e,tab){
   if(tab==='basic'){
     body=`
     <div class="dhdr">
-      <div class="davlg av${e.gender||"_"}">${(e.nick||e.name||"?")[0]}</div>
+      <div class="davlg av${e.gender||"_"}">${escHtml((e.nick||e.name||"?")[0])}</div>
       <div>
-        <div class="dname">${e.nick||"-"}</div>
-        <div class="dsub">${e.name||""} ${e.jikchak?"· "+e.jikchak:""}</div>
-        <div style="margin-top:4px;font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace">${e.empId||""}</div>
+        <div class="dname">${escHtml(e.nick||"-")}</div>
+        <div class="dsub">${escHtml(e.name||"")} ${e.jikchak?"· "+escHtml(e.jikchak):""}</div>
+        <div style="margin-top:4px;font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace">${escHtml(e.empId||"")}</div>
       </div>
     </div>
     <div class="dsec"><div class="dsect">조직</div>${dr("부문",e.bumun)}${dr("센터",e.center)}${dr("부/실",e.bu)}${dr("팀",e.team)}</div>
@@ -2315,7 +2477,7 @@ function renderDetTab(e,tab){
       <div class="drow"><span class="dk">고용형태</span><span class="dv">${tt}</span></div>
       ${dr("원가부서",e.wonka)}${dr("재직상태",e.status||"재직")}
     </div>
-    ${e.note?`<div class="dsec"><div class="dsect">비고</div><div class="dnote">${e.note}</div></div>`:""}
+    ${e.note?`<div class="dsec"><div class="dsect">비고</div><div class="dnote">${escHtml(e.note)}</div></div>`:""}
     ${ce?`<div class="dact">
       <button class="btn btng" onclick="closeDet();openEdit(${idx})">✏️ 수정</button>
       <button class="btn btnd" onclick="closeDet();delEmp(${idx})">삭제</button>
@@ -2345,8 +2507,8 @@ function renderDetTab(e,tab){
     <div class="dsec"><div class="dsect">상태 변경</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
         ${e.type==='파견준비'?`<button class="btn btnp btnsm" onclick="changeDispatchStatus(${idx},'파견')">✈️ 파견 시작</button>`:""}
-        ${e.type==='파견'?`<button class="btn btnsm" style="background:rgba(24,169,110,.1);color:var(--green);border-color:rgba(24,169,110,.3)" onclick="changeDispatchStatus(${idx},'복귀')">🏠 복귀 처리</button>`:""}
-        ${e.type==='파견'?`<button class="btn btnsm" style="background:rgba(79,134,247,.1);color:var(--accent);border-color:rgba(79,134,247,.3)" onclick="extendDispatch(${idx})">🔄 연장 처리</button>`:""}
+        ${e.type==='파견'?`<button class="btn btnsm" style="background:rgba(34,197,94,.1);color:var(--green);border-color:rgba(34,197,94,.3)" onclick="changeDispatchStatus(${idx},'복귀')">🏠 복귀 처리</button>`:""}
+        ${e.type==='파견'?`<button class="btn btnsm" style="background:rgba(62,207,142,.1);color:var(--accent);border-color:rgba(62,207,142,.3)" onclick="extendDispatch(${idx})">🔄 연장 처리</button>`:""}
       </div>
     </div>`:""}`;
   } else {
@@ -2377,7 +2539,7 @@ function populateFwonka(cur){
   const sel=document.getElementById('fwonkaI');
   if(!sel) return;
   const vals=[...new Set(emps.map(e=>e.wonka).filter(Boolean))].sort();
-  sel.innerHTML='<option value="">-- 선택 --</option>'+vals.map(v=>`<option value="${v}"${v===cur?' selected':''}>${v}</option>`).join('');
+  sel.innerHTML='<option value="">-- 선택 --</option>'+vals.map(v=>`<option value="${escHtml(v)}"${v===cur?' selected':''}>${escHtml(v)}</option>`).join('');
 }
 
 function openAdd(){
@@ -2513,8 +2675,24 @@ const DEFAULT_EXECS=[
   {id:"exec-1",name:"설욱환",title:"대표"},
   {id:"exec-2",name:"최기종",title:"부대표"}
 ];
+
+// SECURITY: org tree + exec list moved off localStorage → sessionStorage.
+// localStorage persisted across tabs + survived logout, exposing the org
+// chart to any XSS payload indefinitely. sessionStorage is cleared when the
+// tab closes, narrowing the window. Helper centralises the read/write.
+const _cache = {
+  get(key){
+    try { return sessionStorage.getItem(key) ?? localStorage.getItem(key); }   // legacy fallback during cutover
+    catch(e){ return null; }
+  },
+  set(key, val){
+    try { sessionStorage.setItem(key, val); localStorage.removeItem(key); }    // migrate-and-clear
+    catch(e){ /* private mode */ }
+  },
+};
+
 function loadExecs(){
-  const r=localStorage.getItem(EXEC_SK);
+  const r=_cache.get(EXEC_SK);
   if(!r) return DEFAULT_EXECS.map(e=>({...e}));
   // One-time title migration for any existing browsers carrying legacy values.
   // 법인장 → 대표, 부법인장 → 부대표.
@@ -2525,12 +2703,11 @@ function loadExecs(){
     if(e.title === '부법인장'){  e.title = '부대표';  migrated = true; }
   }
   if(migrated){
-    localStorage.setItem(EXEC_SK, JSON.stringify(arr));
-    console.log('[Migration] Updated exec titles in localStorage: 법인장→대표, 부법인장→부대표');
+    _cache.set(EXEC_SK, JSON.stringify(arr));
   }
   return arr;
 }
-function saveExecs(execs){localStorage.setItem(EXEC_SK,JSON.stringify(execs));}
+function saveExecs(execs){_cache.set(EXEC_SK,JSON.stringify(execs));}
 let execData=null;
 function buildOrgFromEmps(){
   // emps 실제 데이터 기반으로 orgData 생성
@@ -2555,7 +2732,7 @@ function buildOrgFromEmps(){
   return org;
 }
 function loadOrg(){
-  const r=localStorage.getItem(ORG_SK2);
+  const r=_cache.get(ORG_SK2);
   if(r){
     // 저장된 데이터에 emps 신규 항목 병합
     const saved=JSON.parse(r);
@@ -2572,7 +2749,7 @@ function loadOrg(){
   }
   return buildOrgFromEmps();
 }
-function saveOrg(org){localStorage.setItem(ORG_SK2,JSON.stringify(org));}
+function saveOrg(org){_cache.set(ORG_SK2,JSON.stringify(org));}
 
 let orgData=null;
 let orgSel={center:null,bu:null,team:null,execId:null};
@@ -2709,7 +2886,26 @@ function populateFteam(center, bu){
     sel.appendChild(o);
   });
 }
+// ─── String escapers ─────────────────────────────────────────────────────
+// esc()     — escapes for JS string literals (e.g. inside onclick='foo(\'${esc(v)}\')').
+//             Only escapes backslashes + single quotes. NEVER use this when
+//             writing untrusted data into innerHTML / HTML attribute values.
+// escAttr() — alias of esc(), exists for self-documenting code at call sites
+//             that escape for the JS-string-in-attribute use case.
+// escHtml() — escapes for HTML body & attribute values. Use this anywhere
+//             you interpolate user data into a template-literal HTML string
+//             that becomes innerHTML / outerHTML. Closes the XSS vector
+//             flagged in the security review (C-5 / H-1).
 function esc(s){return(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
+const escAttr = esc;
+function escHtml(s){
+  return String(s ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 function cntC(c){return devEmps().filter(e=>e.center===c&&e.type!=='한국파견').length;}
 function cntCos(c){return devEmps().filter(e=>e.center===c&&e.type!=='파견'&&e.type!=='한국파견').length;}
 function cntCdp(c){return devEmps().filter(e=>e.center===c&&e.type==='파견').length;}
@@ -2970,12 +3166,14 @@ function renderTeamPanel(center,bu,team){
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
       <div class="fg" style="flex:1;min-width:140px;margin:0">
         <div class="flab" style="margin-bottom:4px">팀명</div>
-        <input class="fi" id="oe-v" value="${team}" style="margin:0">
+        <!-- data-original captures the value at render time. The save button stays disabled
+             until the input differs from that snapshot; revert to original → button re-disables. -->
+        <input class="fi" id="oe-v" value="${esc(team)}" data-original="${esc(team)}" oninput="dirtyCheckSave('oe-v','saveTeamBtn')" style="margin:0">
       </div>
       <div style="display:flex;gap:6px;align-self:flex-end">
-        <button class="btn btnp btnsm" onclick="saveTeamName('${esc(center)}','${esc(bu)}','${esc(team)}')">팀명 저장</button>
-        <button class="btn btnd btnsm" onclick="deleteTeam('${esc(center)}','${esc(bu)}','${esc(team)}')">팀 삭제</button>
-        ${ce?`<button class="btn btnp btnsm" onclick="openAdd()" style="background:var(--green)">＋ 직원 추가</button>`:''}
+        <button class="btn btnp" id="saveTeamBtn" disabled onclick="saveTeamName('${esc(center)}','${esc(bu)}','${esc(team)}')">팀명 저장</button>
+        <button class="btn btnd" onclick="deleteTeam('${esc(center)}','${esc(bu)}','${esc(team)}')">팀 삭제</button>
+        ${ce?`<button class="btn btnp" onclick="openAdd()">＋ 직원 추가</button>`:''}
       </div>
     </div>
     ${ce?`<div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px">
@@ -3030,15 +3228,15 @@ function renderTeamPanel(center,bu,team){
               <td style="cursor:pointer" onclick="openDet(${idx})">
                 <div style="display:flex;align-items:center;gap:7px">
                   <div class="av av${e.gender||'_'}" style="width:26px;height:26px;font-size:11px;flex-shrink:0">${ini}</div>
-                  <div style="font-weight:700">${e.name||'-'}</div>
+                  <div style="font-weight:700">${escHtml(e.name||'-')}</div>
                 </div>
               </td>
-              <td style="cursor:pointer;font-weight:700" onclick="openDet(${idx})">${e.nick||'-'}</td>
-              <td>${e.grade?`<span class="tag t-grade">${e.grade}</span>`:'-'}</td>
-              <td>${e.jikchak?`<span class="tag t-직책">${e.jikchak}</span>`:'-'}</td>
-              <td style="color:var(--text2)">${e.jikmu||'-'}</td>
-              <td><span class="tag t-${(e.type||'').replace(/\s/g,'')}">${e.type||'-'}</span></td>
-              <td>${e.wonka||'-'}</td>
+              <td style="cursor:pointer;font-weight:700" onclick="openDet(${idx})">${escHtml(e.nick||'-')}</td>
+              <td>${e.grade?`<span class="tag t-grade">${escHtml(e.grade)}</span>`:'-'}</td>
+              <td>${e.jikchak?`<span class="tag t-직책">${escHtml(e.jikchak)}</span>`:'-'}</td>
+              <td style="color:var(--text2)">${escHtml(e.jikmu||'-')}</td>
+              <td><span class="tag t-${['정규직원','파견','파견준비','파견검토','인턴','한국파견'].includes(e.type)?e.type:''}">${escHtml(e.type||'-')}</span></td>
+              <td>${escHtml(e.wonka||'-')}</td>
               <td class="mono" style="color:var(--text3)">${e.join?calcYeon(e.join)+'년':'-'}</td>
               ${(()=>{const pend=pendingTransferLabel(e);const noteText=pend?(e.note?pend+' · '+e.note:pend):(e.note||'-');const col=(pend||e.note)?'var(--orange)':'var(--text3)';return `<td style="color:${col};max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(noteText)}">${esc(noteText)}</td>`;})()}
               ${ce?`<td style="padding:9px 10px;white-space:nowrap;text-align:right">
@@ -3232,7 +3430,7 @@ async function quickMoveDept(idx){
   const sel=document.getElementById('moveDeptSelect');
   sel.innerHTML='<option value="">-- 선택 --</option>'+
     Object.keys(window._orgTree).sort().map(d=>
-      `<option value="${esc(d)}"${e.center===d?' selected':''}>${esc(d)}</option>`).join('');
+      `<option value="${escHtml(d)}"${e.center===d?' selected':''}>${escHtml(d)}</option>`).join('');
   document.getElementById('moveDeptDate').value=getTodayStr();
   document.getElementById('moveDeptNote').value='';
   document.getElementById('moveDeptDateHint').style.display='none';
@@ -3255,7 +3453,7 @@ function onMoveDeptChange(preselectBu, preselectTeam){
   }
   const bus=Object.keys(window._orgTree[center]||{}).sort();
   buSel.innerHTML='<option value="">-- 선택 --</option>'+
-    bus.map(b=>`<option value="${esc(b==='(직속)'?'':b)}"${preselectBu===b||(preselectBu===''&&b==='(직속)')?' selected':''}>${esc(b)}</option>`).join('');
+    bus.map(b=>`<option value="${escHtml(b==='(직속)'?'':b)}"${preselectBu===b||(preselectBu===''&&b==='(직속)')?' selected':''}>${escHtml(b)}</option>`).join('');
   buLbl.style.display=''; buSel.style.display='';
   onMoveBuChange(preselectTeam);
 }
@@ -3272,7 +3470,7 @@ function onMoveBuChange(preselectTeam){
   }
   const teams=(window._orgTree[center]||{})[bu]||[];
   teamSel.innerHTML='<option value="">-- 선택 --</option>'+
-    teams.map(t=>`<option value="${esc(t)}"${preselectTeam===t?' selected':''}>${esc(t)}</option>`).join('');
+    teams.map(t=>`<option value="${escHtml(t)}"${preselectTeam===t?' selected':''}>${escHtml(t)}</option>`).join('');
   teamLbl.style.display=''; teamSel.style.display='';
 }
 function closeMoveDeptModal(){
@@ -3608,9 +3806,9 @@ function selOrg(center,bu,team){
     title.textContent=`📂 ${bu}`;
     const buCnt=emps.filter(e=>e.center===center&&e.bu===bu).length;
     body.innerHTML=`
-      <div class="fg" style="margin-bottom:10px"><div class="flab">부/실명</div><input class="fi" id="oe-v" value="${bu}"></div>
+      <div class="fg" style="margin-bottom:10px"><div class="flab">부/실명</div><input class="fi" id="oe-v" value="${esc(bu)}" data-original="${esc(bu)}" oninput="dirtyCheckSave('oe-v','saveBuBtn')"></div>
       <div style="display:flex;gap:8px;margin-bottom:18px">
-        <button class="btn btnp" onclick="saveBuName('${esc(center)}','${esc(bu)}')">저장</button>
+        <button class="btn btnp" id="saveBuBtn" disabled onclick="saveBuName('${esc(center)}','${esc(bu)}')">저장</button>
         <button class="btn btnd" onclick="deleteBu('${esc(center)}','${esc(bu)}')">삭제</button>
       </div>
       <div style="color:var(--text3);font-size:12px;padding:8px 0">소속 ${buCnt}명 — 팀을 클릭하면 인력 내역을 볼 수 있습니다</div>`;
@@ -3619,10 +3817,10 @@ function selOrg(center,bu,team){
     const curMgr=(orgData[center]&&orgData[center]._mgr)||'';
     const cCnt=emps.filter(e=>e.center===center&&e.type!=='한국파견').length;
     body.innerHTML=`
-      <div class="fg" style="margin-bottom:10px"><div class="flab">센터명</div><input class="fi" id="oe-v" value="${center}"></div>
-      <div class="fg" style="margin-bottom:18px"><div class="flab">센터장</div><input class="fi" id="oe-mgr" value="${curMgr}" placeholder="센터장 이름 입력"></div>
+      <div class="fg" style="margin-bottom:10px"><div class="flab">센터명</div><input class="fi" id="oe-v" value="${esc(center)}" data-original="${esc(center)}" oninput="dirtyCheckSave('oe-v','saveCenterBtn',['oe-mgr'])"></div>
+      <div class="fg" style="margin-bottom:18px"><div class="flab">센터장</div><input class="fi" id="oe-mgr" value="${esc(curMgr)}" data-original="${esc(curMgr)}" placeholder="센터장 이름 입력" oninput="dirtyCheckSave('oe-v','saveCenterBtn',['oe-mgr'])"></div>
       <div style="display:flex;gap:8px;margin-bottom:18px">
-        <button class="btn btnp" onclick="saveCenterName('${esc(center)}')">저장</button>
+        <button class="btn btnp" id="saveCenterBtn" disabled onclick="saveCenterName('${esc(center)}')">저장</button>
         <button class="btn btnd" onclick="deleteCenter('${esc(center)}')">삭제</button>
       </div>
       <div style="color:var(--text3);font-size:12px;padding:8px 0">총 ${cCnt}명 — 팀을 클릭하면 인력 내역을 볼 수 있습니다</div>`;
@@ -3646,6 +3844,30 @@ function addTeamPrompt(center,bu){
   orgData[center][bu].push(n);saveOrg(orgData);renderOrgTree();showOrgMsg('팀 추가됨');
   logChange({category:'조직관리',targetName:`${center} › ${bu} › ${n}`,field:'team_add',newValue:n,description:`팀 '${n}' 추가 (${center}${bu?' › '+bu:''})`});
 }
+// ── Dirty-check helper for the org-management editor save buttons.
+//
+// Each editor input carries:
+//   data-original = the value at render time
+//   oninput       = "dirtyCheckSave('<inputId>','<btnId>',[<extraInputIds>])"
+//
+// The save button starts with the `disabled` attribute. On every keystroke
+// we compare every paired input's current value vs. its data-original. If
+// ANY of them differ → unlock the button. If ALL match → re-lock.
+//
+// extraIds is used by the center editor where 센터명 + 센터장 share one
+// save button — changing either makes the form "dirty".
+function dirtyCheckSave(primaryId, btnId, extraIds){
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  const ids = [primaryId].concat(extraIds || []);
+  const dirty = ids.some(id => {
+    const el = document.getElementById(id);
+    return el && el.value !== (el.dataset.original || '');
+  });
+  btn.disabled = !dirty;
+}
+window.dirtyCheckSave = dirtyCheckSave;
+
 function saveCenterName(old){
   const nv=document.getElementById('oe-v').value.trim();
   const mgr=(document.getElementById('oe-mgr')||{}).value||'';
@@ -3776,8 +3998,8 @@ async function renderSettingsUsers(){
     .sort((a,b)=>(a.nick||'').localeCompare(b.nick||''));
   // 목록 테이블
   const rows=users.map((u,i)=>`<tr>
-    <td class="mono">${u.id}</td>
-    <td>${u.name}${u.empNick?`<span style="font-size:10px;color:var(--text3);margin-left:6px">${u.empNick}</span>`:''}</td>
+    <td class="mono">${escHtml(u.id)}</td>
+    <td>${escHtml(u.name)}${u.empNick?`<span style="font-size:10px;color:var(--text3);margin-left:6px">${escHtml(u.empNick)}</span>`:''}</td>
     <td><span class="tag t-직책">${u.role}</span></td>
     <td style="color:var(--text3)">${u.empNick?'직원':'직원 외'}</td>
     <td><div style="display:flex;gap:4px">
@@ -3845,12 +4067,12 @@ function showEmpList(q){
         style="padding:9px 12px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:2px"
         onmouseover="this.style.background='var(--bg4)'" onmouseout="this.style.background=''">
         <div style="display:flex;align-items:center;gap:6px">
-          <div class="av av${e.gender||'_'}" style="width:20px;height:20px;font-size:9px;flex-shrink:0">${(e.nick||e.name||'?')[0]}</div>
-          <span style="font-weight:700;font-size:13px">${e.nick||e.name}</span>
-          ${e.nick&&e.name?`<span style="font-size:11px;color:var(--text3)">${e.name}</span>`:''}
-          ${e.jikchak?`<span class="tag t-직책" style="font-size:10px;padding:1px 5px">${e.jikchak}</span>`:''}
+          <div class="av av${e.gender||'_'}" style="width:20px;height:20px;font-size:9px;flex-shrink:0">${escHtml((e.nick||e.name||'?')[0])}</div>
+          <span style="font-weight:700;font-size:13px">${escHtml(e.nick||e.name)}</span>
+          ${e.nick&&e.name?`<span style="font-size:11px;color:var(--text3)">${escHtml(e.name)}</span>`:''}
+          ${e.jikchak?`<span class="tag t-직책" style="font-size:10px;padding:1px 5px">${escHtml(e.jikchak)}</span>`:''}
         </div>
-        <div style="font-size:10px;color:var(--text3);padding-left:26px">${e.center||''} ${e.bu?'› '+e.bu:''} ${e.team?'› '+e.team:''}</div>
+        <div style="font-size:10px;color:var(--text3);padding-left:26px">${escHtml(e.center||'')} ${e.bu?'› '+escHtml(e.bu):''} ${e.team?'› '+escHtml(e.team):''}</div>
       </div>`).join('');
   }
   dropdown.style.display='';
@@ -3945,18 +4167,29 @@ async function editUser(i){
     document.getElementById('uf-name').value=u.name||'';
   }
   document.getElementById('uf-id').value=u.id;
-  document.getElementById('uf-pw').value=u.pw;
-  ufPwValidate(u.pw||'');
+  // SECURITY: never pre-populate the password field. Even a hashed value would
+  // be leaked to any browser extension / screenshot / XSS payload that reads
+  // the DOM. The field is left blank — admins type a new password only if
+  // they're actually changing it; an empty value on save means "don't touch".
+  const pwField = document.getElementById('uf-pw');
+  pwField.value = '';
+  pwField.placeholder = '(변경하려면 새 비밀번호 입력)';
+  ufPwValidate('');
   document.getElementById('uf-role').value=u.role;
 }
 async function saveUser(){
   const id=document.getElementById('uf-id').value.trim();
-  const pw=document.getElementById('uf-pw').value.trim();
+  const pw=document.getElementById('uf-pw').value.trim();   // blank ⇒ keep existing on edit
   const role=document.getElementById('uf-role').value;
   const isEmp=document.getElementById('utype-emp').checked;
   const empNick=isEmp?(document.getElementById('uf-emp-nick-hidden')?.value||document.getElementById('uf-emp-search')?.value||''):'';
   if(!id){toast('아이디를 입력하세요','err');return;}
-  if(!pw){toast('비밀번호를 입력하세요','err');return;}
+  const editIdx=document.getElementById('uf-edit-idx').value;
+  const originalId=(document.getElementById('uf-original-id')?.value||'').trim();
+  const isUpdate=editIdx!=='' && originalId!=='';
+  // On CREATE, password is required. On UPDATE, blank means "keep existing"
+  // (we no longer pre-fill the field — see editUser()).
+  if(!isUpdate && !pw){toast('비밀번호를 입력하세요','err');return;}
   let name='';
   if(isEmp&&empNick){
     const emp=emps.find(e=>(e.nick||'')===empNick);
@@ -3965,10 +4198,8 @@ async function saveUser(){
     name=document.getElementById('uf-name').value.trim()||id;
   }
   const canEdit=role!=='조회전용';
-  const editIdx=document.getElementById('uf-edit-idx').value;
-  const originalId=(document.getElementById('uf-original-id')?.value||'').trim();
-  const isUpdate=editIdx!=='' && originalId!=='';
-  const row={ id, password:pw, name, role, can_edit:canEdit };
+  const row={ id, name, role, can_edit:canEdit };
+  if(pw)      row.password = pw;     // omit on UPDATE if blank → DB keeps old hash
   if(empNick) row.emp_nick = empNick;
 
   // Capture pre-update snapshot for audit diff (UPDATE only).
@@ -4108,9 +4339,9 @@ function calcDday(endStr){
 }
 function ddayBadge(d){
   if(d===null)return "-";
-  if(d<=0)return `<span style="background:rgba(224,63,63,.15);color:var(--red);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace">만료</span>`;
+  if(d<=0)return `<span style="background:rgba(239,68,68,.15);color:var(--red);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace">만료</span>`;
   const c=d<=30?"var(--red)":d<=60?"var(--orange)":"var(--green)";
-  const bg=d<=30?"rgba(224,63,63,.1)":d<=60?"rgba(224,138,32,.1)":"rgba(24,169,110,.1)";
+  const bg=d<=30?"rgba(239,68,68,.1)":d<=60?"rgba(245,158,11,.1)":"rgba(34,197,94,.1)";
   return `<span style="background:${bg};color:${c};padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace">D-${d}</span>`;
 }
 function renderDispatchPage(){
@@ -4159,14 +4390,14 @@ function renderDispatchTable(){
   </tr></thead><tbody>${list.map(e=>{
     const idx=emps.indexOf(e);
     const d=calcDday(e.dispatchEnd);
-    const rowBg=d!==null&&d<=30?'background:rgba(224,63,63,.06)':d!==null&&d<=60?'background:rgba(224,138,32,.06)':'';
+    const rowBg=d!==null&&d<=30?'background:rgba(239,68,68,.06)':d!==null&&d<=60?'background:rgba(245,158,11,.06)':'';
     return `<tr style="${rowBg}">
-      <td style="cursor:pointer;font-weight:700" onclick="openDet(${idx})">${e.nick||e.name}</td>
-      <td>${e.dispatchCity||'-'}</td>
-      <td>${e.dispatchClient||'-'}</td>
-      <td>${e.deptHead||'-'}</td>
-      <td class="mono" style="color:var(--text3)">${e.dispatchStart||'-'}</td>
-      <td class="mono">${e.dispatchEnd||'-'}</td>
+      <td style="cursor:pointer;font-weight:700" onclick="openDet(${idx})">${escHtml(e.nick||e.name)}</td>
+      <td>${escHtml(e.dispatchCity||'-')}</td>
+      <td>${escHtml(e.dispatchClient||'-')}</td>
+      <td>${escHtml(e.deptHead||'-')}</td>
+      <td class="mono" style="color:var(--text3)">${escHtml(e.dispatchStart||'-')}</td>
+      <td class="mono">${escHtml(e.dispatchEnd||'-')}</td>
       <td>${ddayBadge(d)}</td>
       <td>${e.dispatchExtendable?'<span class="tag t-파견준비">가능</span>':'<span style="color:var(--text3)">미정</span>'}</td>
       ${ce?`<td><div style="display:flex;gap:4px">
@@ -4188,11 +4419,11 @@ function renderDispatchPrepTable(prep){
   </tr></thead><tbody>${prep.map(e=>{
     const idx=emps.indexOf(e);
     return `<tr>
-      <td style="cursor:pointer;font-weight:700" onclick="openDet(${idx})">${e.nick||e.name}</td>
-      <td><span class="tag t-grade">${e.grade||'-'}</span></td>
-      <td>${e.jikmu||'-'}</td>
-      <td>${e.wonka||'-'}</td>
-      <td style="color:var(--orange);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.note||e.workplace||'-'}</td>
+      <td style="cursor:pointer;font-weight:700" onclick="openDet(${idx})">${escHtml(e.nick||e.name)}</td>
+      <td><span class="tag t-grade">${escHtml(e.grade||'-')}</span></td>
+      <td>${escHtml(e.jikmu||'-')}</td>
+      <td>${escHtml(e.wonka||'-')}</td>
+      <td style="color:var(--orange);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(e.note||e.workplace||'-')}</td>
       ${ce?`<td><button class="btn btnp btnsm" onclick="changeDispatchStatus(${idx},'파견')">✈️ 파견시작</button></td>`:''}
     </tr>`;
   }).join('')}</tbody>`;
@@ -4350,7 +4581,7 @@ function _catBadge(cat){
     '데이터 동기화':  'var(--green)'
   };
   const c = map[cat] || 'var(--text3)';
-  return `<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;background:rgba(0,0,0,.04);border:1px solid ${c};color:${c}">${cat||'-'}</span>`;
+  return `<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;background:rgba(0,0,0,.04);border:1px solid ${c};color:${c}">${escHtml(cat||'-')}</span>`;
 }
 
 function renderChangelog(){
@@ -4382,11 +4613,11 @@ function renderChangelog(){
     <tr>
       <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2);white-space:nowrap">${_fmtDate(r.occurred_at)}</td>
       <td>
-        <span style="font-weight:600">${r.actor_name||'-'}</span>
-        <span style="font-size:10px;color:var(--text3);margin-left:6px">${r.actor_role||''}</span>
+        <span style="font-weight:600">${escHtml(r.actor_name||'-')}</span>
+        <span style="font-size:10px;color:var(--text3);margin-left:6px">${escHtml(r.actor_role||'')}</span>
       </td>
       <td>${_catBadge(r.category)}</td>
-      <td style="color:var(--text)">${(r.description||'').replace(/</g,'&lt;')}</td>
+      <td style="color:var(--text)">${escHtml(r.description||'')}</td>
     </tr>`).join('');
 }
 
