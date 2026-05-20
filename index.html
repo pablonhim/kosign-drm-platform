@@ -728,6 +728,15 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
             </svg>
             사용자 관리
           </div>
+          <div class="navi" id="nav-changelog" onclick="showPage('changelog')">
+            <svg class="navi-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 5h18"/>
+              <path d="M3 12h18"/>
+              <path d="M3 19h12"/>
+              <circle cx="19" cy="19" r="2.5"/>
+            </svg>
+            변경 이력
+          </div>
         </div>
       </nav>
     </aside>
@@ -974,6 +983,49 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
                 <button class="btn btng" onclick="resetUserForm()">취소</button>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHANGELOG (변경 이력) -->
+      <div class="page" id="page-changelog">
+        <div class="filter-row" style="margin-bottom:10px">
+          <div class="srch" style="flex:1;min-width:240px">
+            <span>🔍</span>
+            <input id="clq" placeholder="작업자·대상·내용 검색…" oninput="renderChangelog()">
+            <button type="button" class="srch-clear" id="clqClear" onclick="document.getElementById('clq').value='';renderChangelog()" aria-label="검색 지우기">✕</button>
+          </div>
+          <select id="cl-cat" onchange="renderChangelog()" style="background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:8px 12px;font-size:12px;color:var(--text);outline:none;cursor:pointer">
+            <option value="">전체 분류</option>
+            <option value="조직관리">조직관리</option>
+            <option value="사원정보">사원정보</option>
+            <option value="비밀번호 변경">비밀번호 변경</option>
+            <option value="사용자 관리">사용자 관리</option>
+            <option value="데이터 동기화">데이터 동기화</option>
+          </select>
+          <input type="date" id="cl-from" onchange="renderChangelog()" style="width:140px" title="시작일">
+          <input type="date" id="cl-to"   onchange="renderChangelog()" style="width:140px" title="종료일">
+          <button class="btn btng" onclick="loadChangelog(true)" title="새로고침">↻</button>
+        </div>
+        <div class="section">
+          <div class="sh">
+            <span class="sht">📜 변경 이력</span>
+            <span id="cl-count" style="font-size:11px;color:var(--text3)">0건</span>
+          </div>
+          <div class="ox" style="overflow:auto">
+            <table class="tbl" id="cl-table">
+              <thead>
+                <tr>
+                  <th style="width:170px">일시</th>
+                  <th style="width:170px">작업자</th>
+                  <th style="width:130px">분류</th>
+                  <th>변경 내용</th>
+                </tr>
+              </thead>
+              <tbody id="cl-tbody">
+                <tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text3)">불러오는 중…</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -1554,7 +1606,7 @@ function startApp(){
   });
 }
 
-const PM={dashboard:{t:"대시보드",s:"2026년 개발자 인력 현황"},list:{t:"전체개발 인력",s:"전체 직원 검색 및 관리"},outsourcing:{t:"아웃소싱 인력",s:"아웃소싱/파견센터 재직 인력"},dispatch:{t:"파견 인력",s:"한국 파견 현황 및 D-Day 관리"},rnd:{t:"R&D지원 인력",s:"R&D 지원센터 소속 인력"},summary:{t:"고객사별 인력현황",s:"고객사별 아웃소싱/파견 인력 현황"},"settings-org":{t:"조직 관리",s:"센터/부/실/팀 구조 편집"},"settings-users":{t:"사용자 관리",s:"계정 및 권한 관리"}};
+const PM={dashboard:{t:"대시보드",s:"2026년 개발자 인력 현황"},list:{t:"전체개발 인력",s:"전체 직원 검색 및 관리"},outsourcing:{t:"아웃소싱 인력",s:"아웃소싱/파견센터 재직 인력"},dispatch:{t:"파견 인력",s:"한국 파견 현황 및 D-Day 관리"},rnd:{t:"R&D지원 인력",s:"R&D 지원센터 소속 인력"},summary:{t:"고객사별 인력현황",s:"고객사별 아웃소싱/파견 인력 현황"},"settings-org":{t:"조직 관리",s:"센터/부/실/팀 구조 편집"},"settings-users":{t:"사용자 관리",s:"계정 및 권한 관리"},"changelog":{t:"변경 이력",s:"시스템 변경 기록"}};
 // 가상 페이지: 리스트 페이지를 센터 필터로 표시
 
 function setPill(id, cnt){
@@ -1619,6 +1671,7 @@ function showPage(id){
   if(id==="settings-org")renderSettingsOrg();
   if(id==="settings-users"){renderSettingsUsers();resetUserForm();toggleUserType();}
   if(id==="dispatch")renderDispatchPage();
+  if(id==="changelog") loadChangelog(true);
   // nav 활성화
   const navEl=document.getElementById('nav-'+id);
   if(navEl)navEl.classList.add('active');
@@ -2371,6 +2424,19 @@ async function saveEmp(){
     // After re-render, pulse the row that was just saved (uses empId; new rows pulse on next save once they have one).
     const savedEmp=isUpdate?emps[parseInt(idx)]:emps[emps.length-1];
     if(savedEmp?.empId) pulseRow(savedEmp.empId);
+    // ── Audit log
+    if(isUpdate){
+      logEmpDiff(prev, savedEmp);
+    } else if(savedEmp){
+      const nm=savedEmp.nick||savedEmp.name||'(이름 없음)';
+      logChange({
+        category:'사원정보',
+        targetId:savedEmp.empId||null,
+        targetName:nm,
+        field:'create',
+        description:`${nm} 직원 추가 (${[savedEmp.center,savedEmp.bu,savedEmp.team].filter(Boolean).join(' › ')||'-'})`
+      });
+    }
   } finally {
     setBtnLoading('empSaveBtn', false);
   }
@@ -3076,6 +3142,17 @@ async function confirmResign(){
     toast('퇴사 처리됐습니다');
     refreshActiveViews();
     pulseRow(e.empId);
+    // ── Audit log
+    const nm=e.nick||e.name||'(이름 없음)';
+    logChange({
+      category:'사원정보',
+      targetId:e.empId,
+      targetName:nm,
+      field:'status',
+      oldValue:'재직',
+      newValue:'Resigned',
+      description:`${nm} 퇴사 처리 (${dt}${noteIn?' — '+noteIn:''})`
+    });
   } finally {
     setBtnLoading('resignSave', false);
   }
@@ -3305,8 +3382,9 @@ async function syncWonkaForAllEmployees(){
 async function confirmMoveDept(){
   if(_moveDeptIdx===null) return;
   const e=emps[_moveDeptIdx]; if(!e) return;
-  // Snapshot the OLD position before we overwrite it (used for the note line).
+  // Snapshot the OLD position before we overwrite it (used for the note line + audit log).
   const oldCenter = e.center || '';
+  const oldBu     = e.bu     || '';
   const oldTeam   = e.team   || '';
   const newDept=document.getElementById('moveDeptSelect').value;
   if(!newDept){toast('새 센터를 선택하세요','err');return;}
@@ -3358,6 +3436,19 @@ async function confirmMoveDept(){
     toast(isFuture?`이동 예약됨 (${dt})`:'부서 이동 완료');
     refreshActiveViews();
     pulseRow(e.empId);
+    // ── Audit log
+    const nm=e.nick||e.name||'(이름 없음)';
+    const oldPath=[oldCenter,oldBu,oldTeam].filter(Boolean).join(' › ')||'(미지정)';
+    const newPath=[newDept,newBu,newTeam].filter(Boolean).join(' › ')||'(미지정)';
+    logChange({
+      category:'조직관리',
+      targetId:e.empId,
+      targetName:nm,
+      field:isFuture?'pending_transfer':'transfer',
+      oldValue:oldPath,
+      newValue:newPath,
+      description:`${nm} 부서 ${isFuture?'이동 예약':'이동'}: ${oldPath} → ${newPath}${isFuture?` (발령일 ${dt})`:''}`
+    });
   } finally {
     setBtnLoading('moveDeptSave', false);
   }
@@ -3818,6 +3909,13 @@ async function saveUser(){
   const row={ id, password:pw, name, role, can_edit:canEdit };
   if(empNick) row.emp_nick = empNick;
 
+  // Capture pre-update snapshot for audit diff (UPDATE only).
+  let _prevUser = null;
+  if(isUpdate && originalId){
+    const { data: pu } = await sb.from('users').select('*').eq('id', originalId).maybeSingle();
+    _prevUser = pu || null;
+  }
+
   setBtnLoading('userSaveBtn', true);
   try {
     if(!isUpdate){
@@ -3832,6 +3930,12 @@ async function saveUser(){
         return;
       }
       toast('사용자 추가됐습니다');
+      logChange({
+        category:'사용자 관리',
+        targetId:id, targetName:name||id,
+        field:'create',
+        description:`사용자 추가: ${name||id} (${role})`
+      });
     } else {
       // UPDATE — by the ORIGINAL id captured when Edit was clicked.
       // This prevents the duplicate-row bug when the user changes the id during edit.
@@ -3847,6 +3951,45 @@ async function saveUser(){
         return;
       }
       toast('수정됐습니다');
+      // ── Audit log — diff prev vs new
+      if(_prevUser){
+        const label = name || id;
+        if(_prevUser.password !== pw){
+          logChange({
+            category:'비밀번호 변경',
+            targetId:id, targetName:label,
+            field:'password',
+            description:`${label} 비밀번호 변경`
+          });
+        }
+        if(_prevUser.role !== role){
+          logChange({
+            category:'사용자 관리',
+            targetId:id, targetName:label,
+            field:'role',
+            oldValue:_prevUser.role, newValue:role,
+            description:`${label}: ${_prevUser.role} → ${role} 권한 변경`
+          });
+        }
+        if(_prevUser.name !== name){
+          logChange({
+            category:'사용자 관리',
+            targetId:id, targetName:label,
+            field:'name',
+            oldValue:_prevUser.name, newValue:name,
+            description:`${_prevUser.name||'(이름 없음)'} → ${name} 이름 변경`
+          });
+        }
+        if(_prevUser.id !== id){
+          logChange({
+            category:'사용자 관리',
+            targetId:id, targetName:label,
+            field:'id',
+            oldValue:_prevUser.id, newValue:id,
+            description:`${label}: 아이디 변경 ${_prevUser.id} → ${id}`
+          });
+        }
+      }
     }
     await renderSettingsUsers();
     resetUserForm();
@@ -3874,14 +4017,21 @@ function updateSearchClear(){
 async function deleteUser(i){
   const users=await loadUsers();
   if(users[i].id===CU?.id){toast('현재 로그인 계정은 삭제 불가','err');return;}
-  if(!confirm(`'${users[i].id}' 계정을 삭제하시겠습니까?`))return;
-  const { error } = await sb.from('users').delete().eq('id', users[i].id);
+  const victim=users[i];
+  if(!confirm(`'${victim.id}' 계정을 삭제하시겠습니까?`))return;
+  const { error } = await sb.from('users').delete().eq('id', victim.id);
   if(error){
     console.error('[Users] Delete failed:', error);
     toast('삭제 실패: '+error.message,'err');
     return;
   }
   await renderSettingsUsers();resetUserForm();toast('삭제됐습니다');
+  logChange({
+    category:'사용자 관리',
+    targetId:victim.id, targetName:victim.name||victim.id,
+    field:'delete',
+    description:`사용자 삭제: ${victim.name||victim.id} (${victim.role||''})`
+  });
 }
 
 
@@ -4043,6 +4193,141 @@ function toggleNonDev(on){
   updateAll();pf();rl();
   toast(on?'비개발 직군 표시 중 (전체 142명)':'개발자 인력만 표시 중 (127명)');
 }
+
+// ═══════════════════════════════════════════════════
+// 변경 이력 (Changes Log)
+// ═══════════════════════════════════════════════════
+const FIELD_KO = {
+  jikmu:'직무', jikchak:'직책', grade:'등급', kgrade:'K등급',
+  center:'센터', bu:'부/실', team:'팀',
+  type:'고용형태', wonka:'원가부서', workplace:'근무지',
+  localMgr:'담당관리자', director:'센터장', deptHead:'부서장',
+  status:'재직상태', note:'비고',
+  dispatchStart:'파견 시작', dispatchEnd:'파견 종료',
+  dispatchCity:'파견 도시', dispatchClient:'파견 고객사',
+  password:'비밀번호', role:'권한', name:'이름', id:'아이디'
+};
+const TRACKED_EMP_FIELDS = ['jikmu','jikchak','grade','kgrade','center','bu','team','type','wonka','workplace','localMgr','director','deptHead','status'];
+
+let _changelogRows = [];
+
+async function logChange({category, targetId, targetName, field, oldValue, newValue, description, meta}){
+  if(!CU) return;
+  const row = {
+    actor_id:   CU.id   || null,
+    actor_name: CU.name || null,
+    actor_role: CU.role || null,
+    category,
+    target_id:   targetId   || null,
+    target_name: targetName || null,
+    field:     field || null,
+    old_value: oldValue==null ? null : String(oldValue),
+    new_value: newValue==null ? null : String(newValue),
+    description,
+    meta: meta || null
+  };
+  try{
+    const { error } = await sb.from('audit_logs').insert(row);
+    if(error) console.error('[Audit] insert failed:', error);
+  }catch(e){ console.error('[Audit] insert exception:', e); }
+}
+
+// Diff two employee snapshots and emit one log line per changed tracked field.
+function logEmpDiff(prev, curr){
+  if(!prev || !curr) return;
+  const name = curr.nick || curr.name || curr.empId || '(이름 없음)';
+  for(const f of TRACKED_EMP_FIELDS){
+    const o = (prev[f]==null?'':String(prev[f])).trim();
+    const n = (curr[f]==null?'':String(curr[f])).trim();
+    if(o===n) continue;
+    const label = FIELD_KO[f] || f;
+    const isOrg = (f==='center'||f==='bu'||f==='team');
+    logChange({
+      category: isOrg ? '조직관리' : '사원정보',
+      targetId: curr.empId || null,
+      targetName: name,
+      field: f,
+      oldValue: o,
+      newValue: n,
+      description: `${name}: ${o||'(빈값)'} → ${n||'(빈값)'} ${label} 변경`
+    });
+  }
+}
+
+async function loadChangelog(force){
+  if(!_changelogRows.length || force){
+    const tbody=document.getElementById('cl-tbody');
+    if(tbody) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text3)">불러오는 중…</td></tr>';
+    const { data, error } = await sb.from('audit_logs')
+      .select('*')
+      .order('occurred_at',{ascending:false})
+      .limit(1000);
+    if(error){
+      console.error('[Audit] load failed:', error);
+      if(tbody) tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:40px;color:var(--red)">불러오기 실패: ${error.message}</td></tr>`;
+      return;
+    }
+    _changelogRows = data || [];
+  }
+  renderChangelog();
+}
+
+function _fmtDate(iso){
+  if(!iso) return '-';
+  const d=new Date(iso); if(isNaN(d)) return iso;
+  const p=n=>String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+}
+
+function _catBadge(cat){
+  const map = {
+    '조직관리':       'var(--accent)',
+    '사원정보':       'var(--cyan)',
+    '비밀번호 변경':  'var(--orange)',
+    '사용자 관리':    'var(--purple)',
+    '데이터 동기화':  'var(--green)'
+  };
+  const c = map[cat] || 'var(--text3)';
+  return `<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;background:rgba(0,0,0,.04);border:1px solid ${c};color:${c}">${cat||'-'}</span>`;
+}
+
+function renderChangelog(){
+  const tbody=document.getElementById('cl-tbody'); if(!tbody) return;
+  const q=(document.getElementById('clq')?.value||'').trim().toLowerCase();
+  const cat=document.getElementById('cl-cat')?.value||'';
+  const from=document.getElementById('cl-from')?.value||'';
+  const to  =document.getElementById('cl-to')  ?.value||'';
+
+  const rows=_changelogRows.filter(r=>{
+    if(cat && r.category!==cat) return false;
+    if(from && r.occurred_at && r.occurred_at < from) return false;
+    if(to   && r.occurred_at && r.occurred_at > (to+'T23:59:59')) return false;
+    if(q){
+      const hay=[r.actor_name,r.actor_role,r.category,r.target_name,r.description,r.field,r.old_value,r.new_value]
+        .map(s=>(s||'').toString().toLowerCase()).join(' ');
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  document.getElementById('cl-count').textContent = `${rows.length.toLocaleString()}건`;
+
+  if(!rows.length){
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text3)">기록이 없습니다</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(r=>`
+    <tr>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2);white-space:nowrap">${_fmtDate(r.occurred_at)}</td>
+      <td>
+        <div style="font-weight:600">${r.actor_name||'-'}</div>
+        <div style="font-size:10px;color:var(--text3)">${r.actor_role||''}</div>
+      </td>
+      <td>${_catBadge(r.category)}</td>
+      <td style="color:var(--text)">${(r.description||'').replace(/</g,'&lt;')}</td>
+    </tr>`).join('');
+}
+
 function toast(msg,type="ok"){
   const t=document.getElementById("toast");t.textContent=msg;t.className="toast "+type+" show";
   setTimeout(()=>t.classList.remove("show"),3000);
