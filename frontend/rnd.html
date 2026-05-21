@@ -7,7 +7,17 @@
 <!-- Content-Security-Policy: restricts where scripts / styles / connections may load from.
      Even if a stored-XSS payload slips through, it can't exfiltrate to attacker domains
      because connect-src whitelists only this origin + the Supabase project. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://tnkofdygsdxmtuiijygi.supabase.co wss://tnkofdygsdxmtuiijygi.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self';">
+<!-- 'unsafe-inline' is intentionally included in script-src because the prototype uses
+     hundreds of inline onclick / oninput / onchange handlers throughout template-literal
+     HTML (see e.g. table row renderers in dispatch / list / changelog). Removing them is
+     a multi-day refactor that should land as a separate change.
+     What's STILL enforced even with this relaxation:
+       * connect-src whitelists only Supabase + self  → XSS payloads can't exfil data
+       * script-src still blocks external script URLs → no evil.com/payload.js loads
+       * frame-ancestors 'none' blocks clickjacking
+       * base-uri / form-action / img-src still locked down
+     Primary XSS defense remains the escHtml() sweep applied across the renderers. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://tnkofdygsdxmtuiijygi.supabase.co wss://tnkofdygsdxmtuiijygi.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self';">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 

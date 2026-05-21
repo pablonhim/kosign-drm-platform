@@ -71,11 +71,14 @@ update public.users
 --    The function returns a single row on success or zero rows on failure;
 --    the client distinguishes "no match" from "DB error" by inspecting the
 --    `error` field of the supabase-js response.
+-- search_path includes `extensions` because Supabase installs pgcrypto there
+-- (not `public`). Without this, the function body fails to resolve crypt()
+-- with "function crypt(text, text) does not exist".
 create or replace function public.verify_login(p_id text, p_pw text)
 returns table (id text, name text, role text, can_edit boolean)
 language sql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
   select u.id, u.name, u.role, u.can_edit
     from public.users u
