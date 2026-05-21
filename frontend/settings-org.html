@@ -2754,16 +2754,12 @@ function loadExecs(){
 function saveExecs(execs){_cache.set(EXEC_SK,JSON.stringify(execs));}
 let execData=null;
 function buildOrgFromEmps(){
-  // emps 실제 데이터 기반으로 orgData 생성
+  // The tree is now built strictly from live employee data — DEFAULT_ORG
+  // is no longer seeded here. The constant remains in the file as a
+  // first-time-setup reference for a fresh database, but it's no longer
+  // injected into the tree on every rebuild (which used to keep
+  // hard-coded legacy center names visible after admin renames).
   const org={};
-  // DEFAULT_ORG 구조 먼저 복사 (빈 센터 포함)
-  for(const[c,bus]of Object.entries(DEFAULT_ORG)){
-    org[c]={};
-    for(const[b,teams]of Object.entries(bus)){
-      org[c][b]=[...teams];
-    }
-  }
-  // emps에서 실제 데이터 병합
   emps.forEach(e=>{
     const c=e.center||'',b=e.bu||'',t=e.team||'';
     if(!c)return;
@@ -2773,13 +2769,34 @@ function buildOrgFromEmps(){
       if(t&&!org[c][b].includes(t))org[c][b].push(t);
     }
   });
+  // Fallback: only inject DEFAULT_ORG if the database has zero employees
+  // (i.e., the truly-empty initial state). Otherwise emps is the source
+  // of truth.
+  if (Object.keys(org).length === 0) {
+    for(const[c,bus]of Object.entries(DEFAULT_ORG)){
+      org[c]={};
+      for(const[b,teams]of Object.entries(bus)){
+        org[c][b]=[...teams];
+      }
+    }
+  }
   return org;
 }
 function loadOrg(){
   const r=_cache.get(ORG_SK2);
   if(r){
-    // 저장된 데이터에 emps 신규 항목 병합
+    // 저장된 데이터에 emps 신규 항목 병합 + 폐기된 센터/부서/팀 제거.
+    // The previous version only ADDED missing entries from emps. That left
+    // stale center/bu/team keys hanging around after a rename (e.g., admin
+    // renamed "OldName" → "NewName" in another tab; this tab's cache still
+    // had "OldName" with no employees in it). The org-tree therefore showed
+    // a ghost center with zero members. We now prune any cached key that
+    // has no live employee pointing at it.
     const saved=JSON.parse(r);
+    const liveCenters=new Set(emps.map(e=>e.center).filter(Boolean));
+    for(const c of Object.keys(saved)){
+      if(!liveCenters.has(c)) delete saved[c];
+    }
     emps.forEach(e=>{
       const c=e.center||'',b=e.bu||'',t=e.team||'';
       if(!c)return;
@@ -2799,9 +2816,25 @@ let orgData=null;
 let orgSel={center:null,bu:null,team:null,execId:null};
 
 function renderSettingsOrg(){
-  // 항상 최신 emps 기반으로 orgData 재구성
-  execData=loadExecs();
-  orgData=loadOrg();
+  // 항상 최신 emps 기반으로 orgData 재구성.
+  // We deliberately bypass loadOrg()'s cache here and rebuild fresh from
+  // the live employee data, then carry forward only `_mgr` (center-manager
+  // names) from the cached version. Reason: this is the page where a center
+  // rename ought to be visible immediately. Any other code path that reads
+  // orgData via loadOrg() will also get a pruned/repaired tree (see the
+  // pruning loop added to loadOrg above).
+  execData = loadExecs();
+  const fresh = buildOrgFromEmps();
+  const cachedRaw = _cache.get(ORG_SK2);
+  if (cachedRaw) {
+    try {
+      const cached = JSON.parse(cachedRaw);
+      for (const c of Object.keys(fresh)) {
+        if (cached[c] && cached[c]._mgr) fresh[c]._mgr = cached[c]._mgr;
+      }
+    } catch (_e) { /* stale JSON — ignore */ }
+  }
+  orgData = fresh;
   saveOrg(orgData);
   renderOrgTree();
 }
