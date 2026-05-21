@@ -68,8 +68,11 @@
      --accent  is the saturated fill — used on .btnp, focus rings, switch ON.
      --accent2 is the darker hover/text-on-tint shade used by .btnp:hover and
      the sidebar's .navi.active text (dark mode overrides accent2 for contrast). */
-  --accent:#3ecf8e;
-  --accent2:#30b87a;
+  /* Brand: Gemini-style tech blue.
+     --accent  is the saturated fill — primary button bg + focus rings + .navi.active tint.
+     --accent2 is the lighter "border ring" + hover bg + text on light tint. */
+  --accent:#1A73E8;
+  --accent2:#4285F4;
   /* Status — text-grade shades for light mode. These are also the values
      pages use as text on tinted backgrounds (e.g., .pill-green color), so
      they need WCAG AA contrast against near-white. Each is the "-700" tier
@@ -106,7 +109,7 @@
   --text:#ffffff;
   --text2:#a1a1a1;
   --text3:#6e6e6e;
-  --accent2:#34d399;   /* emerald-400 — readable text on dark emerald tint */
+  --accent2:#8AB4F8;   /* lighter Material blue — readable text on dark blue tint */
   /* Status — lighter for dark backgrounds */
   --green:#4ade80;     /* green-400 */
   --orange:#fbbf24;    /* amber-400 */
@@ -137,7 +140,7 @@ body{font-family:'JetBrains Mono Digits',"Plus Jakarta Sans","Noto Sans KR","Kan
 .lbox{width:300px;max-width:90vw;position:relative;z-index:1;animation:fu .4s ease;}
 @keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 .llogo{text-align:left;margin-bottom:30px;}
-.lico{width:76px;height:76px;background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:20px;display:inline-flex;align-items:center;justify-content:center;color:#fff;margin-bottom:14px;box-shadow:0 10px 28px rgba(62,207,142,.30);}
+.lico{width:76px;height:76px;background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:20px;display:inline-flex;align-items:center;justify-content:center;color:#fff;margin-bottom:14px;box-shadow:0 10px 28px rgba(26,115,232,.30);}
 .lico svg{width:36px;height:36px;}
 .len{font-size:11px;color:var(--text3);letter-spacing:.4px;text-transform:uppercase;font-weight:700;line-height:1.1;}
 .lko{font-size:26px;font-weight:800;margin-top:1px;letter-spacing:-0.3px;line-height:1.15;}
@@ -147,7 +150,7 @@ body{font-family:'JetBrains Mono Digits',"Plus Jakarta Sans","Noto Sans KR","Kan
 .lcheck{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);cursor:pointer;user-select:none;margin-top:-4px;}
 .lcheck input{margin:0;cursor:pointer;accent-color:var(--accent);width:14px;height:14px;}
 .li{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:11px 14px;color:var(--text);font-size:14px;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;outline:none;transition:border-color .15s,box-shadow .15s;width:100%;}
-.li:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(62,207,142,.14);}
+.li:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,115,232,.14);}
 .lpw-wrap{position:relative;}
 .lpw-wrap > input{padding-right:42px;}
 .lpw-eye{position:absolute;top:50%;right:8px;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);padding:6px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:color .15s,background .15s;}
@@ -276,7 +279,7 @@ body{font-family:'JetBrains Mono Digits',"Plus Jakarta Sans","Noto Sans KR","Kan
 .bell-wrap{position:relative;}
 .bell-btn{width:36px;height:36px;background:none;border:1px solid transparent;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--text2);position:relative;transition:background .15s,color .15s,border-color .15s,box-shadow .15s;font-family:inherit;}
 .bell-btn:hover{background:var(--bg3);color:var(--text);}
-.bell-btn:focus-visible{outline:none;border-color:var(--accent2);box-shadow:0 0 0 2px rgba(48,184,122,.20);}
+.bell-btn:focus-visible{outline:none;border-color:var(--accent2);box-shadow:0 0 0 2px rgba(66,133,244,.20);}
 .bell-ico{width:20px;height:20px;}
 .bell-dot{position:absolute;top:7px;right:7px;width:9px;height:9px;background:var(--red);border:2px solid var(--bg2);border-radius:50%;pointer-events:none;}
 .bell-menu{position:absolute;top:calc(100% + 8px);right:0;width:340px;max-width:90vw;max-height:380px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.16);z-index:80;overflow:hidden;display:flex;flex-direction:column;}
@@ -302,7 +305,7 @@ body{font-family:'JetBrains Mono Digits',"Plus Jakarta Sans","Noto Sans KR","Kan
 .profile-wrap{position:relative;}
 .profile-btn{display:flex;align-items:center;gap:9px;background:none;border:1px solid transparent;border-radius:9px;padding:4px 10px 4px 4px;cursor:pointer;font-family:inherit;color:var(--text);transition:background .12s,border-color .12s;}
 .profile-btn:hover{background:var(--bg3);}
-.profile-btn:focus-visible{outline:none;border-color:var(--accent2);box-shadow:0 0 0 2px rgba(48,184,122,.20);}
+.profile-btn:focus-visible{outline:none;border-color:var(--accent2);box-shadow:0 0 0 2px rgba(66,133,244,.20);}
 .profile-meta{text-align:left;line-height:1.15;}
 .profile-caret{width:10px;height:7px;color:var(--text3);margin-left:4px;}
 .profile-menu{position:absolute;top:calc(100% + 8px);right:0;width:220px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.16);z-index:80;padding:8px;display:none;}
@@ -330,10 +333,10 @@ body{font-family:'JetBrains Mono Digits',"Plus Jakarta Sans","Noto Sans KR","Kan
 .navl{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:1.5px;padding:8px 10px 4px;text-transform:uppercase;}
 .navi{display:flex;align-items:center;gap:10px;padding:8px 11px;border-radius:8px;cursor:pointer;color:var(--text2);font-size:13px;font-weight:500;transition:background .12s,color .12s;margin-bottom:2px;user-select:none;}.navdiv{height:16px;}.nav-admin{background:var(--bg3);border-radius:0;padding:4px;border:none;}
 .navi:hover{background:var(--bg4);color:var(--text);}              /* slightly darker gray than the page bg */
-.navi.active{background:rgba(62,207,142,.08);color:var(--accent2);font-weight:600;}  /* subtle emerald tint + readable emerald text (emerald-600 light / emerald-400 dark) */
+.navi.active{background:rgba(26,115,232,.08);color:var(--accent2);font-weight:600;}  /* subtle emerald tint + readable emerald text (emerald-600 light / emerald-400 dark) */
 .navi-ic{width:17px;height:17px;flex-shrink:0;}                     /* outlined SVG icon, inherits color via stroke=currentColor */
 .navc{margin-left:auto;background:var(--bg4);border-radius:10px;padding:1px 7px;font-size:10px;font-family:"JetBrains Mono",monospace;color:var(--text3);}
-.navi.active .navc{background:rgba(62,207,142,.2);color:var(--accent);}
+.navi.active .navc{background:rgba(26,115,232,.2);color:var(--accent);}
 .sum-tbl{width:100%;border-collapse:collapse;}.sum-tbl th{padding:9px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border2);background:var(--bg3);white-space:nowrap;}.sum-tbl th.tc{text-align:center;}.sum-tbl td{padding:10px 14px;font-size:12px;color:var(--text2);border-bottom:0.5px solid var(--border);vertical-align:middle;}.sum-tbl td.tc{text-align:center;}.sum-tbl .co-cell{background:var(--bg3);border-right:1px solid var(--border);border-left:3px solid var(--accent);vertical-align:middle;font-size:13px;font-weight:700;color:var(--text);}.sum-tbl tr.grp-mid td{border-bottom:0.5px dashed var(--border);}.sum-tbl tr.grp-end td{border-bottom:1px solid var(--border2);}.sum-tbl tr.grp-sub td{background:var(--bg3);}.sum-tbl tr.grp-sub .co-cell{background:var(--bg3);}.sum-tbl tr.sum-total td{background:var(--bg3);font-weight:700;font-size:13px;border-top:2px solid var(--border2);}.ref-date-wrap{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;height:var(--ctl-h);padding:0 12px;font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap;box-sizing:border-box;}.ref-date-wrap input[type=date]{background:none;border:none;outline:none;font-size:12px;color:var(--text);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer;}.sbfoot{padding:10px;border-top:1px solid var(--border);}
 .synbtn{width:100%;padding:9px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);border-radius:8px;color:var(--green);font-size:12px;font-weight:600;cursor:pointer;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .12s;display:flex;align-items:center;justify-content:center;gap:7px;}
 .synbtn:hover{background:rgba(34,197,94,.14);}
@@ -342,7 +345,7 @@ body{overflow:hidden;}
 .topbar{display:none;}
 .ttl{font-size:20px;font-weight:800;}.sub{font-size:12px;color:var(--text3);margin-top:4px;font-weight:400;}
 .tbr{display:flex;align-items:center;gap:9px;}
-.pill{border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700;font-family:"JetBrains Mono",monospace;}.pill-blue{background:rgba(62,207,142,.12);color:var(--accent);border:1px solid rgba(62,207,142,.2);}.pill-amber{background:rgba(245,158,11,.12);color:var(--orange);border:1px solid rgba(245,158,11,.2);}.pill-green{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2);}
+.pill{border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700;font-family:"JetBrains Mono",monospace;}.pill-blue{background:rgba(26,115,232,.12);color:var(--accent);border:1px solid rgba(26,115,232,.2);}.pill-amber{background:rgba(245,158,11,.12);color:var(--orange);border:1px solid rgba(245,158,11,.2);}.pill-green{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2);}
 /* Content area now hosts the active page directly; scroll is delegated to each page (or to the table inside it). */
 .content{flex:1;overflow:hidden;padding:0;display:flex;flex-direction:column;min-height:0;}
 .page{display:none;}
@@ -414,7 +417,7 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 @keyframes skillBarGrow{from{width:0%;} to{width:var(--target-w,0%);}}
 @keyframes skillCountSlide{from{left:6px;opacity:0;} to{left:calc(var(--target-w,0%) + 6px);opacity:1;}}
 .skill-gridline{position:absolute;top:0;bottom:38px;width:1px;background:var(--border);pointer-events:none;}
-.skill-focus{position:absolute;top:0;bottom:38px;width:1px;background:rgba(62,207,142,.5);pointer-events:none;display:none;will-change:left;}
+.skill-focus{position:absolute;top:0;bottom:38px;width:1px;background:rgba(26,115,232,.5);pointer-events:none;display:none;will-change:left;}
 .skill-focus-badge{position:absolute;top:-2px;transform:translateX(-50%);background:var(--text);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;pointer-events:none;display:none;white-space:nowrap;font-family:"JetBrains Mono",monospace;box-shadow:0 1px 4px rgba(0,0,0,.18);}
 .skill-axis{position:absolute;left:0;right:0;bottom:0;height:28px;}
 .skill-axis-rule{position:absolute;left:0;right:0;top:0;height:1px;background:var(--border2);}
@@ -458,7 +461,7 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 .filter-row > select:focus{
   outline:none;
   border-color:var(--accent2);
-  box-shadow:0 0 0 2px rgba(48,184,122,.20);
+  box-shadow:0 0 0 2px rgba(66,133,244,.20);
 }
 /* Native input/select inside the wrappers: kill their browser default focus rings so only our wrapper stroke shows. */
 .filter-row .srch input:focus,
@@ -481,15 +484,15 @@ select:focus{border-color:var(--accent);}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:var(--ctl-h);padding:0 10px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid transparent;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .12s,color .12s,border-color .12s,box-shadow .12s,opacity .12s;white-space:nowrap;line-height:1;box-sizing:border-box;}
 /* Disabled state — overrides all .btn variants. Used for the dirty-check on
    the org editor's save buttons (팀명 / 부/실명 / 센터명 저장). */
-/* Disabled state — premium muted dark slate. Replaces the previous opacity:.45
-   dim. Uses native :disabled / [disabled] so it works on save-on-dirty buttons
-   in the org editor (팀명 저장, 부/실명 저장, 센터명 저장) without extra markup.
-   No pointer-events:none — that would suppress the cursor:not-allowed. The
-   native HTML disabled attribute already blocks clicks on <button>. */
+/* Disabled state — premium muted dark slate, matching the blue primary's
+   design language. Replaces opacity:.45 dim. Works natively with [disabled]
+   on save-on-dirty buttons in the org editor (팀명 저장, 부/실명 저장,
+   센터명 저장). No pointer-events:none — would suppress cursor:not-allowed.
+   Native HTML disabled blocks clicks on <button>. */
 .btn:disabled,.btn[disabled]{
-  background:#222524 !important;
-  color:#606764 !important;
-  border-color:#383D3A !important;
+  background:#202124 !important;
+  color:#5F6368 !important;
+  border-color:#3C4043 !important;
   cursor:not-allowed;
   opacity:1;
 }
@@ -501,20 +504,19 @@ select:focus{border-color:var(--accent);}
    already routes through var(--accent), so it auto-emeralds. */
 /* Supabase primary: solid emerald (#3ecf8e) fill + crisp dark text + darker
    hover (#30b87a via --accent2 in light; --accent2 = #34d399 lift in dark). */
-/* Primary button — dark forest green + slightly-lighter green border to create
-   the subtle "outer ring" glow. White text for high contrast on the dark fill.
-   Hex values per the design-system spec; intentionally NOT routed through
-   var(--accent) so the rest of the app's brand-accent uses (focus rings,
-   .navi.active highlight) stay on the existing emerald system. */
+/* Primary button — Gemini-style tech blue + slightly lighter blue border for
+   the outer-ring depth. White text on the vibrant fill. Hex matches the
+   --accent / --accent2 variables exactly, so the design is unified system-wide
+   (focus rings, .navi.active highlight, pill tints — all route through these). */
 .btnp{
-  background:#2D5A3F;
+  background:#1A73E8;
   color:#FFFFFF;
-  border:1px solid #4D8060;
+  border:1px solid #4285F4;
   font-weight:700;
 }
 .btnp:hover{
-  background:#4D8060;
-  border-color:#5E9974;
+  background:#4285F4;
+  border-color:#5C9BFF;
   color:#FFFFFF;
 }
 .btng{background:var(--bg3);color:var(--text);border:1px solid var(--border);}
@@ -564,13 +566,13 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.01
 .t-파견준비{background:rgba(157,114,245,.12);color:var(--purple);}
 .t-인턴{background:rgba(56,196,240,.12);color:var(--cyan);}
 .t-한국파견{background:rgba(245,208,56,.1);color:var(--yellow);}
-.t-직책{background:rgba(62,207,142,.1);color:var(--accent);}
+.t-직책{background:rgba(26,115,232,.1);color:var(--accent);}
 .t-grade{background:rgba(240,75,138,.1);color:var(--pink);font-family:"JetBrains Mono",monospace;}
 /* 원가부서 (cost-centre) tag — neutral, easy to scan, no full path. */
-.t-wonka{background:rgba(62,207,142,.08);color:var(--accent);border:1px solid rgba(62,207,142,.18);font-weight:700;}
+.t-wonka{background:rgba(26,115,232,.08);color:var(--accent);border:1px solid rgba(26,115,232,.18);font-weight:700;}
 /* AVATAR */
 .av{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
-.avM{background:rgba(62,207,142,.16);color:var(--accent);border:1px solid rgba(62,207,142,.28);}
+.avM{background:rgba(26,115,232,.16);color:var(--accent);border:1px solid rgba(26,115,232,.28);}
 .avF{background:rgba(240,75,138,.1);color:var(--pink);border:1px solid rgba(240,75,138,.22);}
 .av_{background:var(--bg4);color:var(--text3);border:1px solid var(--border);}
 .nc{display:flex;align-items:center;gap:8px;}
@@ -620,8 +622,8 @@ tr.row-resigned .av{filter:grayscale(100%) brightness(.92);}
 select.fi{padding-right:32px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%238e9ab8' stroke-width='1.6' fill='none' stroke-linecap='round'/></svg>");background-repeat:no-repeat;background-position:right 12px center;}
 textarea.fi{height:auto;min-height:var(--ctl-h);padding:10px 12px;line-height:1.5;}
 /* Supabase focus state — sharp 1px emerald border + tight 2px translucent glow. */
-.fi:focus,.fi:focus-visible{border-color:#3ecf8e;box-shadow:0 0 0 2px rgba(62,207,142,0.25);outline:none;}
-select.fi:focus{box-shadow:0 0 0 2px rgba(62,207,142,0.25);}
+.fi:focus,.fi:focus-visible{border-color:#3ecf8e;box-shadow:0 0 0 2px rgba(26,115,232,0.25);outline:none;}
+select.fi:focus{box-shadow:0 0 0 2px rgba(26,115,232,0.25);}
 /* Password real-time validation UI */
 .pw-meter{margin-top:8px;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
 .pw-meter-fill{height:100%;width:0;background:transparent;border-radius:2px;transition:width .25s ease,background-color .25s ease;}
@@ -662,7 +664,7 @@ select.fi:focus{box-shadow:0 0 0 2px rgba(62,207,142,0.25);}
 .is-loading{position:relative;color:transparent !important;pointer-events:none;opacity:.85;}
 .is-loading::after{content:"";position:absolute;top:50%;left:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
-@keyframes rowPulse{0%{background:rgba(62,207,142,.22);box-shadow:inset 3px 0 0 var(--accent);}60%{background:rgba(62,207,142,.10);box-shadow:inset 3px 0 0 rgba(62,207,142,.5);}100%{background:transparent;box-shadow:none;}}
+@keyframes rowPulse{0%{background:rgba(26,115,232,.22);box-shadow:inset 3px 0 0 var(--accent);}60%{background:rgba(26,115,232,.10);box-shadow:inset 3px 0 0 rgba(26,115,232,.5);}100%{background:transparent;box-shadow:none;}}
 .row-pulse{animation:rowPulse 3s ease-out;}
 .qa-wrap{position:relative;display:inline-block;}
 .qa-toggle{display:inline-flex;align-items:center;gap:3px;}
@@ -692,7 +694,7 @@ select.fi:focus{box-shadow:0 0 0 2px rgba(62,207,142,0.25);}
 .qmodal-info{font-size:12px;color:var(--text2);background:var(--bg3);border-radius:8px;padding:8px 10px;border-left:3px solid var(--accent);}
 .qmodal-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin:8px 0 2px;}
 .qmodal-input{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color .15s,box-shadow .15s;width:100%;box-sizing:border-box;}
-.qmodal-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(62,207,142,.14);}
+.qmodal-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,115,232,.14);}
 textarea.qmodal-input{resize:vertical;min-height:56px;}
 .qmodal-foot{display:flex;gap:8px;justify-content:flex-end;padding:11px 16px;border-top:1px solid var(--border);background:var(--bg3);}
 .qmodal-foot .btn{padding:8px 16px;font-size:12px;border-radius:8px;}
@@ -2313,7 +2315,7 @@ function rd(){
     }
     document.getElementById("ch-wonka").innerHTML=`
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;align-items:start">
-        ${panel("아웃소싱",osTotal,"background:rgba(62,207,142,.12);color:var(--accent)",os,osEn,0)}
+        ${panel("아웃소싱",osTotal,"background:rgba(26,115,232,.12);color:var(--accent)",os,osEn,0)}
         ${panel("파견",dpTotal,"background:rgba(245,158,11,.12);color:var(--orange)",dp,dpEn,1)}
       </div>`;
     // ── Radial-wipe entry + count-up animations ─────────────────
@@ -2806,7 +2808,7 @@ function renderDetTab(e,tab){
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
         ${e.type==='파견준비'?`<button class="btn btnp btnsm" onclick="changeDispatchStatus(${idx},'파견')">✈️ 파견 시작</button>`:""}
         ${e.type==='파견'?`<button class="btn btnsm" style="background:rgba(34,197,94,.1);color:var(--green);border-color:rgba(34,197,94,.3)" onclick="changeDispatchStatus(${idx},'복귀')">🏠 복귀 처리</button>`:""}
-        ${e.type==='파견'?`<button class="btn btnsm" style="background:rgba(62,207,142,.1);color:var(--accent);border-color:rgba(62,207,142,.3)" onclick="extendDispatch(${idx})">🔄 연장 처리</button>`:""}
+        ${e.type==='파견'?`<button class="btn btnsm" style="background:rgba(26,115,232,.1);color:var(--accent);border-color:rgba(26,115,232,.3)" onclick="extendDispatch(${idx})">🔄 연장 처리</button>`:""}
       </div>
     </div>`:""}`;
   } else {
