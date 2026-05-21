@@ -2837,8 +2837,16 @@ const DEFAULT_ORG={
     "":["인사/관리","회계"]
   }
 };
-const ORG_SK2="cosine_org_v3";
+// Bumped v3 → v4 on 2026-05-21 so every browser invalidates its cached
+// org-tree snapshot. Old snapshots could still contain the legacy team
+// name '사업기획' (renamed to '그룹사 상품 TFT'). The cleanup below also
+// removes orphaned v3 entries from previous sessions.
+const ORG_SK2="cosine_org_v4";
 const EXEC_SK="cosine_exec_v1";
+// One-shot purge of the legacy v3 cache so stale browser state doesn't
+// linger forever (storage bloat + theoretical re-introduction if someone
+// reverts the version bump).
+try { sessionStorage.removeItem("cosine_org_v3"); localStorage.removeItem("cosine_org_v3"); } catch(_){ }
 const DEFAULT_EXECS=[
   {id:"exec-1",name:"설욱환",title:"대표"},
   {id:"exec-2",name:"최기종",title:"부대표"}
