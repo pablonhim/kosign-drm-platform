@@ -1996,11 +1996,19 @@ function uc(){
 }
 
 function rd(){
+  // Early-bail guard: on per-menu split files (frontend/list.html, dispatch.html,
+  // etc.) the dashboard's #sg / #ch-wonka / #ch-type containers don't exist
+  // because split_by_menu.py keeps only one <div class="page"> per file. Without
+  // this guard, updateAll() would crash trying to access null.innerHTML and
+  // blank the entire page. If #sg isn't in the DOM, this isn't the dashboard
+  // view — silently skip the dashboard render.
+  const sgEl = document.getElementById("sg");
+  if (!sgEl) return;
   const nk=devEmps().filter(e=>e.type!=="한국파견");
   const t=nk.length,r=nk.filter(e=>e.type==="정규직원").length,p=nk.filter(e=>e.type==="파견").length,pp=nk.filter(e=>e.type==="파견준비").length,i=nk.filter(e=>e.type==="인턴").length;
   const os=nk.filter(e=>e.center==="아웃소싱/파견센터"&&e.type!=="파견"&&e.type!=="파견준비"&&e.type!=="파견검토").length;
   const rd=nk.filter(e=>e.center==="R&D 지원센터").length;
-  document.getElementById("sg").innerHTML=`
+  sgEl.innerHTML=`
     <div class="sc c1" style="cursor:pointer" onclick="showPage('list')"><div class="scl">개발인력</div><div class="scn" data-target="${t}">0</div><div class="scd">전체 관리 인원</div></div>
     <div class="sc c2" style="cursor:pointer" onclick="showPage('list');msSet('fc','아웃소싱/파견센터')"><div class="scl">아웃소싱</div><div class="scn" data-target="${os}">0</div><div class="scd">아웃소싱/파견센터</div></div>
     <div class="sc c3" style="cursor:pointer" onclick="showPage('dispatch')"><div class="scl">파견</div><div class="scn" data-target="${p}">0</div><div class="scd">현재 한국 파견 중</div></div>
