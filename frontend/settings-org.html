@@ -17,19 +17,23 @@
        * frame-ancestors 'none' blocks clickjacking
        * base-uri / form-action / img-src still locked down
      Primary XSS defense remains the escHtml() sweep applied across the renderers. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://tnkofdygsdxmtuiijygi.supabase.co wss://tnkofdygsdxmtuiijygi.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'self' https://tnkofdygsdxmtuiijygi.supabase.co wss://tnkofdygsdxmtuiijygi.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self';">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 
+<!-- Three publicly-licensed webfonts, all from Google Fonts:
+       Plus Jakarta Sans  →  Latin glyphs (clean, geometric, Google-Sans-adjacent)
+       Noto Sans KR       →  Korean (Hangul) glyphs
+       Kantumruy          →  Khmer glyphs
+     The browser picks the right family per glyph via the font-family stack
+     below — Plus Jakarta Sans is listed first, but it has no Hangul/Khmer,
+     so the browser falls through to the next family that does.
+     SRI hashes are NOT used here because Google Fonts ships variable CSS
+     that changes byte-for-byte based on User-Agent (woff2 vs ttf, hinting,
+     etc.) — adding a hash would break loading for some browsers. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Pretendard 1.3.9 — pinned + Subresource Integrity. If jsDelivr returns
-     different bytes than this hash, the browser refuses to apply the file. -->
-<link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable.css"
-      integrity="sha384-ibFbybJ6PggxRvIHmU1Ev0cJP1iQRYYeVs/vOrlRzPEyHM79xSfKH2pMLOlIbzJA"
-      crossorigin="anonymous">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&family=Noto+Sans+Khmer:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700;800&family=Kantumruy:wght@400;500;600;700&display=swap" rel="stylesheet">
 <!-- Supabase JS 2.39.7 — pinned to a specific patch + SRI. The previous
      "@2" floating-major-version reference would auto-upgrade on every page
      load, making a malicious patch in the npm package an immediate site-wide
@@ -114,7 +118,7 @@
   --sh:0 4px 20px rgba(0,0,0,0.4);
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;}
-body{font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;}
+body{font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;}
 /* LOGIN */
 #LP{min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding-top:14vh;background:var(--bg);position:relative;overflow:hidden;}
 .lbox{width:300px;max-width:90vw;position:relative;z-index:1;animation:fu .4s ease;}
@@ -129,7 +133,7 @@ body{font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variabl
 .lg label{font-size:13px;color:var(--text);font-weight:600;letter-spacing:0;text-transform:none;}
 .lcheck{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);cursor:pointer;user-select:none;margin-top:-4px;}
 .lcheck input{margin:0;cursor:pointer;accent-color:var(--accent);width:14px;height:14px;}
-.li{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:11px 14px;color:var(--text);font-size:14px;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;outline:none;transition:border-color .15s,box-shadow .15s;width:100%;}
+.li{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:11px 14px;color:var(--text);font-size:14px;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;outline:none;transition:border-color .15s,box-shadow .15s;width:100%;}
 .li:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(62,207,142,.14);}
 .lpw-wrap{position:relative;}
 .lpw-wrap > input{padding-right:42px;}
@@ -140,11 +144,11 @@ body{font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variabl
 .lerr.show{display:block;}
 /* Supabase primary login button: solid emerald, deep-charcoal text, sharp 1px
    border, no gradient. Hover: switch to the lighter accent2 swatch. */
-.lbtn{background:var(--accent);color:#0e0e10;border:1px solid var(--accent);border-radius:8px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;transition:background .15s,border-color .15s;margin-top:18px;}
+.lbtn{background:var(--accent);color:#0e0e10;border:1px solid var(--accent);border-radius:8px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .15s,border-color .15s;margin-top:18px;}
 .lbtn:hover{background:var(--accent2);border-color:var(--accent2);}
 .lbtn:hover{opacity:.92;}
 /* Platform version label, anchored bottom-center of the screen. Auto-updated from APP_VERSION in JS. */
-.lversion{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--text3);font-family:"JetBrains Mono",monospace;letter-spacing:.5px;pointer-events:none;z-index:2;}
+.lversion{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--text3);font-family:monospace;letter-spacing:.5px;pointer-events:none;z-index:2;}
 /* ── Login background: bottom-anchored region with decorative dome curves + an elliptical orbit of tech badges. ── */
 /* ── Login background: a single thin arc with tech-brand badges that scale up at the apex. ── */
 .tech-bg{
@@ -216,7 +220,7 @@ body{font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variabl
   line-height:1.05;
   padding:0 4px;
   color:var(--bg, #1a2240);
-  font-family:"Inter","Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;
+  font-family:"Inter","Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   letter-spacing:-0.2px;
   /* Slightly stronger shadow so white discs read against a white backdrop. */
   box-shadow:0 6px 18px rgba(40,60,120,.16), 0 1px 3px rgba(0,0,0,.08);
@@ -249,7 +253,7 @@ body{font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variabl
 .lht{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
 .lhr{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);}
 .lhr:last-child{border-bottom:none;}
-.lhr strong{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--text);}
+.lhr strong{font-family:monospace;font-size:11px;color:var(--text);}
 /* MAIN */
 #MA{display:none;height:100vh;flex-direction:column;}
 .layout{display:flex;flex:1;overflow:hidden;}
@@ -264,7 +268,7 @@ body{font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variabl
 .bell-dot{position:absolute;top:7px;right:7px;width:9px;height:9px;background:var(--red);border:2px solid var(--bg2);border-radius:50%;pointer-events:none;}
 .bell-menu{position:absolute;top:calc(100% + 8px);right:0;width:340px;max-width:90vw;max-height:380px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.16);z-index:80;overflow:hidden;display:flex;flex-direction:column;}
 .bell-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px;font-weight:700;color:var(--text);}
-.bell-count{font-size:11px;font-weight:700;background:var(--bg3);color:var(--text2);padding:2px 8px;border-radius:10px;font-family:"JetBrains Mono",monospace;}
+.bell-count{font-size:11px;font-weight:700;background:var(--bg3);color:var(--text2);padding:2px 8px;border-radius:10px;font-family:monospace;}
 .bell-list{flex:1;overflow-y:auto;padding:6px;}
 .bell-item{display:flex;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;transition:background .12s;}
 .bell-item:hover{background:var(--bg3);}
@@ -276,7 +280,7 @@ body{font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variabl
 .sblogo{padding:20px 18px 14px;border-bottom:1px solid var(--border);}
 .sblogo-en{font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;font-weight:600;}
 .sblogo-ko{font-size:14px;font-weight:800;margin-top:2px;}
-.sblogo-dt{font-size:10px;color:var(--text3);margin-top:3px;font-family:"JetBrains Mono",monospace;}
+.sblogo-dt{font-size:10px;color:var(--text3);margin-top:3px;font-family:monospace;}
 .sbuser{margin:10px;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:10px 12px;display:flex;align-items:center;gap:9px;}
 .sbav{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;}
 .sbuname{font-size:12px;font-weight:700;}.sburole{font-size:10px;color:var(--text3);}
@@ -315,17 +319,17 @@ body{font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variabl
 .navi:hover{background:var(--bg4);color:var(--text);}              /* slightly darker gray than the page bg */
 .navi.active{background:rgba(62,207,142,.08);color:var(--accent2);font-weight:600;}  /* subtle emerald tint + readable emerald text (emerald-600 light / emerald-400 dark) */
 .navi-ic{width:17px;height:17px;flex-shrink:0;}                     /* outlined SVG icon, inherits color via stroke=currentColor */
-.navc{margin-left:auto;background:var(--bg4);border-radius:10px;padding:1px 7px;font-size:10px;font-family:"JetBrains Mono",monospace;color:var(--text3);}
+.navc{margin-left:auto;background:var(--bg4);border-radius:10px;padding:1px 7px;font-size:10px;font-family:monospace;color:var(--text3);}
 .navi.active .navc{background:rgba(62,207,142,.2);color:var(--accent);}
-.sum-tbl{width:100%;border-collapse:collapse;}.sum-tbl th{padding:9px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border2);background:var(--bg3);white-space:nowrap;}.sum-tbl th.tc{text-align:center;}.sum-tbl td{padding:10px 14px;font-size:12px;color:var(--text2);border-bottom:0.5px solid var(--border);vertical-align:middle;}.sum-tbl td.tc{text-align:center;}.sum-tbl .co-cell{background:var(--bg3);border-right:1px solid var(--border);border-left:3px solid var(--accent);vertical-align:middle;font-size:13px;font-weight:700;color:var(--text);}.sum-tbl tr.grp-mid td{border-bottom:0.5px dashed var(--border);}.sum-tbl tr.grp-end td{border-bottom:1px solid var(--border2);}.sum-tbl tr.grp-sub td{background:var(--bg3);}.sum-tbl tr.grp-sub .co-cell{background:var(--bg3);}.sum-tbl tr.sum-total td{background:var(--bg3);font-weight:700;font-size:13px;border-top:2px solid var(--border2);}.ref-date-wrap{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;height:var(--ctl-h);padding:0 12px;font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap;box-sizing:border-box;}.ref-date-wrap input[type=date]{background:none;border:none;outline:none;font-size:12px;color:var(--text);font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;cursor:pointer;}.sbfoot{padding:10px;border-top:1px solid var(--border);}
-.synbtn{width:100%;padding:9px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);border-radius:8px;color:var(--green);font-size:12px;font-weight:600;cursor:pointer;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;transition:background .12s;display:flex;align-items:center;justify-content:center;gap:7px;}
+.sum-tbl{width:100%;border-collapse:collapse;}.sum-tbl th{padding:9px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border2);background:var(--bg3);white-space:nowrap;}.sum-tbl th.tc{text-align:center;}.sum-tbl td{padding:10px 14px;font-size:12px;color:var(--text2);border-bottom:0.5px solid var(--border);vertical-align:middle;}.sum-tbl td.tc{text-align:center;}.sum-tbl .co-cell{background:var(--bg3);border-right:1px solid var(--border);border-left:3px solid var(--accent);vertical-align:middle;font-size:13px;font-weight:700;color:var(--text);}.sum-tbl tr.grp-mid td{border-bottom:0.5px dashed var(--border);}.sum-tbl tr.grp-end td{border-bottom:1px solid var(--border2);}.sum-tbl tr.grp-sub td{background:var(--bg3);}.sum-tbl tr.grp-sub .co-cell{background:var(--bg3);}.sum-tbl tr.sum-total td{background:var(--bg3);font-weight:700;font-size:13px;border-top:2px solid var(--border2);}.ref-date-wrap{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;height:var(--ctl-h);padding:0 12px;font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap;box-sizing:border-box;}.ref-date-wrap input[type=date]{background:none;border:none;outline:none;font-size:12px;color:var(--text);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer;}.sbfoot{padding:10px;border-top:1px solid var(--border);}
+.synbtn{width:100%;padding:9px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);border-radius:8px;color:var(--green);font-size:12px;font-weight:600;cursor:pointer;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .12s;display:flex;align-items:center;justify-content:center;gap:7px;}
 .synbtn:hover{background:rgba(34,197,94,.14);}
 body{overflow:hidden;}
 .main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
 .topbar{display:none;}
 .ttl{font-size:20px;font-weight:800;}.sub{font-size:12px;color:var(--text3);margin-top:4px;font-weight:400;}
 .tbr{display:flex;align-items:center;gap:9px;}
-.pill{border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700;font-family:"JetBrains Mono",monospace;}.pill-blue{background:rgba(62,207,142,.12);color:var(--accent);border:1px solid rgba(62,207,142,.2);}.pill-amber{background:rgba(245,158,11,.12);color:var(--orange);border:1px solid rgba(245,158,11,.2);}.pill-green{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2);}
+.pill{border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700;font-family:monospace;}.pill-blue{background:rgba(62,207,142,.12);color:var(--accent);border:1px solid rgba(62,207,142,.2);}.pill-amber{background:rgba(245,158,11,.12);color:var(--orange);border:1px solid rgba(245,158,11,.2);}.pill-green{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2);}
 /* Content area now hosts the active page directly; scroll is delegated to each page (or to the table inside it). */
 .content{flex:1;overflow:hidden;padding:0;display:flex;flex-direction:column;min-height:0;}
 .page{display:none;}
@@ -354,7 +358,7 @@ body{overflow:hidden;}
 tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 /* Custom multi-select dropdown (replaces native <select> filters). */
 .ms-wrap{position:relative;display:inline-block;}
-.ms-btn{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:0 32px 0 14px;font-size:12px;color:var(--text);cursor:pointer;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;display:inline-flex;align-items:center;min-width:140px;max-width:240px;height:var(--ctl-h);position:relative;transition:border-color .15s,background .15s,box-shadow .15s;line-height:1;}
+.ms-btn{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:0 32px 0 14px;font-size:12px;color:var(--text);cursor:pointer;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;display:inline-flex;align-items:center;min-width:140px;max-width:240px;height:var(--ctl-h);position:relative;transition:border-color .15s,background .15s,box-shadow .15s;line-height:1;}
 .ms-btn:hover{background:var(--bg3);border-color:var(--accent2);}
 /* .is-open / focus state — handled centrally by the unified .filter-row focus rule above so all controls match. */
 .ms-btn .ms-label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;}
@@ -373,7 +377,7 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 .sc::after{content:"";position:absolute;top:0;left:0;right:0;height:3px;}
 .sc.c1::after{background:var(--accent);}.sc.c2::after{background:var(--green);}.sc.c3::after{background:var(--orange);}.sc.c4::after{background:var(--purple);}.sc.c5::after{background:var(--cyan);}
 .scl{font-size:13px;color:var(--text);font-weight:700;letter-spacing:0;text-transform:none;}
-.scn{font-size:26px;font-weight:700;font-family:"JetBrains Mono",monospace;margin:5px 0 3px;}
+.scn{font-size:26px;font-weight:700;font-family:monospace;margin:5px 0 3px;}
 .sc.c1 .scn{color:var(--accent);}.sc.c2 .scn{color:var(--green);}.sc.c3 .scn{color:var(--orange);}.sc.c4 .scn{color:var(--purple);}.sc.c5 .scn{color:var(--cyan);}
 .scd{font-size:11px;color:var(--text3);}
 /* CHARTS */
@@ -382,7 +386,7 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 .sh{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
 .sht{font-size:13px;font-weight:700;}.sp{padding:14px 16px;}
 .bi{margin-bottom:9px;}.bm{display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px;}
-.bv{font-weight:700;font-family:"JetBrains Mono",monospace;}
+.bv{font-weight:700;font-family:monospace;}
 .bt{height:6px;background:var(--bg4);border-radius:4px;overflow:hidden;}
 .bf{height:100%;border-radius:4px;transition:width .5s ease;}
 /* 보유기술 현황 — floating colored bars on white card, gridlines at each tick, hover focus line + live count badge. */
@@ -393,23 +397,23 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 .skill-tracks{position:relative;display:flex;flex-direction:column;padding-top:14px;padding-bottom:38px;}
 .skill-track-row{flex:1;min-height:30px;max-height:56px;position:relative;}
 .skill-bar{position:absolute;left:0;top:50%;transform:translateY(-50%);height:22px;border-radius:3px;animation:skillBarGrow 1s cubic-bezier(.4,0,.2,1) both;animation-delay:var(--delay,0ms);}
-.skill-count{position:absolute;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;font-family:"JetBrains Mono",monospace;color:var(--text);white-space:nowrap;animation:skillCountSlide 1s cubic-bezier(.4,0,.2,1) both;animation-delay:var(--delay,0ms);}
+.skill-count{position:absolute;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;font-family:monospace;color:var(--text);white-space:nowrap;animation:skillCountSlide 1s cubic-bezier(.4,0,.2,1) both;animation-delay:var(--delay,0ms);}
 @keyframes skillBarGrow{from{width:0%;} to{width:var(--target-w,0%);}}
 @keyframes skillCountSlide{from{left:6px;opacity:0;} to{left:calc(var(--target-w,0%) + 6px);opacity:1;}}
 .skill-gridline{position:absolute;top:0;bottom:38px;width:1px;background:var(--border);pointer-events:none;}
 .skill-focus{position:absolute;top:0;bottom:38px;width:1px;background:rgba(62,207,142,.5);pointer-events:none;display:none;will-change:left;}
-.skill-focus-badge{position:absolute;top:-2px;transform:translateX(-50%);background:var(--text);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;pointer-events:none;display:none;white-space:nowrap;font-family:"JetBrains Mono",monospace;box-shadow:0 1px 4px rgba(0,0,0,.18);}
+.skill-focus-badge{position:absolute;top:-2px;transform:translateX(-50%);background:var(--text);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;pointer-events:none;display:none;white-space:nowrap;font-family:monospace;box-shadow:0 1px 4px rgba(0,0,0,.18);}
 .skill-axis{position:absolute;left:0;right:0;bottom:0;height:28px;}
 .skill-axis-rule{position:absolute;left:0;right:0;top:0;height:1px;background:var(--border2);}
-.skill-axis-tick{position:absolute;transform:translateX(-50%);font-size:10px;font-weight:500;color:var(--text3);font-family:"JetBrains Mono",monospace;top:8px;}
+.skill-axis-tick{position:absolute;transform:translateX(-50%);font-size:10px;font-weight:500;color:var(--text3);font-family:monospace;top:8px;}
 /* Donut: slices stay at static opacity 0.9; the radial-wipe entry animation is driven by JS via a conic-gradient mask. */
 .donut-svg{display:block;}
 .donut-slice{opacity:.9;}
 /* HTML overlay for the center label so it stays exactly centered AND can be count-animated independently. */
 .donut-wrap{position:relative;}
 .donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;width:100%;}
-.donut-num{font-size:30px;font-weight:800;color:var(--text);font-family:"JetBrains Mono",monospace;line-height:1;}
-.donut-unit{font-size:11px;color:var(--text3);font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;margin-top:4px;}
+.donut-num{font-size:30px;font-weight:800;color:var(--text);font-family:monospace;line-height:1;}
+.donut-unit{font-size:11px;color:var(--text3);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;margin-top:4px;}
 /* Respect users who prefer reduced motion — instant final state for skill bars; donut handled in JS. */
 @media (prefers-reduced-motion: reduce){
   .skill-bar,.skill-count{animation:none !important;}
@@ -428,8 +432,8 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 .filter-row > select,
 .filter-row > input[type="date"]{height:var(--ctl-h);box-sizing:border-box;transition:border-color .15s,box-shadow .15s;}
 .filter-row > .ref-date-wrap{padding:0 14px;}
-.filter-row > input[type="date"]{padding:0 12px;border:1px solid var(--border2);border-radius:8px;background:var(--bg2);font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;font-size:12px;color:var(--text);}
-.filter-row > select{padding:0 32px 0 12px;border:1px solid var(--border2);border-radius:8px;background:var(--bg2);font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;font-size:12px;color:var(--text);}
+.filter-row > input[type="date"]{padding:0 12px;border:1px solid var(--border2);border-radius:8px;background:var(--bg2);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;color:var(--text);}
+.filter-row > select{padding:0 32px 0 12px;border:1px solid var(--border2);border-radius:8px;background:var(--bg2);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;color:var(--text);}
 /* Crisp focus state — 1px solid deep-blue border + 2px even outer glow.
    The outline is killed entirely; box-shadow with no inset paints a perfectly uniform halo
    on all four sides, following border-radius automatically. No content reflow (border stays 1px). */
@@ -448,9 +452,9 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 .filter-row .ref-date-wrap input:focus,
 .filter-row > input[type="date"]:focus,
 .filter-row > select:focus{outline:none;}
-.srch input{background:none;border:none;outline:none;color:var(--text);font-size:13px;width:190px;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;}
+.srch input{background:none;border:none;outline:none;color:var(--text);font-size:13px;width:190px;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
 .srch input::placeholder{color:var(--text3);}
-select{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;color:var(--text);font-size:12px;outline:none;cursor:pointer;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;}
+select{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;color:var(--text);font-size:12px;outline:none;cursor:pointer;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
 select:focus{border-color:var(--accent);}
 /* Standardized control height — inputs, selects, buttons all align at 38px so they line up perfectly in form rows. .btnsm opts out for compact in-row actions. */
 /* --ctl-h now lives in the main :root block at the top of this file alongside
@@ -461,7 +465,7 @@ select:focus{border-color:var(--accent);}
    maths matches .fi exactly. Specific button variants below just swap the
    border colour without changing geometry — heights line up perfectly.
    Padding 0 10px and font 13px per the high-density spec. */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:var(--ctl-h);padding:0 10px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid transparent;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;transition:background .12s,color .12s,border-color .12s,box-shadow .12s,opacity .12s;white-space:nowrap;line-height:1;box-sizing:border-box;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:var(--ctl-h);padding:0 10px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid transparent;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .12s,color .12s,border-color .12s,box-shadow .12s,opacity .12s;white-space:nowrap;line-height:1;box-sizing:border-box;}
 /* Disabled state — overrides all .btn variants. Used for the dirty-check on
    the org editor's save buttons (팀명 / 부/실명 / 센터명 저장). */
 .btn:disabled,.btn[disabled]{opacity:.45;cursor:not-allowed;pointer-events:none;}
@@ -514,7 +518,7 @@ th{background:var(--bg3);padding:9px 13px;text-align:left;font-size:10px;color:v
 th:hover{color:var(--text2);}
 td{padding:10px 13px;border-bottom:1px solid var(--border);font-size:12px;vertical-align:middle;}
 tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.015);}
-.mono{font-family:"JetBrains Mono",monospace;font-size:11px;}
+.mono{font-family:monospace;font-size:11px;}
 /* TAGS */
 .tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap;}
 .t-정규직원{background:rgba(34,197,94,.12);color:var(--green);}
@@ -523,7 +527,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.01
 .t-인턴{background:rgba(56,196,240,.12);color:var(--cyan);}
 .t-한국파견{background:rgba(245,208,56,.1);color:var(--yellow);}
 .t-직책{background:rgba(62,207,142,.1);color:var(--accent);}
-.t-grade{background:rgba(240,75,138,.1);color:var(--pink);font-family:"JetBrains Mono",monospace;}
+.t-grade{background:rgba(240,75,138,.1);color:var(--pink);font-family:monospace;}
 /* 원가부서 (cost-centre) tag — neutral, easy to scan, no full path. */
 .t-wonka{background:rgba(62,207,142,.08);color:var(--accent);border:1px solid rgba(62,207,142,.18);font-weight:700;}
 /* AVATAR */
@@ -574,7 +578,7 @@ tr.row-resigned .av{filter:grayscale(100%) brightness(.92);}
 /* Field labels: bumped from 10px → 12px and from --text3 (light gray) → --text (near-black) for high-contrast legibility above inputs. */
 .flab{font-size:12px;color:var(--text);font-weight:700;letter-spacing:.3px;text-transform:none;margin-bottom:4px;}
 /* All form inputs/selects share --ctl-h (38px) — matches .btn so they line up flush in horizontal rows. */
-.fi{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;height:var(--ctl-h);padding:0 10px;color:var(--text);font-size:13px;outline:none;font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;width:100%;transition:border-color .12s,box-shadow .12s;line-height:1;box-sizing:border-box;}
+.fi{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;height:var(--ctl-h);padding:0 10px;color:var(--text);font-size:13px;outline:none;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;width:100%;transition:border-color .12s,box-shadow .12s;line-height:1;box-sizing:border-box;}
 select.fi{padding-right:32px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%238e9ab8' stroke-width='1.6' fill='none' stroke-linecap='round'/></svg>");background-repeat:no-repeat;background-position:right 12px center;}
 textarea.fi{height:auto;min-height:var(--ctl-h);padding:10px 12px;line-height:1.5;}
 /* Supabase focus state — sharp 1px emerald border + tight 2px translucent glow. */
@@ -660,7 +664,7 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
 .empty{padding:40px;text-align:center;color:var(--text3);}
 
 /* ─── 조직도 차트뷰 ─── */
-.och-wrap{font-family:"Google Sans","Noto Sans","Noto Sans Khmer","Pretendard Variable",Pretendard,sans-serif;padding:4px 0;width:100%;box-sizing:border-box;}
+.och-wrap{font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:4px 0;width:100%;box-sizing:border-box;}
 .och-title-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
 .och-title{font-size:clamp(13px,1.4vw,17px);font-weight:900;color:var(--text1);}
 .och-total-num{font-size:clamp(15px,1.6vw,20px);font-weight:900;color:var(--accent);}
@@ -2014,8 +2018,8 @@ function rd(){
         const large=a>Math.PI?1:0;
         const fill=colors[i%colors.length];
         slices+=`<path class="donut-slice" d="M${cx},${cy} L${x1.toFixed(2)},${y1.toFixed(2)} A${R},${R} 0 ${large},1 ${x2.toFixed(2)},${y2.toFixed(2)} L${xi2.toFixed(2)},${yi2.toFixed(2)} A${ri},${ri} 0 ${large},0 ${xi.toFixed(2)},${yi.toFixed(2)} Z" fill="${fill}" style="cursor:pointer;transition:opacity .15s;--slice-delay:${i*60}ms" onmouseenter="this.setAttribute('opacity','1')" onmouseleave="this.setAttribute('opacity','0.9')"><title>${k}: ${v}명 (${(pct*100).toFixed(1)}%)</title></path>`;
-        if(pct>=0.06){const ma=ang+a/2,mr=(R+ri)/2;pctL+=`<text x="${(cx+mr*Math.cos(ma)).toFixed(1)}" y="${(cy+mr*Math.sin(ma)).toFixed(1)}" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="10" font-weight="700" font-family="JetBrains Mono,monospace" pointer-events="none">${(pct*100).toFixed(0)}%</text>`;}
-        legend+=`<div style="display:flex;align-items:center;gap:7px;padding:4px 0;font-size:12px;border-bottom:1px solid var(--border)"><div style="width:10px;height:10px;border-radius:2px;background:${fill};flex-shrink:0"></div><span style="color:var(--text2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${k}</span><span class="legend-count" data-target="${v}" data-suffix="명" style="color:${fill};font-weight:700;font-family:JetBrains Mono,monospace">0명</span><span style="color:var(--text3);font-family:JetBrains Mono,monospace;font-size:11px;margin-left:4px">${(pct*100).toFixed(1)}%</span></div>`;
+        if(pct>=0.06){const ma=ang+a/2,mr=(R+ri)/2;pctL+=`<text x="${(cx+mr*Math.cos(ma)).toFixed(1)}" y="${(cy+mr*Math.sin(ma)).toFixed(1)}" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="10" font-weight="700" font-family="monospace" pointer-events="none">${(pct*100).toFixed(0)}%</text>`;}
+        legend+=`<div style="display:flex;align-items:center;gap:7px;padding:4px 0;font-size:12px;border-bottom:1px solid var(--border)"><div style="width:10px;height:10px;border-radius:2px;background:${fill};flex-shrink:0"></div><span style="color:var(--text2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${k}</span><span class="legend-count" data-target="${v}" data-suffix="명" style="color:${fill};font-weight:700;font-family:monospace">0명</span><span style="color:var(--text3);font-family:monospace;font-size:11px;margin-left:4px">${(pct*100).toFixed(1)}%</span></div>`;
         ang+=a;
       });
       return {slices,pctL,legend,cx,cy};
@@ -2493,7 +2497,7 @@ function renderDetTab(e,tab){
       <div>
         <div class="dname">${escHtml(e.nick||"-")}</div>
         <div class="dsub">${escHtml(e.name||"")} ${e.jikchak?"· "+escHtml(e.jikchak):""}</div>
-        <div style="margin-top:4px;font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace">${escHtml(e.empId||"")}</div>
+        <div style="margin-top:4px;font-size:10px;color:var(--text3);font-family:monospace">${escHtml(e.empId||"")}</div>
       </div>
     </div>
     <div class="dsec"><div class="dsect">조직</div>${dr("부문",e.bumun)}${dr("센터",e.center)}${dr("부/실",e.bu)}${dr("팀",e.team)}</div>
@@ -2514,7 +2518,7 @@ function renderDetTab(e,tab){
       if(!end)return "-";
       const d=Math.ceil((new Date(end)-new Date())/86400000);
       const c=d<=30?"var(--red)":d<=60?"var(--orange)":"var(--green)";
-      return `<span style="color:${c};font-weight:700;font-family:'JetBrains Mono',monospace">${d>0?"D-"+d:"만료"}</span>`;
+      return `<span style="color:${c};font-weight:700;font-family:monospace">${d>0?"D-"+d:"만료"}</span>`;
     };
     body=`
     <div class="dhdr">
@@ -3080,7 +3084,7 @@ function renderSummaryPage(){
   // 합계
   rows += `<tr class="sum-total">
     <td>합계</td>
-    <td class="tc" style="font-family:'JetBrains Mono',monospace">${totOs+totDp}</td>
+    <td class="tc" style="font-family:monospace">${totOs+totDp}</td>
     <td class="tc"><span class="b-os">${totOs}</span></td>
     <td class="tc"><span class="b-dp">${totDp}</span></td>
     <td colspan="3"></td>
@@ -4366,10 +4370,10 @@ function calcDday(endStr){
 }
 function ddayBadge(d){
   if(d===null)return "-";
-  if(d<=0)return `<span style="background:rgba(239,68,68,.15);color:var(--red);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace">만료</span>`;
+  if(d<=0)return `<span style="background:rgba(239,68,68,.15);color:var(--red);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:monospace">만료</span>`;
   const c=d<=30?"var(--red)":d<=60?"var(--orange)":"var(--green)";
   const bg=d<=30?"rgba(239,68,68,.1)":d<=60?"rgba(245,158,11,.1)":"rgba(34,197,94,.1)";
-  return `<span style="background:${bg};color:${c};padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace">D-${d}</span>`;
+  return `<span style="background:${bg};color:${c};padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:monospace">D-${d}</span>`;
 }
 function renderDispatchPage(){
   const dispatched=devEmps().filter(e=>e.type==='파견');
@@ -4638,7 +4642,7 @@ function renderChangelog(){
   }
   tbody.innerHTML = rows.map(r=>`
     <tr>
-      <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2);white-space:nowrap">${_fmtDate(r.occurred_at)}</td>
+      <td style="font-family:monospace;font-size:11px;color:var(--text2);white-space:nowrap">${_fmtDate(r.occurred_at)}</td>
       <td>
         <span style="font-weight:600">${escHtml(r.actor_name||'-')}</span>
         <span style="font-size:10px;color:var(--text3);margin-left:6px">${escHtml(r.actor_role||'')}</span>
