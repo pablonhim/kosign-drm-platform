@@ -148,7 +148,11 @@ body{font-family:'JetBrains Mono Digits',"Plus Jakarta Sans","Noto Sans KR","Kan
 .lg{display:flex;flex-direction:column;gap:6px;}
 .lg label{font-size:13px;color:var(--text);font-weight:600;letter-spacing:0;text-transform:none;}
 .lcheck{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);cursor:pointer;user-select:none;margin-top:-4px;}
-.lcheck input{margin:0;cursor:pointer;accent-color:var(--accent);width:14px;height:14px;}
+.lcheck input{margin:0;cursor:pointer;accent-color:var(--accent);width:18px;height:18px;}
+/* Global checkbox sizing — every <input type=checkbox> in the app reads as
+   18×18px unless explicitly overridden. Affects multi-select filter lists,
+   user-management toggles, login "remember ID", etc. */
+input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);cursor:pointer;}
 .li{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:11px 14px;color:var(--text);font-size:14px;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;outline:none;transition:border-color .15s,box-shadow .15s;width:100%;}
 .li:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,115,232,.14);}
 .lpw-wrap{position:relative;}
@@ -337,7 +341,7 @@ body{font-family:'JetBrains Mono Digits',"Plus Jakarta Sans","Noto Sans KR","Kan
 .navi-ic{width:17px;height:17px;flex-shrink:0;}                     /* outlined SVG icon, inherits color via stroke=currentColor */
 .navc{margin-left:auto;background:var(--bg4);border-radius:10px;padding:1px 7px;font-size:10px;font-family:"JetBrains Mono",monospace;color:var(--text3);}
 .navi.active .navc{background:rgba(26,115,232,.2);color:var(--accent);}
-.sum-tbl{width:100%;border-collapse:collapse;}.sum-tbl th{padding:9px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border2);background:var(--bg3);white-space:nowrap;}.sum-tbl th.tc{text-align:center;}.sum-tbl td{padding:10px 14px;font-size:12px;color:var(--text2);border-bottom:0.5px solid var(--border);vertical-align:middle;}.sum-tbl td.tc{text-align:center;}.sum-tbl .co-cell{background:var(--bg3);border-right:1px solid var(--border);border-left:3px solid var(--accent);vertical-align:middle;font-size:13px;font-weight:700;color:var(--text);}.sum-tbl tr.grp-mid td{border-bottom:0.5px dashed var(--border);}.sum-tbl tr.grp-end td{border-bottom:1px solid var(--border2);}.sum-tbl tr.grp-sub td{background:var(--bg3);}.sum-tbl tr.grp-sub .co-cell{background:var(--bg3);}.sum-tbl tr.sum-total td{background:var(--bg3);font-weight:700;font-size:13px;border-top:2px solid var(--border2);}.ref-date-wrap{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;height:var(--ctl-h);padding:0 12px;font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap;box-sizing:border-box;}.ref-date-wrap input[type=date]{background:none;border:none;outline:none;font-size:12px;color:var(--text);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer;}.sbfoot{padding:10px;border-top:1px solid var(--border);}
+.sum-tbl{width:100%;border-collapse:collapse;}.sum-tbl th{padding:9px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border2);background:var(--bg3);white-space:nowrap;}.sum-tbl th.tc{text-align:center;}.sum-tbl td{padding:10px 14px;font-size:12px;color:var(--text2);border-bottom:0.5px solid var(--border);vertical-align:middle;}.sum-tbl td.tc{text-align:center;}.sum-tbl .co-cell{background:var(--bg3);border-right:1px solid var(--border);border-left:3px solid var(--accent);vertical-align:middle;font-size:13px;font-weight:700;color:var(--text);}.sum-tbl tr.grp-mid td{border-bottom:0.5px dashed var(--border);}.sum-tbl tr.grp-end td{border-bottom:1px solid var(--border2);}.sum-tbl tr.grp-sub td{background:var(--bg3);}.sum-tbl tr.grp-sub .co-cell{background:var(--bg3);}.sum-tbl tr.sum-total td{background:var(--bg3);font-weight:700;font-size:13px;border-top:2px solid var(--border2);}.ref-date-wrap{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;height:var(--ctl-h);padding:0 12px;font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap;box-sizing:border-box;}.ref-date-wrap input[type=date]{background:none;border:none;outline:none;font-size:12px;color:var(--text);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer;}.sbfoot{padding:10px;border-top:1px solid var(--border);}
 .synbtn{width:100%;padding:9px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);border-radius:8px;color:var(--green);font-size:12px;font-weight:600;cursor:pointer;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .12s;display:flex;align-items:center;justify-content:center;gap:7px;}
 .synbtn:hover{background:rgba(34,197,94,.14);}
 body{overflow:hidden;}
@@ -374,7 +378,7 @@ body{overflow:hidden;}
 tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 /* Custom multi-select dropdown (replaces native <select> filters). */
 .ms-wrap{position:relative;display:inline-block;}
-.ms-btn{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:0 32px 0 14px;font-size:12px;color:var(--text);cursor:pointer;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;display:inline-flex;align-items:center;min-width:140px;max-width:240px;height:var(--ctl-h);position:relative;transition:border-color .15s,background .15s,box-shadow .15s;line-height:1;}
+.ms-btn{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:0 32px 0 14px;font-size:12px;color:var(--text);cursor:pointer;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;display:inline-flex;align-items:center;min-width:140px;max-width:240px;height:var(--ctl-h);position:relative;transition:border-color .15s,background .15s,box-shadow .15s;line-height:1;}
 .ms-btn:hover{background:var(--bg3);border-color:var(--accent2);}
 /* .is-open / focus state — handled centrally by the unified .filter-row focus rule above so all controls match. */
 .ms-btn .ms-label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;}
@@ -438,7 +442,7 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 }
 /* CONTROLS */
 .cb{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-.srch{display:flex;align-items:center;gap:7px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:0 12px;height:var(--ctl-h);box-sizing:border-box;transition:border-color .15s,box-shadow .15s;}
+.srch{display:flex;align-items:center;gap:7px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:0 12px;height:var(--ctl-h);box-sizing:border-box;transition:border-color .15s,box-shadow .15s;}
 /* Filter bar: every child sits at exactly 40px on the same baseline. */
 .filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
 .filter-row > .ref-date-wrap,
@@ -448,8 +452,8 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 .filter-row > select,
 .filter-row > input[type="date"]{height:var(--ctl-h);box-sizing:border-box;transition:border-color .15s,box-shadow .15s;}
 .filter-row > .ref-date-wrap{padding:0 14px;}
-.filter-row > input[type="date"]{padding:0 12px;border:1px solid var(--border2);border-radius:8px;background:var(--bg2);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;color:var(--text);}
-.filter-row > select{padding:0 32px 0 12px;border:1px solid var(--border2);border-radius:8px;background:var(--bg2);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;color:var(--text);}
+.filter-row > input[type="date"]{padding:0 12px;border:1px solid var(--border2);border-radius:6px;background:var(--bg2);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;color:var(--text);}
+.filter-row > select{padding:0 32px 0 12px;border:1px solid var(--border2);border-radius:6px;background:var(--bg2);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;color:var(--text);}
 /* Crisp focus state — 1px solid deep-blue border + 2px even outer glow.
    The outline is killed entirely; box-shadow with no inset paints a perfectly uniform halo
    on all four sides, following border-radius automatically. No content reflow (border stays 1px). */
@@ -481,18 +485,15 @@ select:focus{border-color:var(--accent);}
    maths matches .fi exactly. Specific button variants below just swap the
    border colour without changing geometry — heights line up perfectly.
    Padding 0 10px and font 13px per the high-density spec. */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:var(--ctl-h);padding:0 10px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid transparent;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .12s,color .12s,border-color .12s,box-shadow .12s,opacity .12s;white-space:nowrap;line-height:1;box-sizing:border-box;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:var(--ctl-h);padding:0 10px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid transparent;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .12s,color .12s,border-color .12s,box-shadow .12s,opacity .12s;white-space:nowrap;line-height:1;box-sizing:border-box;}
 /* Disabled state — overrides all .btn variants. Used for the dirty-check on
    the org editor's save buttons (팀명 / 부/실명 / 센터명 저장). */
-/* Disabled state — medium gray fill with white label for high contrast.
-   Works natively with [disabled] on save-on-dirty buttons in the org
-   editor (팀명 저장, 부/실명 저장, 센터명 저장). No pointer-events:none —
-   would suppress cursor:not-allowed. Native HTML disabled blocks clicks
-   on <button>. */
+/* Disabled state — soft light gray. Label uses a dark slate so the text
+   stays clearly readable on the pale background. */
 .btn:disabled,.btn[disabled]{
-  background:#6B7280 !important;   /* medium slate gray */
-  color:#FFFFFF !important;        /* white label */
-  border-color:#9CA3AF !important; /* slightly lighter gray border for the outer ring */
+  background:#d7dbe4 !important;
+  color:#4B5563 !important;        /* slate-600 — passes AA on this bg */
+  border-color:#c8ced9 !important;
   cursor:not-allowed;
   opacity:1;
 }
@@ -504,19 +505,17 @@ select:focus{border-color:var(--accent);}
    already routes through var(--accent), so it auto-emeralds. */
 /* Supabase primary: solid emerald (#3ecf8e) fill + crisp dark text + darker
    hover (#30b87a via --accent2 in light; --accent2 = #34d399 lift in dark). */
-/* Primary button — Gemini-style tech blue + slightly lighter blue border for
-   the outer-ring depth. White text on the vibrant fill. Hex matches the
-   --accent / --accent2 variables exactly, so the design is unified system-wide
-   (focus rings, .navi.active highlight, pill tints — all route through these). */
+/* Primary button — Gemini tech blue fill with a DARKER blue border so the
+   button reads as solid + depressed rather than glowing. */
 .btnp{
   background:#1A73E8;
   color:#FFFFFF;
-  border:1px solid #4285F4;
+  border:1px solid #1557B0;   /* deeper blue than the fill */
   font-weight:700;
 }
 .btnp:hover{
   background:#4285F4;
-  border-color:#5C9BFF;
+  border-color:#1A73E8;        /* still darker than the hover fill */
   color:#FFFFFF;
 }
 .btng{background:var(--bg3);color:var(--text);border:1px solid var(--border);}
@@ -618,7 +617,7 @@ tr.row-resigned .av{filter:grayscale(100%) brightness(.92);}
 /* Field labels: bumped from 10px → 12px and from --text3 (light gray) → --text (near-black) for high-contrast legibility above inputs. */
 .flab{font-size:12px;color:var(--text);font-weight:700;letter-spacing:.3px;text-transform:none;margin-bottom:4px;}
 /* All form inputs/selects share --ctl-h (38px) — matches .btn so they line up flush in horizontal rows. */
-.fi{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;height:var(--ctl-h);padding:0 10px;color:var(--text);font-size:13px;outline:none;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;width:100%;transition:border-color .12s,box-shadow .12s;line-height:1;box-sizing:border-box;}
+.fi{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;height:var(--ctl-h);padding:0 10px;color:var(--text);font-size:13px;outline:none;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;width:100%;transition:border-color .12s,box-shadow .12s;line-height:1;box-sizing:border-box;}
 select.fi{padding-right:32px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%238e9ab8' stroke-width='1.6' fill='none' stroke-linecap='round'/></svg>");background-repeat:no-repeat;background-position:right 12px center;}
 textarea.fi{height:auto;min-height:var(--ctl-h);padding:10px 12px;line-height:1.5;}
 /* Supabase focus state — sharp 1px emerald border + tight 2px translucent glow. */
@@ -697,7 +696,7 @@ select.fi:focus{box-shadow:0 0 0 2px rgba(26,115,232,0.25);}
 .qmodal-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,115,232,.14);}
 textarea.qmodal-input{resize:vertical;min-height:56px;}
 .qmodal-foot{display:flex;gap:8px;justify-content:flex-end;padding:11px 16px;border-top:1px solid var(--border);background:var(--bg3);}
-.qmodal-foot .btn{padding:8px 16px;font-size:12px;border-radius:8px;}
+.qmodal-foot .btn{padding:8px 16px;font-size:12px;border-radius:6px;}
 .srch-clear{background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;line-height:1;padding:2px 5px;border-radius:4px;display:none;align-items:center;justify-content:center;transition:color .15s,background .15s;}
 .srch-clear:hover{color:var(--text);background:rgba(0,0,0,.05);}
 .srch-clear.show{display:inline-flex;}
