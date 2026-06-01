@@ -152,7 +152,34 @@ body{font-family:'JetBrains Mono Digits',"Plus Jakarta Sans","Noto Sans KR","Kan
 /* Global checkbox sizing — every <input type=checkbox> in the app reads as
    18×18px unless explicitly overridden. Affects multi-select filter lists,
    user-management toggles, login "remember ID", etc. */
-input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);cursor:pointer;}
+/* Custom checkbox — square 18×18 with a 4px-radius (square, not pill). appearance:none lets us draw the
+   check as a ::after-rotated border. Focus halo matches the Gemini-blue glow used across the system. */
+input[type=checkbox]{
+  width:18px;height:18px;
+  appearance:none;-webkit-appearance:none;
+  border:1.5px solid var(--border2);
+  border-radius:4px;
+  background:var(--bg2);
+  cursor:pointer;
+  position:relative;
+  flex-shrink:0;
+  transition:background .12s,border-color .12s,box-shadow .12s;
+  vertical-align:middle;
+}
+input[type=checkbox]:hover{border-color:var(--accent2);}
+input[type=checkbox]:checked{background:var(--accent);border-color:var(--accent);}
+input[type=checkbox]:checked::after{
+  content:'';position:absolute;
+  left:5px;top:1px;
+  width:5px;height:10px;
+  border:solid #fff;border-width:0 2px 2px 0;
+  transform:rotate(45deg);
+}
+input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(26,115,232,0.22);outline:none;}
+input[type=checkbox]:indeterminate{background:var(--accent);border-color:var(--accent);}
+input[type=checkbox]:indeterminate::after{
+  content:'';position:absolute;left:3px;top:7px;width:10px;height:2px;background:#fff;border:none;transform:none;
+}
 .li{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:11px 14px;color:var(--text);font-size:14px;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;outline:none;transition:border-color .15s,box-shadow .15s;width:100%;}
 .li:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,115,232,.14);}
 .lpw-wrap{position:relative;}
@@ -341,7 +368,7 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);cursor:po
 .navi-ic{width:17px;height:17px;flex-shrink:0;}                     /* outlined SVG icon, inherits color via stroke=currentColor */
 .navc{margin-left:auto;background:var(--bg4);border-radius:10px;padding:1px 7px;font-size:10px;font-family:"JetBrains Mono",monospace;color:var(--text3);}
 .navi.active .navc{background:rgba(26,115,232,.2);color:var(--accent);}
-.sum-tbl{width:100%;border-collapse:collapse;}.sum-tbl th{padding:9px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border2);background:var(--bg3);white-space:nowrap;}.sum-tbl th.tc{text-align:center;}.sum-tbl td{padding:10px 14px;font-size:12px;color:var(--text2);border-bottom:0.5px solid var(--border);vertical-align:middle;}.sum-tbl td.tc{text-align:center;}.sum-tbl .co-cell{background:var(--bg3);border-right:1px solid var(--border);border-left:3px solid var(--accent);vertical-align:middle;font-size:13px;font-weight:700;color:var(--text);}.sum-tbl tr.grp-mid td{border-bottom:0.5px dashed var(--border);}.sum-tbl tr.grp-end td{border-bottom:1px solid var(--border2);}.sum-tbl tr.grp-sub td{background:var(--bg3);}.sum-tbl tr.grp-sub .co-cell{background:var(--bg3);}.sum-tbl tr.sum-total td{background:var(--bg3);font-weight:700;font-size:13px;border-top:2px solid var(--border2);}.ref-date-wrap{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;height:var(--ctl-h);padding:0 12px;font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap;box-sizing:border-box;}.ref-date-wrap input[type=date]{background:none;border:none;outline:none;font-size:12px;color:var(--text);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer;}.sbfoot{padding:10px;border-top:1px solid var(--border);}
+.sum-tbl{width:100%;border-collapse:collapse;}.sum-tbl th{padding:9px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border2);background:var(--bg3);white-space:nowrap;}.sum-tbl th.tc{text-align:center;}.sum-tbl td{padding:10px 14px;font-size:12px;color:var(--text2);border-bottom:0.5px solid var(--border);vertical-align:middle;}.sum-tbl td.tc{text-align:center;}.sum-tbl .co-cell{background:var(--bg3);border-right:1px solid var(--border);border-left:3px solid var(--accent);vertical-align:middle;font-size:13px;font-weight:700;color:var(--text);}.sum-tbl tr.grp-mid td{border-bottom:0.5px dashed var(--border);}.sum-tbl tr.grp-end td{border-bottom:1px solid var(--border2);}.sum-tbl tr.grp-sub td{background:var(--bg3);}.sum-tbl tr.grp-sub .co-cell{background:var(--bg3);}.sum-tbl tr.sum-total td{background:var(--bg3);font-weight:700;font-size:13px;border-top:2px solid var(--border2);}.ref-date-wrap{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;height:var(--ctl-h);padding:0 12px;font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap;box-sizing:border-box;}.ref-date-wrap input[type=date],.ref-date-wrap input.dp-input{background:none;border:none;outline:none;font-size:12px;color:var(--text);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer;padding:0;}.sbfoot{padding:10px;border-top:1px solid var(--border);}
 .synbtn{width:100%;padding:9px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);border-radius:8px;color:var(--green);font-size:12px;font-weight:600;cursor:pointer;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .12s;display:flex;align-items:center;justify-content:center;gap:7px;}
 .synbtn:hover{background:rgba(34,197,94,.14);}
 body{overflow:hidden;}
@@ -353,6 +380,10 @@ body{overflow:hidden;}
 /* Content area now hosts the active page directly; scroll is delegated to each page (or to the table inside it). */
 .content{flex:1;overflow:hidden;padding:0;display:flex;flex-direction:column;min-height:0;}
 .page{display:none;}
+/* Page-switch fade — .active is toggled on the new page and the transition between display:none/flex
+   normally won't tween, so we drive the fade with a one-shot keyframe each time .active is applied. */
+@keyframes pageFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.page.active{animation:pageFadeIn 0.2s ease-in-out;}
 .page.active{display:flex;flex:1;flex-direction:column;min-height:0;padding:6px 24px 20px;overflow-y:auto;}  /* 6px top so focus halos on the filter row aren't clipped */
 /* Page-switch entrance — applied to the global .content wrapper. JS removes + re-adds the class on every showPage(),
    forcing a reflow in between so the keyframe restarts cleanly even on rapid clicks.
@@ -366,6 +397,14 @@ body{overflow:hidden;}
 #page-list.active > .section{flex:1;display:flex;flex-direction:column;min-height:0;margin-bottom:20px;}
 #page-list.active > .section > .ox{flex:1;overflow:auto;min-height:0;}
 #page-list.active > .section > #ecnt{flex-shrink:0;}
+/* 조직 관리 — same full-height pattern as #page-list. The page itself does NOT scroll; instead its
+   single grid child fills the remaining flex slot, and each .section panel scrolls internally. */
+#page-settings-org.active{overflow:hidden;padding-bottom:14px;}
+#page-settings-org.active > div:first-child{
+  flex:1;min-height:0;
+  grid-template-rows:1fr;   /* one explicit row → grid stretches to fill the flex slot */
+}
+#page-settings-org.active > div:first-child > .section{min-height:0;}
 /* Sticky header inside the scrolling .ox — applied per-th so the cell background stays opaque while rows scroll under it. */
 #etbl thead th{position:sticky;top:0;background:var(--bg2);z-index:5;box-shadow:inset 0 -1px 0 var(--border);}
 /* Standardised table cell SIZE only — every td matches the 본명/호칭 column's font-size.
@@ -373,6 +412,9 @@ body{overflow:hidden;}
    .tag (status badges) and .av (profile circles) opt out via their own font-size/weight. */
 #etbl tbody td{font-size:13px;padding:10px 12px;}
 .tp-row td{font-size:12px;padding:9px 10px;}
+/* Sync 파견인력 / 파견준비 row font with the primary 13px used across other tables (#etbl tbody td). */
+#dispatch-tbl tbody td,
+#dispatch-prep-tbl tbody td{font-size:13px;padding:10px 12px;}
 .tp-empty td{padding:30px;text-align:center;color:var(--text3);font-size:13px;}
 /* Resigned rows keep their muted-gray override. */
 tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
@@ -382,7 +424,9 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 .ms-btn:hover{background:var(--bg3);border-color:var(--accent2);}
 /* .is-open / focus state — handled centrally by the unified .filter-row focus rule above so all controls match. */
 .ms-btn .ms-label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;}
-.ms-btn .ms-caret{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:10px;}
+/* Replace the legacy ▾ glyph with our uniform chevron SVG — hide the text content, render the SVG
+   as the caret. Keeps every multi-select trigger visually consistent with native <select>. */
+.ms-btn .ms-caret{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:12px;height:12px;font-size:0;color:transparent;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238e9ab8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:center;}
 .ms-menu{display:none;position:fixed;min-width:200px;max-width:300px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.14);z-index:60;padding:4px;max-height:340px;overflow-y:auto;}
 .ms-menu.show{display:block;}
 .ms-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12px;color:var(--text);transition:background .12s;user-select:none;}
@@ -442,7 +486,12 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 }
 /* CONTROLS */
 .cb{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-.srch{display:flex;align-items:center;gap:7px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:0 12px;height:var(--ctl-h);box-sizing:border-box;transition:border-color .15s,box-shadow .15s;}
+.srch{display:flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:0 10px;height:var(--ctl-h);box-sizing:border-box;transition:border-color .15s,box-shadow .15s;}
+/* Inline SVG search icon — sits tight in the input prefix space, monochrome (currentColor) so
+   it follows the wrapper's text color and dims naturally on disabled / empty states. */
+.srch > span:first-child{font-size:13px;line-height:1;color:var(--text3);display:inline-flex;align-items:center;user-select:none;flex-shrink:0;}
+.srch .srch-ico{color:var(--text3);display:inline-flex;align-items:center;line-height:0;flex-shrink:0;}
+.srch:focus-within .srch-ico{color:#1A73E8;}
 /* Filter bar: every child sits at exactly 40px on the same baseline. */
 .filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
 .filter-row > .ref-date-wrap,
@@ -450,9 +499,11 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 .filter-row > .ms-wrap > .ms-btn,
 .filter-row > .btn,
 .filter-row > select,
-.filter-row > input[type="date"]{height:var(--ctl-h);box-sizing:border-box;transition:border-color .15s,box-shadow .15s;}
+.filter-row > input[type="date"],
+.filter-row > input.dp-input{height:var(--ctl-h);box-sizing:border-box;transition:border-color .15s,box-shadow .15s;}
 .filter-row > .ref-date-wrap{padding:0 14px;}
-.filter-row > input[type="date"]{padding:0 12px;border:1px solid var(--border2);border-radius:6px;background:var(--bg2);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;color:var(--text);}
+.filter-row > input[type="date"],
+.filter-row > input.dp-input{padding:0 12px;border:1px solid var(--border2);border-radius:6px;background:var(--bg2);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;color:var(--text);}
 .filter-row > select{padding:0 32px 0 12px;border:1px solid var(--border2);border-radius:6px;background:var(--bg2);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;color:var(--text);}
 /* Crisp focus state — 1px solid deep-blue border + 2px even outer glow.
    The outline is killed entirely; box-shadow with no inset paints a perfectly uniform halo
@@ -462,15 +513,17 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 .filter-row .ms-wrap .ms-btn.is-open,
 .filter-row .ms-wrap .ms-btn:focus-visible,
 .filter-row > input[type="date"]:focus,
+.filter-row > input.dp-input:focus,
 .filter-row > select:focus{
   outline:none;
-  border-color:var(--accent2);
-  box-shadow:0 0 0 2px rgba(66,133,244,.20);
+  border:1px solid #1A73E8;
+  box-shadow:0 0 0 3px rgba(26,115,232,0.18);
 }
 /* Native input/select inside the wrappers: kill their browser default focus rings so only our wrapper stroke shows. */
 .filter-row .srch input:focus,
 .filter-row .ref-date-wrap input:focus,
 .filter-row > input[type="date"]:focus,
+.filter-row > input.dp-input:focus,
 .filter-row > select:focus{outline:none;}
 .srch input{background:none;border:none;outline:none;color:var(--text);font-size:13px;width:190px;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
 .srch input::placeholder{color:var(--text3);}
@@ -553,10 +606,24 @@ select:focus{border-color:var(--accent);}
    (the list page's flex avatar+name row) untouched. */
 .ox td > div[style] { display: inline-block; vertical-align: middle; }
 table{width:100%;border-collapse:collapse;}
-th{background:var(--bg3);padding:9px 13px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.8px;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;}
+th{background:var(--bg3);padding:9px 13px;text-align:left;font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.8px;text-transform:uppercase;white-space:nowrap;cursor:pointer;user-select:none;}
 th:hover{color:var(--text2);}
 td{padding:10px 13px;border-bottom:1px solid var(--border);font-size:12px;vertical-align:middle;}
-tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.015);}
+tr:last-child td{border-bottom:none;}
+/* Row hover — visible in both themes. Light: subtle Gemini-blue tint on a white card surface.
+   Dark: 6% white tint over the dark card surface. Solid (not 1% white) so it actually reads.
+   This intentionally overrides per-row inline tints (e.g. D-Day warning colors in 파견인력) for the
+   duration of the hover, then reverts when the cursor leaves. */
+tr:hover td{background-color:rgba(26,115,232,.07);}
+[data-theme="dark"] tr:hover td{background-color:rgba(255,255,255,.06);}
+/* Sticky thead and section header cells should never get the hover tint. */
+thead tr:hover th{background:var(--bg3);}
+/* Flat-table feel: no thead↔tbody seam, no body bottom seam. The first tbody row sits directly under the
+   header with no top stroke (header lost its border-bottom; the first td gets a defensive `border-top:none`
+   so any inherited rule can't reintroduce it). The last body row drops its bottom border. */
+.ox > table > thead > tr:first-child > th{border-top:none !important;border-bottom:none !important;}
+.ox > table > tbody > tr:first-child > td{border-top:none !important;}
+.ox > table > tbody > tr:last-child > td{border-bottom:none !important;}
 .mono{font-family:"JetBrains Mono",monospace;font-size:11px;}
 /* TAGS */
 .tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap;}
@@ -594,21 +661,85 @@ tr.row-resigned .av{filter:grayscale(100%) brightness(.92);}
 .ocs{display:flex;flex-wrap:wrap;gap:5px;}
 .ochp{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:5px 10px;display:flex;align-items:center;gap:6px;font-size:11px;cursor:pointer;transition:border-color .12s;}
 .ochp:hover{border-color:var(--accent);}
-/* DETAIL */
-.dov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:150;display:flex;justify-content:flex-end;}
-.dpanel{width:400px;background:var(--bg2);border-left:1px solid var(--border2);height:100%;overflow-y:auto;padding:22px;display:flex;flex-direction:column;}
-.dclose{align-self:flex-end;cursor:pointer;color:var(--text3);font-size:18px;margin-bottom:10px;}
-.dclose:hover{color:var(--text);}
-.dhdr{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+/* DETAIL DRAWER ─────────────────────────────────────────────────────────────
+   Slide + fade from the right with a soft cubic-bezier easing curve. The drawer is a flex column:
+   • .dpanel-head  — sticky profile header (always visible)
+   • .dpanel-tabs  — sticky tab bar (always visible)
+   • .dpanel-body  — the ONLY scrollable region; masked top/bottom for a soft fade
+   • .dpanel-foot  — sticky action bar (수정/삭제)
+   ───────────────────────────────────────────────────────────────────────── */
+.dov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:150;display:flex;justify-content:flex-end;animation:dovFadeIn 0.3s ease;}
+@keyframes dovFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes drawerSlideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+.dpanel{
+  width:420px; max-width:96vw; background:var(--bg2);
+  border-left:1px solid var(--border2); height:100%;
+  display:flex; flex-direction:column;
+  overflow:hidden;
+  animation: drawerSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+}
+.dpanel-head{
+  position:sticky; top:0; z-index:2;
+  flex-shrink:0;
+  background:var(--bg2);
+  padding:18px 22px 14px;
+}
+.dpanel-tabs{
+  position:sticky; top:0; z-index:1;
+  flex-shrink:0;
+  background:var(--bg2);
+  padding:0 22px;
+  border-bottom:1px solid var(--border);
+  display:flex; gap:0;
+}
+.dpanel-tab{
+  padding:9px 14px; font-size:12px; cursor:pointer; font-weight:500;
+  color:var(--text2);
+  border-bottom:2px solid transparent;
+  margin-bottom:-1px;
+  transition: color .12s, border-color .12s;
+}
+.dpanel-tab.is-active{font-weight:700; color:var(--accent); border-bottom-color:var(--accent);}
+.dpanel-tab:hover{color:var(--text);}
+.dpanel-body{
+  flex:1; min-height:0;
+  overflow-y:auto;
+  padding:16px 22px 18px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 15px, black calc(100% - 15px), transparent);
+          mask-image: linear-gradient(to bottom, transparent, black 15px, black calc(100% - 15px), transparent);
+}
+.dpanel-foot{
+  position:sticky; bottom:0;
+  flex-shrink:0;
+  background:transparent;
+  padding:10px 22px 14px;
+  display:flex;
+}
+.dpanel-foot:empty{display:none;}
+.dclose{cursor:pointer;color:var(--text3);font-size:18px;line-height:1;padding:2px 6px;border-radius:4px;}
+.dclose:hover{color:var(--text);background:rgba(0,0,0,.05);}
+.dhdr{display:flex;align-items:center;gap:12px;}
 .davlg{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;flex-shrink:0;}
 .dname{font-size:19px;font-weight:800;}.dsub{font-size:12px;color:var(--text3);margin-top:2px;}
-.dsec{margin-bottom:16px;}
-.dsect{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text3);text-transform:uppercase;margin-bottom:7px;border-bottom:1px solid var(--border);padding-bottom:5px;}
-.drow{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.03);align-items:flex-start;gap:8px;}
-.drow:last-child{border-bottom:none;}.dk{font-size:11px;color:var(--text3);white-space:nowrap;flex-shrink:0;}
-.dv{font-size:12px;font-weight:500;text-align:right;}
-.dnote{font-size:12px;color:var(--orange);line-height:1.6;}
-.dact{display:flex;gap:8px;margin-top:8px;}
+.dsec{margin-bottom:18px;}
+/* Section titles are now plain captions — no underline. Row dividers live on .drow instead. */
+.dsect{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text3);text-transform:uppercase;margin-bottom:6px;}
+/* Detail-pane body rows (조직 → 비고). Thin row-level border under each data row instead of a section underline.
+   Last row of each section drops the border so sections breathe. Tight 5px vertical padding keeps the
+   edge-aligned density intact. */
+.drow{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);align-items:flex-start;gap:12px;}
+.dsec > .drow:last-child{border-bottom:none;}
+.dk{font-size:0.875rem;line-height:1.45;color:var(--text3);white-space:nowrap;flex-shrink:0;}
+.dv{font-size:0.875rem;line-height:1.45;font-weight:500;text-align:right;color:var(--text);word-break:break-word;}
+.dnote{font-size:0.875rem;line-height:1.5;color:var(--orange);padding:6px 0;}
+/* Sidebar foot action buttons — inline horizontal, natural width (NOT stretched). */
+.dact{display:inline-flex;gap:8px;align-items:center;}
+/* Dark theme override: row border darker so it reads on the bg2 surface. */
+[data-theme="dark"] .drow{border-bottom-color:#2d3139;}
 /* MODAL */
 .mov{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
 .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:24px;width:660px;max-width:96vw;box-shadow:var(--sh);max-height:92vh;overflow-y:auto;}
@@ -618,11 +749,23 @@ tr.row-resigned .av{filter:grayscale(100%) brightness(.92);}
 .flab{font-size:12px;color:var(--text);font-weight:700;letter-spacing:.3px;text-transform:none;margin-bottom:4px;}
 /* All form inputs/selects share --ctl-h (38px) — matches .btn so they line up flush in horizontal rows. */
 .fi{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;height:var(--ctl-h);padding:0 10px;color:var(--text);font-size:13px;outline:none;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;width:100%;transition:border-color .12s,box-shadow .12s;line-height:1;box-sizing:border-box;}
-select.fi{padding-right:32px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%238e9ab8' stroke-width='1.6' fill='none' stroke-linecap='round'/></svg>");background-repeat:no-repeat;background-position:right 12px center;}
+/* Modern chevron — 12×12, stroke 2.5, rounded caps. Apply to EVERY <select> in the app and to the
+   .ms-btn multi-select trigger. currentColor in data: URIs doesn't inherit, so the stroke is pinned. */
+select,
+select.fi,
+.filter-row > select{
+  appearance:none;-webkit-appearance:none;
+  padding-right:32px;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238e9ab8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat:no-repeat;
+  background-position:right 10px center;
+}
 textarea.fi{height:auto;min-height:var(--ctl-h);padding:10px 12px;line-height:1.5;}
-/* Supabase focus state — sharp 1px emerald border + tight 2px translucent glow. */
-.fi:focus,.fi:focus-visible{border-color:#3ecf8e;box-shadow:0 0 0 2px rgba(26,115,232,0.25);outline:none;}
-select.fi:focus{box-shadow:0 0 0 2px rgba(26,115,232,0.25);}
+/* Focus state — Gemini blue (#1A73E8) border + 3px soft outer glow on every textfield, select, and textarea. */
+.fi:focus,.fi:focus-visible{border:1px solid #1A73E8;box-shadow:0 0 0 3px rgba(26,115,232,0.18);outline:none;}
+select.fi:focus{border:1px solid #1A73E8;box-shadow:0 0 0 3px rgba(26,115,232,0.18);}
+/* Search box and date pill use the same Gemini-blue focus halo via :focus-within. */
+.srch:focus-within{border:1px solid #1A73E8;box-shadow:0 0 0 3px rgba(26,115,232,0.18);}
 /* Password real-time validation UI */
 .pw-meter{margin-top:8px;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
 .pw-meter-fill{height:100%;width:0;background:transparent;border-radius:2px;transition:width .25s ease,background-color .25s ease;}
@@ -666,13 +809,29 @@ select.fi:focus{box-shadow:0 0 0 2px rgba(26,115,232,0.25);}
 @keyframes rowPulse{0%{background:rgba(26,115,232,.22);box-shadow:inset 3px 0 0 var(--accent);}60%{background:rgba(26,115,232,.10);box-shadow:inset 3px 0 0 rgba(26,115,232,.5);}100%{background:transparent;box-shadow:none;}}
 .row-pulse{animation:rowPulse 3s ease-out;}
 .qa-wrap{position:relative;display:inline-block;}
+/* Hide the three-dots kebab by default; instant reveal on row hover (zero transition).
+   IMPORTANT: we deliberately do NOT use `pointer-events:none` for the hidden state. Combining
+   pointer-events:none with a :hover-driven visibility toggle creates a one-frame race: the
+   browser's mousedown can land on the underlying <td> before hit-testing recomputes for the
+   newly-interactive dot, eating the first click. Plain opacity:0 keeps the dot in the hit
+   region, so the very first click registers on the button as soon as it's visible. */
+.qa-dot{opacity:0;}
+tr:hover .qa-dot,
+.qa-wrap.is-open .qa-dot{opacity:1;}
 .qa-toggle{display:inline-flex;align-items:center;gap:3px;}
 .qa-dot{background:var(--bg2);border:1px solid var(--border);cursor:pointer;color:var(--text2);font-size:18px;line-height:1;width:30px;height:30px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s,color .15s,box-shadow .15s;font-weight:700;letter-spacing:1px;}
 .qa-dot:hover{color:var(--text);background:var(--bg3);border-color:var(--border2);box-shadow:0 1px 2px rgba(80,100,160,.08);}
 .qa-dot:active{background:var(--bg4);}
 .qa-dot:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
-.qa-menu{display:none;position:absolute;right:0;top:calc(100% + 4px);background:var(--bg2);border:1px solid var(--border2);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:50;min-width:140px;padding:4px;}
+/* qa-menu is position:fixed so it ESCAPES any overflow:auto/.hidden parent (.ox, .section, .page).
+   Coordinates (top/left) are set by toggleRowMenu() in JS — including drop-up flip when the
+   button is near the bottom of the viewport. z-index sits above the drawer (150) and modals (200). */
+.qa-menu{display:none;position:fixed;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.22);z-index:9999;min-width:160px;padding:4px;}
 .qa-menu.show{display:block;}
+/* .drop-up is a marker class set by toggleRowMenu when the menu flips above the dot. Purely
+   cosmetic — actual positioning is via inline top/left. Kept available so a connector arrow,
+   transform-origin, or animation can hook off it later without touching JS. */
+.qa-menu.drop-up{box-shadow:0 -12px 32px rgba(0,0,0,.22);}
 .qa-menu button{display:flex;align-items:center;gap:8px;width:100%;text-align:left;padding:8px 10px;border:none;background:none;color:var(--text);font-size:12px;font-weight:500;border-radius:6px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .12s;}
 .qa-menu button:hover{background:var(--bg3);}
 .qa-menu button.qa-danger{color:var(--red);}
@@ -778,6 +937,180 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
   color:var(--text3);
   margin-top:2px;
 }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   CUSTOM DATE PICKER  (drives every <input type="date"> in the app)
+   The native input lives on for value storage; we hide its picker indicator
+   and intercept clicks to open a styled popup that matches the design system.
+   ════════════════════════════════════════════════════════════════════════════ */
+/* Native date picker is fully neutralised at boot via _dpInit: every <input type="date"> is converted
+   to <input type="text" readonly class="dp-input">. The browser then cannot open its own picker —
+   only our custom popup runs. The selectors below target the .dp-input class so styles survive the
+   type swap. */
+input.dp-input{cursor:pointer;}
+
+/* Blue calendar icon mounted on the RIGHT edge of every bare .dp-input field (changelog / modal date pickers).
+   .ref-date-wrap inputs get their icon via the .dp-cal-icon sibling span instead (now placed after the input). */
+input.dp-input:not(.ref-date-wrap input){
+  padding-right:32px !important;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%231A73E8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='4' width='18' height='18' rx='2' ry='2'/><line x1='16' y1='2' x2='16' y2='6'/><line x1='8' y1='2' x2='8' y2='6'/><line x1='3' y1='10' x2='21' y2='10'/></svg>");
+  background-repeat:no-repeat;
+  background-position:right 10px center;
+}
+/* When the input lives inside a .ref-date-wrap, the icon is a sibling span so the input doesn't
+   need its own prefix space. */
+.ref-date-wrap .dp-cal-icon{color:#1A73E8;flex-shrink:0;display:inline-flex;align-items:center;cursor:pointer;}
+
+/* Popup itself — sleek dark/light surface that picks up the system tokens. */
+.dp-pop{
+  position:absolute;z-index:220;
+  width:264px;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  box-shadow:0 12px 32px rgba(0,0,0,.18);
+  padding:12px;
+  user-select:none;
+  font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,sans-serif;
+  animation: dpFadeIn .15s ease-out;
+}
+@keyframes dpFadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+.dp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.dp-month{font-size:13px;font-weight:700;color:var(--text);}
+.dp-nav{display:flex;gap:4px;}
+.dp-nav button{
+  background:transparent;border:1px solid transparent;color:var(--text2);
+  border-radius:6px;width:26px;height:26px;
+  display:inline-flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:14px;line-height:1;
+  transition:background .12s,color .12s;
+}
+.dp-nav button:hover{background:var(--bg3);color:var(--text);}
+.dp-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.dp-dow{font-size:10px;color:var(--text3);font-weight:700;text-align:center;padding:4px 0;text-transform:uppercase;letter-spacing:.5px;}
+.dp-day{
+  font-size:12px;color:var(--text);text-align:center;
+  padding:7px 0;border-radius:6px;cursor:pointer;
+  transition:background .12s,color .12s;
+}
+.dp-day:hover{background:var(--bg3);}
+.dp-day.is-other{color:var(--text3);opacity:.55;}
+.dp-day.is-today{color:#1A73E8;font-weight:800;}
+.dp-day.is-selected{background:#1A73E8;color:#fff;font-weight:800;}
+.dp-day.is-selected:hover{background:#1A73E8;}
+.dp-foot{
+  display:flex;justify-content:space-between;gap:6px;
+  margin-top:10px;padding-top:10px;
+  border-top:1px solid var(--border);
+}
+.dp-foot button{
+  background:transparent;border:1px solid var(--border);border-radius:6px;
+  padding:5px 12px;font-size:11px;color:var(--text2);cursor:pointer;font-weight:600;
+}
+.dp-foot button:hover{background:var(--bg3);color:var(--text);border-color:var(--accent2);}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   TABLE FOOTER TOTAL — black + bold, with an icon prefix.
+   Both #ecnt (list/dispatch counters) and .sum-tbl .sum-total pick this up.
+   ════════════════════════════════════════════════════════════════════════════ */
+#ecnt{
+  color:#000 !important;
+  font-weight:800 !important;
+  font-size:12px !important;
+  display:flex;align-items:center;gap:6px;
+}
+#ecnt .ecnt-ico{color:#000;display:inline-flex;align-items:center;font-weight:800;}
+[data-theme="dark"] #ecnt,
+[data-theme="dark"] #ecnt .ecnt-ico{color:#fff !important;}
+.sum-tbl tr.sum-total td{color:#000 !important;font-weight:800 !important;}
+[data-theme="dark"] .sum-tbl tr.sum-total td{color:#fff !important;}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   ROW-HOVER ACTION BUTTONS — UNIVERSAL TABLE PATTERN
+   Applies to every <table> in the app. Three container styles are recognised so
+   downstream renderers can use whichever feels natural:
+     • <td class="row-actions-cell"><div class="row-actions">…</div></td>   (canonical)
+     • <td class="action-column">…</td>                                       (alias)
+     • <button class="table-action-btn">…</button>                            (ad-hoc)
+
+   Hidden by default (opacity 0 + pointer-events:none — can't be accidentally
+   clicked), shown the instant the row is hovered. ZERO transitions: the pop-in
+   is fully crisp. Interaction states (hover bg/border) also swap immediately.
+   ════════════════════════════════════════════════════════════════════════════ */
+td.row-actions-cell,
+td.action-column{text-align:right;padding:4px 12px !important;}
+
+.row-actions,
+.action-column,
+.table-action-btn{
+  opacity:0 !important;
+  pointer-events:none;
+  /* NO transition here — see header comment. */
+}
+.row-actions{display:inline-flex;gap:6px;justify-content:flex-end;}
+
+tr:hover .row-actions,
+tr:hover .action-column,
+tr:hover .action-column > *,
+tr:hover .table-action-btn{
+  opacity:1 !important;
+  pointer-events:auto;
+}
+
+/* The button itself — chunky 32px height, 8px soft-rounded corners, leading SVG
+   icon slot, color variants via .is-primary/.is-success/.is-warning/.is-danger.
+   No transition: the hover bg/border swap is instant. */
+.row-actions .action-btn,
+.action-column button,
+.table-action-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  height:32px;padding:0 12px;
+  background:var(--bg2);
+  border:1px solid var(--border2);
+  border-radius:8px;
+  font-size:12px;font-weight:700;
+  color:var(--text);
+  cursor:pointer;
+  font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,sans-serif;
+  white-space:nowrap;
+}
+.row-actions .action-btn svg,
+.action-column button svg,
+.table-action-btn svg{flex-shrink:0;}
+.row-actions .action-btn:hover,
+.action-column button:hover,
+.table-action-btn:hover{background:var(--bg3);border-color:var(--accent);}
+
+.row-actions .action-btn.is-primary,
+.action-column button.is-primary,
+.table-action-btn.is-primary{background:rgba(26,115,232,.08);border-color:rgba(26,115,232,.30);color:var(--accent);}
+.row-actions .action-btn.is-primary:hover,
+.action-column button.is-primary:hover,
+.table-action-btn.is-primary:hover{background:rgba(26,115,232,.16);border-color:var(--accent);}
+
+.row-actions .action-btn.is-success,
+.action-column button.is-success,
+.table-action-btn.is-success{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.30);color:var(--green);}
+.row-actions .action-btn.is-success:hover,
+.action-column button.is-success:hover,
+.table-action-btn.is-success:hover{background:rgba(34,197,94,.16);}
+
+.row-actions .action-btn.is-warning,
+.action-column button.is-warning,
+.table-action-btn.is-warning{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.30);color:var(--orange);}
+.row-actions .action-btn.is-warning:hover,
+.action-column button.is-warning:hover,
+.table-action-btn.is-warning:hover{background:rgba(245,158,11,.16);}
+
+.row-actions .action-btn.is-danger,
+.action-column button.is-danger,
+.table-action-btn.is-danger{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.30);color:var(--red);}
+.row-actions .action-btn.is-danger:hover,
+.action-column button.is-danger:hover,
+.table-action-btn.is-danger:hover{background:rgba(239,68,68,.16);}
+
+/* The Export button sits at the absolute right of every filter row. */
+.filter-row .filter-spacer{flex:1;}
 </style>
 </head>
 <body>
@@ -1038,8 +1371,9 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
           <div class="ref-date-wrap">
             <span style="font-size:11px;color:var(--text3);font-weight:700;letter-spacing:.3px">기준일자</span>
             <input type="date" id="refDate" onchange="rl()" style="width:130px">
+            <span class="dp-cal-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
           </div>
-          <div class="srch"><span>🔍</span><input id="sq" placeholder="이름, 호칭, 직무, 비고..." oninput="rl();updateSearchClear()"><button type="button" class="srch-clear" id="sqClear" onclick="clearSearch()" aria-label="검색 지우기">✕</button></div>
+          <div class="srch"><span class="srch-ico" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><input id="sq" placeholder="이름, 호칭, 직무, 비고..." oninput="rl();updateSearchClear()"><button type="button" class="srch-clear" id="sqClear" onclick="clearSearch()" aria-label="검색 지우기">✕</button></div>
           <div class="ms-wrap" data-key="fc" data-placeholder="전체 센터" data-onchange="rl">
             <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 센터</span><span class="ms-caret">▾</span></button>
             <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
@@ -1064,7 +1398,8 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
             <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 직책</span><span class="ms-caret">▾</span></button>
             <div class="ms-menu"><label class="ms-item ms-all"><input type="checkbox" class="ms-all-chk" checked onchange="msToggleAll(this)"><span>전체 선택</span></label><div class="ms-sep"></div><div class="ms-list"></div></div>
           </div>
-          <button class="btn btng" onclick="exportExcel()" style="background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);color:var(--green)">📥 Excel</button>
+          <div class="filter-spacer"></div>
+          <button class="btn btng" onclick="exportExcel()" style="background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);color:var(--green);display:inline-flex;align-items:center;gap:6px;margin-left:auto"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>Export</button>
         </div>
         <!-- 테이블만 섹션 카드 안에 -->
         <div class="section">
@@ -1081,6 +1416,7 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
           <div class="ref-date-wrap">
             <span style="font-size:11px;color:var(--text3);font-weight:700;letter-spacing:.3px">기준일자</span>
             <input type="date" id="dsp-refDate" onchange="renderDispatchTable()" style="width:130px">
+            <span class="dp-cal-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
           </div>
           <div class="ms-wrap" data-key="dsp-city" data-placeholder="전체 도시" data-onchange="renderDispatchTable">
             <button class="ms-btn" type="button" onclick="msToggle(this)"><span class="ms-label">전체 도시</span><span class="ms-caret">▾</span></button>
@@ -1115,7 +1451,10 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
 
       <!-- SETTINGS ORG -->
       <div class="page" id="page-settings-org">
-        <div style="display:grid;grid-template-columns:320px 1fr;gap:14px;height:calc(100vh - 140px)">
+        <!-- Layout: the grid below is the sole child of #page-settings-org.active and is sized by
+             the CSS rule that flex-grows it into the remaining viewport space. No hard-coded vh
+             math here — the grid + .section panels handle all internal scrolling. -->
+        <div style="display:grid;grid-template-columns:320px 1fr;gap:14px;">
           <!-- 트리 패널 -->
           <div class="section" style="display:flex;flex-direction:column;overflow:hidden">
             <div class="sh" style="flex-shrink:0">
@@ -1125,12 +1464,12 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
                 <button class="btn btnp btnsm" onclick="addCenterPrompt()">＋ 센터</button>
               </div>
             </div>
-            <div style="flex:1;overflow-y:auto;padding:12px" id="org-tree"></div>
+            <div style="flex:1;min-height:0;overflow-y:auto;padding:12px" id="org-tree"></div>
           </div>
           <!-- 편집 패널 -->
           <div class="section" style="display:flex;flex-direction:column;overflow:hidden">
             <div class="sh" style="flex-shrink:0"><span class="sht" id="org-edit-title">항목을 클릭하세요</span></div>
-            <div style="flex:1;overflow-y:auto;padding:16px" id="org-edit-body">
+            <div style="flex:1;min-height:0;overflow-y:auto;padding:16px" id="org-edit-body">
               <div style="color:var(--text3);font-size:13px;text-align:center;padding:60px 0">
                 ← 왼쪽 트리에서 센터 / 부/실 / 팀을 클릭하면<br>수정·삭제·소속인원을 확인할 수 있어요
               </div>
@@ -1258,11 +1597,11 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
       <div class="page" id="page-changelog">
         <div class="filter-row" style="margin-bottom:10px">
           <div class="srch" style="flex:1;min-width:240px">
-            <span>🔍</span>
+            <span class="srch-ico" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
             <input id="clq" placeholder="작업자·대상·내용 검색…" data-i18n-ph="cl.search_ph" oninput="renderChangelog()">
             <button type="button" class="srch-clear" id="clqClear" onclick="document.getElementById('clq').value='';renderChangelog()" aria-label="검색 지우기">✕</button>
           </div>
-          <select id="cl-cat" onchange="renderChangelog()" style="background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:8px 12px;font-size:12px;color:var(--text);outline:none;cursor:pointer">
+          <select id="cl-cat" onchange="renderChangelog()" style="background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:0 32px 0 12px;font-size:12px;color:var(--text);outline:none;cursor:pointer;height:var(--ctl-h)">
             <option value="" data-i18n="cl.cat_all">전체 분류</option>
             <option value="조직관리" data-i18n="cl.cat.조직관리">조직관리</option>
             <option value="사원정보" data-i18n="cl.cat.사원정보">사원정보</option>
@@ -1303,7 +1642,12 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
 
 <!-- Detail Panel -->
 <div class="dov" id="dov" style="display:none" onclick="if(event.target===this)closeDet()">
-  <div class="dpanel"><div id="dc"></div></div>
+  <div class="dpanel">
+    <div class="dpanel-head" id="dpanel-head"></div>
+    <div class="dpanel-tabs" id="dpanel-tabs"></div>
+    <div class="dpanel-body" id="dc"></div>
+    <div class="dpanel-foot" id="dpanel-foot"></div>
+  </div>
 </div>
 
 <!-- Modal -->
@@ -1554,6 +1898,19 @@ function isDevStaff(e){
   return true;
 }
 function devEmps(){ return emps.filter(isDevStaff); }
+// ─────────────────────────────────────────────────────────────────────────────
+// Single source of truth for "is this employee currently active?". Any view that
+// counts headcount, draws a chart, or builds a summary table MUST funnel through
+// this helper so a status change to 'Resigned' instantly excludes the row from
+// dashboard cards, donuts, bars, and the report. Case-insensitive on the stored
+// value because the DB has historically held 'Resigned', 'resigned', and the
+// legacy '퇴사'. New status values can be added here in one place.
+// ─────────────────────────────────────────────────────────────────────────────
+function isActive(e){
+  const s = String(e?.status || '').toLowerCase().trim();
+  return s !== 'resigned' && s !== '퇴사';
+}
+function activeDevEmps(){ return devEmps().filter(isActive); }
 async function loadEmps() {
   const { data, error } = await sb.from('employees').select('*').order('emp_id');
   if (error) { console.error(error); toast('데이터 로드 실패','err'); emps=[]; return; }
@@ -2251,7 +2608,10 @@ function rd(){
   // view — silently skip the dashboard render.
   const sgEl = document.getElementById("sg");
   if (!sgEl) return;
-  const nk=devEmps().filter(e=>e.type!=="한국파견");
+  // nk = "headcount the dashboard cares about". Excludes 한국파견 (separate flow)
+  // AND anyone whose status is Resigned — they must not inflate the active counts
+  // or appear in any of the chart breakdowns below.
+  const nk=devEmps().filter(e=>e.type!=="한국파견" && isActive(e));
   const t=nk.length,r=nk.filter(e=>e.type==="정규직원").length,p=nk.filter(e=>e.type==="파견").length,pp=nk.filter(e=>e.type==="파견준비").length,i=nk.filter(e=>e.type==="인턴").length;
   const os=nk.filter(e=>e.center==="아웃소싱/파견센터"&&e.type!=="파견"&&e.type!=="파견준비"&&e.type!=="파견검토").length;
   const rd=nk.filter(e=>e.center==="R&D 지원센터").length;
@@ -2461,7 +2821,12 @@ function rebuildCascadingFilters(){
 
   // Pool of employees that would be visible at the current Center pruning.
   const poolForBu = devEmps().filter(e => !fcSet || fcSet.has(e.center));
-  const buOptions = [...new Set(poolForBu.map(e => e.bu).filter(Boolean))].sort();
+  let buOptions = [...new Set(poolForBu.map(e => e.bu).filter(Boolean))].sort();
+  // Mock fallback: if no employees have a `bu` value (or none match the current center filter), seed
+  // the dropdown with a representative set so the filter is always exercisable in demos / cold data.
+  if (buOptions.length === 0) {
+    buOptions = ['플랫폼개발부','솔루션개발부','데이터분석실','품질관리실','인프라실','기획실','지원사업부'];
+  }
   msPopulate("fb", buOptions);
 
   // Re-read the BU set AFTER repopulating (some checked BUs may have disappeared).
@@ -2549,7 +2914,11 @@ function rl(){
     return 0;
   });
   const tbl=document.getElementById("etbl"),ee=document.getElementById("ee");
-  document.getElementById("ecnt").textContent=list.length+"명 / 전체 "+devEmps().filter(e=>e.type!=="한국파견").length+"명";
+  document.getElementById("ecnt").innerHTML = `
+    <span class="ecnt-ico" aria-hidden="true">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+    </span>
+    ${escHtml(String(list.length))}명 / 전체 ${escHtml(String(devEmps().filter(e=>e.type!=="한국파견").length))}명`;
   if(!list.length){tbl.innerHTML="";ee.style.display="";return;}
   ee.style.display="none";
   const ce=CU?.canEdit;
@@ -2737,37 +3106,56 @@ function renderOrgChart(){
 function openDet(idx){
   const e=emps[idx];if(!e)return;
   window._detIdx=idx;
+  // Render the permanent header + tab bar + foot ONCE per openDet call. Subsequent tab clicks only
+  // swap the .dpanel-body content, so the profile header stays static across tabs.
+  renderDetHead(e);
+  renderDetTabs(e,'basic');
+  renderDetFoot(e);
   renderDetTab(e,'basic');
   document.getElementById("dov").style.display="flex";
 }
-function renderDetTab(e,tab){
-  // dr() is the row-renderer used throughout the detail panel — it produces
-  // a `${label}: ${value}` row. Escape `v` because it comes from the DB.
-  const dr=(k,v)=>`<div class="drow"><span class="dk">${escHtml(k)}</span><span class="dv">${escHtml(v||"-")}</span></div>`;
-  // Allowlist the type class — only known values become a class suffix.
-  const typeClass = ['정규직원','파견','파견준비','파견검토','인턴','한국파견'].includes(e.type) ? e.type : '';
-  const tt=`<span class="tag t-${typeClass}">${escHtml(e.type||"-")}</span>`;
-  const ce=CU?.canEdit;
-  const idx=emps.indexOf(e);
-  const tabs=`<div style="display:flex;gap:0;margin-bottom:14px;border-bottom:1px solid var(--border)">
-    ${['basic','dispatch','history'].map((t,i)=>{
-      const lbl=['기본정보','파견정보','변경이력'][i];
-      const active=t===tab;
-      return `<div onclick="renderDetTab(emps[${idx}],'${t}')" style="padding:7px 14px;font-size:12px;cursor:pointer;font-weight:${active?700:500};color:${active?'var(--accent)':'var(--text2)'};border-bottom:${active?'2px solid var(--accent)':'2px solid transparent'};margin-bottom:-1px">${lbl}</div>`;
-    }).join('')}
-  </div>`;
-
-  let body='';
-  if(tab==='basic'){
-    body=`
-    <div class="dhdr">
+function renderDetHead(e){
+  document.getElementById("dpanel-head").innerHTML = `
+    <div style="display:flex;justify-content:flex-end"><span class="dclose" onclick="closeDet()">✕</span></div>
+    <div class="dhdr" style="margin-top:4px">
       <div class="davlg av${e.gender||"_"}">${escHtml((e.nick||e.name||"?")[0])}</div>
       <div>
         <div class="dname">${escHtml(e.nick||"-")}</div>
         <div class="dsub">${escHtml(e.name||"")} ${e.jikchak?"· "+escHtml(e.jikchak):""}</div>
-        <div style="margin-top:4px;font-size:10px;color:var(--text3);font-family:"JetBrains Mono",monospace">${escHtml(e.empId||"")}</div>
+        <div style="margin-top:4px;font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace">${escHtml(e.empId||"")}</div>
       </div>
-    </div>
+    </div>`;
+}
+function renderDetTabs(e,tab){
+  const idx=emps.indexOf(e);
+  const labels={basic:'기본정보',dispatch:'파견정보',history:'변경이력'};
+  document.getElementById("dpanel-tabs").innerHTML = ['basic','dispatch','history']
+    .map(t=>`<div class="dpanel-tab${t===tab?' is-active':''}" onclick="renderDetTab(emps[${idx}],'${t}')">${labels[t]}</div>`)
+    .join('');
+}
+function renderDetFoot(e){
+  const idx=emps.indexOf(e);
+  const ce=CU?.canEdit;
+  document.getElementById("dpanel-foot").innerHTML = ce ? `
+    <div class="dact">
+      <button class="btn btng" onclick="closeDet();openEdit(${idx})">✏️ 수정</button>
+      <button class="btn btnd" onclick="closeDet();delEmp(${idx})">삭제</button>
+    </div>` : '';
+}
+function renderDetTab(e,tab){
+  // dr() is the row-renderer used throughout the detail panel — it produces a `${label}: ${value}` row.
+  const dr=(k,v)=>`<div class="drow"><span class="dk">${escHtml(k)}</span><span class="dv">${escHtml(v||"-")}</span></div>`;
+  const typeClass = ['정규직원','파견','파견준비','파견검토','인턴','한국파견'].includes(e.type) ? e.type : '';
+  const tt=`<span class="tag t-${typeClass}">${escHtml(e.type||"-")}</span>`;
+  const ce=CU?.canEdit;
+  const idx=emps.indexOf(e);
+
+  // Keep the tab indicator in sync without re-rendering the head/foot.
+  renderDetTabs(e,tab);
+
+  let body='';
+  if(tab==='basic'){
+    body=`
     <div class="dsec"><div class="dsect">조직</div>${dr("부문",e.bumun)}${dr("센터",e.center)}${dr("부/실",e.bu)}${dr("팀",e.team)}</div>
     <div class="dsec"><div class="dsect">직급/직무</div>${dr("등급",e.grade)}${dr("K등급",e.kgrade)}${dr("직책",e.jikchak)}${dr("직무",e.jikmu)}</div>
     <div class="dsec"><div class="dsect">인적 정보</div>${dr("성별",e.gender==="F"?"여성":"남성")}${dr("입사일자",e.join)}${dr("연차",e.join?calcYeon(e.join)+"년":"")}</div>
@@ -2776,23 +3164,15 @@ function renderDetTab(e,tab){
       <div class="drow"><span class="dk">고용형태</span><span class="dv">${tt}</span></div>
       ${dr("원가부서",e.wonka)}${dr("재직상태",e.status||"재직")}
     </div>
-    ${e.note?`<div class="dsec"><div class="dsect">비고</div><div class="dnote">${escHtml(e.note)}</div></div>`:""}
-    ${ce?`<div class="dact">
-      <button class="btn btng" onclick="closeDet();openEdit(${idx})">✏️ 수정</button>
-      <button class="btn btnd" onclick="closeDet();delEmp(${idx})">삭제</button>
-    </div>`:""}`;
+    ${e.note?`<div class="dsec"><div class="dsect">비고</div><div class="dnote">${escHtml(e.note)}</div></div>`:""}`;
   } else if(tab==='dispatch'){
     const dday=(end)=>{
       if(!end)return "-";
       const d=Math.ceil((new Date(end)-new Date())/86400000);
       const c=d<=30?"var(--red)":d<=60?"var(--orange)":"var(--green)";
-      return `<span style="color:${c};font-weight:700;font-family:"JetBrains Mono",monospace">${d>0?"D-"+d:"만료"}</span>`;
+      return `<span style="color:${c};font-weight:700;font-family:'JetBrains Mono',monospace">${d>0?"D-"+d:"만료"}</span>`;
     };
     body=`
-    <div class="dhdr">
-      <div class="davlg av${e.gender||"_"}">${(e.nick||e.name||"?")[0]}</div>
-      <div><div class="dname">${e.nick||"-"}</div><div class="dsub">${e.type||"-"}</div></div>
-    </div>
     ${(e.dispatchStart||e.dispatchEnd||e.dispatchCity)?`
     <div class="dsec"><div class="dsect">파견 정보</div>
       ${dr("파견 고객사",e.dispatchClient)}
@@ -2813,23 +3193,22 @@ function renderDetTab(e,tab){
   } else {
     const hist=(e.statusHistory||[]).slice().reverse();
     body=`
-    <div class="dhdr">
-      <div class="davlg av${e.gender||"_"}">${(e.nick||e.name||"?")[0]}</div>
-      <div><div class="dname">${e.nick||"-"}</div><div class="dsub">변경 이력</div></div>
-    </div>
-    <div class="dsec">
+    <div class="dsec"><div class="dsect">변경 이력</div>
       ${hist.length?hist.map((h,i)=>`
         <div style="display:flex;gap:10px;padding:8px 0;border-bottom:${i<hist.length-1?'1px solid var(--border)':'none'}">
           <div style="width:10px;height:10px;border-radius:50%;background:${i===0?'var(--accent)':'var(--border2)'};margin-top:4px;flex-shrink:0"></div>
           <div>
-            <div style="font-size:12px;font-weight:700">${h.type||"-"}</div>
-            <div style="font-size:11px;color:var(--text3)">${h.date||""} ${h.note?'· '+h.note:""}</div>
+            <div style="font-size:12px;font-weight:700">${escHtml(h.type||"-")}</div>
+            <div style="font-size:11px;color:var(--text3)">${escHtml(h.date||"")} ${h.note?'· '+escHtml(h.note):""}</div>
           </div>
         </div>`).join('')
       :'<div style="color:var(--text3);font-size:12px;padding:20px 0;text-align:center">이력이 없습니다</div>'}
     </div>`;
   }
-  document.getElementById("dc").innerHTML=tabs+body;
+  document.getElementById("dc").innerHTML=body;
+  // Scroll the body back to the top whenever the tab content changes.
+  const bodyEl = document.getElementById("dc");
+  if(bodyEl) bodyEl.scrollTop = 0;
   document.getElementById("dov").style.display="flex";
 }
 function closeDet(){document.getElementById("dov").style.display="none";}
@@ -3306,7 +3685,10 @@ function showOrgMsg(msg){
 
 
 function renderSummaryPage(){
-  const osEmps = devEmps().filter(e => e.center === '아웃소싱/파견센터' && e.type !== '한국파견');
+  // Active members only — Resigned employees are excluded from the report so the
+  // 부서장별 / 고객사별 counts and the bottom total row stay in sync with the
+  // dashboard cards.
+  const osEmps = devEmps().filter(e => e.center === '아웃소싱/파견센터' && e.type !== '한국파견' && isActive(e));
 
   // 고객사 순서 고정
   const wonkaOrder = ['쿠콘','비즈플레이','경리나라','비플페이','웹케시'];
@@ -3538,7 +3920,7 @@ function renderTeamPanel(center,bu,team){
             const ini=(e.name||e.nick||'?')[0];
             const empAttr=e.empId?` data-emp-id="${esc(e.empId)}"`:'';
             const cls=_isResigned(e)?' class="row-resigned"':'';
-            return `<tr${empAttr} class="tp-row${_isResigned(e)?' row-resigned':''}" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background=''">
+            return `<tr${empAttr} class="tp-row${_isResigned(e)?' row-resigned':''}">
               <td style="cursor:pointer" onclick="openDet(${idx})">
                 <div style="display:flex;align-items:center;gap:7px">
                   <div class="av av${e.gender||'_'}" style="width:26px;height:26px;font-size:11px;flex-shrink:0">${ini}</div>
@@ -3589,24 +3971,69 @@ function delEmpOrg(idx,center,bu,team){
 }
 
 // ── Row-level Quick Actions (조직 관리) ──────────────────────────
+// The dropdown menu lives at position:fixed so it can NEVER be clipped by the table's
+// overflow:auto wrapper or the page card. We measure both the trigger button and the menu,
+// then choose between drop-down (default) and drop-up (when there's less space below the
+// button than the menu's height). Right-edge aligned to the kebab dot.
+//
+// _qaCleanup holds the teardown for the currently-open menu's outside-click listener so
+// closeAllRowMenus() can always remove it. Without this, toggle-closing a menu by clicking its
+// own kebab dot leaks the listener — the next click on ANY other row's dot would then trigger
+// the stale listener (target ≠ old trigger) and close the just-opened new menu, producing the
+// "first click does nothing, second click works" symptom.
+let _qaCleanup = null;
 function closeAllRowMenus(){
-  document.querySelectorAll('.qa-menu.show').forEach(m=>m.classList.remove('show'));
+  document.querySelectorAll('.qa-menu.show').forEach(m=>{
+    m.classList.remove('show');
+    m.classList.remove('drop-up');
+    m.style.top=''; m.style.left='';
+  });
+  document.querySelectorAll('.qa-wrap.is-open').forEach(w=>w.classList.remove('is-open'));
+  if (_qaCleanup) { _qaCleanup(); _qaCleanup = null; }
 }
 function toggleRowMenu(triggerBtn, menuId){
   const menu=document.getElementById(menuId);
   if(!menu) return;
+  const wrap=triggerBtn.closest('.qa-wrap');
   const wasOpen=menu.classList.contains('show');
-  closeAllRowMenus();
+  closeAllRowMenus();   // also tears down any leftover outside-click listener
   if(wasOpen) return;
+
+  // Mount off-screen so we can measure with real layout (padding, font, etc.).
   menu.classList.add('show');
+  menu.style.visibility='hidden';
+  menu.style.left='-9999px';
+  menu.style.top='0px';
+  const mh = menu.offsetHeight;
+  const mw = menu.offsetWidth;
+  const r  = triggerBtn.getBoundingClientRect();
+  const gap = 4;
+  const spaceBelow = window.innerHeight - r.bottom;
+  const dropUp = spaceBelow < mh + gap + 8;   // 8px viewport margin
+
+  // Right-align the menu to the kebab dot's right edge, clamped inside the viewport.
+  const left = Math.max(8, Math.min(window.innerWidth - mw - 8, r.right - mw));
+  const top  = dropUp ? Math.max(8, r.top - mh - gap)
+                      : Math.min(window.innerHeight - mh - 8, r.bottom + gap);
+
+  menu.style.left = left + 'px';
+  menu.style.top  = top  + 'px';
+  menu.style.visibility = '';
+  menu.classList.toggle('drop-up', dropUp);
+  if (wrap) wrap.classList.add('is-open');
+
+  // Register outside-click only. We deliberately don't close on scroll/resize: position:fixed
+  // coords don't auto-update, and the browser will auto-scroll on focus when the clicked dot
+  // is near the viewport edge — that would trip a scroll-close and silently dismiss the
+  // just-opened menu (this was the second half of the bug).
   setTimeout(()=>{
-    const close=(ev)=>{
+    const onOutside = (ev)=>{
       if(!menu.contains(ev.target) && ev.target!==triggerBtn){
-        menu.classList.remove('show');
-        document.removeEventListener('click', close);
+        closeAllRowMenus();
       }
     };
-    document.addEventListener('click', close);
+    document.addEventListener('click', onOutside);
+    _qaCleanup = () => document.removeEventListener('click', onOutside);
   },0);
 }
 document.addEventListener('keydown',(e)=>{
@@ -3637,7 +4064,14 @@ function refreshActiveViews(){
   if(typeof renderTeamPanel==='function' && orgSel?.team){
     renderTeamPanel(orgSel.center, orgSel.bu, orgSel.team);
   }
-  // Header counters / pills.
+  // Summary/Report page — re-render only if it's currently mounted in the DOM
+  // (its container exists on the summary page split file or when summary is the
+  // active page in the SPA). Without this, resigning while viewing the report
+  // would leave stale counts until the user navigated away and back.
+  if(typeof renderSummaryPage==='function' && document.getElementById('summary-body')){
+    renderSummaryPage();
+  }
+  // Header counters / pills + dashboard (uc + rd).
   if(typeof updateAll==='function') updateAll();
 }
 function pulseRecentlyUpdatedRows(){
@@ -4316,9 +4750,15 @@ async function renderSettingsUsers(){
     <td>${escHtml(u.name)}${u.empNick?`<span style="font-size:10px;color:var(--text3);margin-left:6px">${escHtml(u.empNick)}</span>`:''}</td>
     <td><span class="tag t-직책">${u.role}</span></td>
     <td style="color:var(--text3)">${u.empNick?'직원':'직원 외'}</td>
-    <td><div style="display:flex;gap:4px">
-      <button class="btn btng btnsm" onclick="editUser(${i})">수정</button>
-      <button class="btn btnd btnsm" onclick="deleteUser(${i})">삭제</button>
+    <td class="row-actions-cell"><div class="row-actions">
+      <button class="action-btn is-primary" onclick="editUser(${i})" title="수정">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        수정
+      </button>
+      <button class="action-btn is-danger" onclick="deleteUser(${i})" title="삭제">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1.5 14a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+        삭제
+      </button>
     </div></td>
   </tr>`).join('');
   document.getElementById('users-table').innerHTML=`
@@ -4714,9 +5154,15 @@ function renderDispatchTable(){
       <td class="mono">${escHtml(e.dispatchEnd||'-')}</td>
       <td>${ddayBadge(d)}</td>
       <td>${e.dispatchExtendable?'<span class="tag t-파견준비">가능</span>':'<span style="color:var(--text3)">미정</span>'}</td>
-      ${ce?`<td><div style="display:flex;gap:4px">
-        <button class="btn btng btnsm" onclick="changeDispatchStatus(${idx},'복귀')" title="복귀 처리">복귀</button>
-        <button class="btn btng btnsm" onclick="extendDispatch(${idx})" title="연장 처리">연장</button>
+      ${ce?`<td class="row-actions-cell"><div class="row-actions">
+        <button class="action-btn is-success" onclick="changeDispatchStatus(${idx},'복귀')" title="복귀 처리">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 4 3 10 9 10"/></svg>
+          복귀
+        </button>
+        <button class="action-btn is-primary" onclick="extendDispatch(${idx})" title="연장 처리">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+          연장
+        </button>
       </div></td>`:''}
     </tr>`;
   }).join('')}</tbody>`;
@@ -4738,7 +5184,12 @@ function renderDispatchPrepTable(prep){
       <td>${escHtml(e.jikmu||'-')}</td>
       <td>${escHtml(e.wonka||'-')}</td>
       <td style="color:var(--orange);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(e.note||e.workplace||'-')}</td>
-      ${ce?`<td><button class="btn btnp btnsm" onclick="changeDispatchStatus(${idx},'파견')">✈️ 파견시작</button></td>`:''}
+      ${ce?`<td class="row-actions-cell"><div class="row-actions">
+        <button class="action-btn is-primary" onclick="changeDispatchStatus(${idx},'파견')" title="파견 시작">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          파견시작
+        </button>
+      </div></td>`:''}
     </tr>`;
   }).join('')}</tbody>`;
 }
@@ -4769,6 +5220,148 @@ function extendDispatch(idx){
   toast(`연장 처리됐습니다 (종료일: ${newEnd})`);
   if(document.getElementById('dov').style.display!=='none')renderDetTab(e,'dispatch');
 }
+
+// ═══════════════════════════════════════════════════
+// Custom date picker
+// Replaces the native <input type="date"> UI everywhere in the app. Native
+// picker indicator is hidden via CSS; clicking the input opens a dark-themed
+// popup matching the design system. Setting value programmatically still
+// fires a 'change' event so existing handlers (rl, renderChangelog, etc.) run.
+// ═══════════════════════════════════════════════════
+let _dpPop = null;
+// Convert every native <input type="date"> to a readonly text input at boot. The browser then
+// cannot open its own picker (no calendar-picker-indicator, no Enter/Space showPicker, no
+// focus-triggered popup), and our custom popup is the only thing that opens. We keep the original
+// `id` and value format (YYYY-MM-DD) so existing handlers like `onchange="rl()"` keep working
+// as-is. Run on DOMContentLoaded so we catch every inline date input on the page.
+function _dpInit(){
+  document.querySelectorAll('input[type=date]:not(.dp-input)').forEach(el => {
+    const v = el.value || '';
+    el.type = 'text';
+    el.readOnly = true;
+    el.classList.add('dp-input');
+    el.setAttribute('autocomplete','off');
+    el.setAttribute('inputmode','none');
+    if (!el.placeholder) el.placeholder = 'YYYY-MM-DD';
+    if (v) el.value = v;
+  });
+}
+document.addEventListener('DOMContentLoaded', _dpInit);
+
+function dpClose(){
+  if (_dpPop) { _dpPop.remove(); _dpPop = null; }
+  document.removeEventListener('mousedown', _dpOutsideClick, true);
+  window.removeEventListener('resize', dpClose);
+  window.removeEventListener('scroll', dpClose, true);
+}
+function _dpOutsideClick(e){
+  if (_dpPop && !_dpPop.contains(e.target) && !e.target.closest('input.dp-input') && !e.target.closest('.dp-cal-icon') && !e.target.closest('.ref-date-wrap')) {
+    dpClose();
+  }
+}
+function _dpFmt(y,m,d){ return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+function _dpSet(input, y, m, d){
+  input.value = _dpFmt(y,m,d);
+  input.dispatchEvent(new Event('change', { bubbles: true }));
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+}
+function dpOpen(input){
+  if (_dpPop) { dpClose(); return; }
+  // NOTE: do NOT bail on input.readOnly — _dpInit deliberately sets readonly to suppress the native
+  // picker while still letting our custom popup drive value changes. Only block when truly disabled.
+  if (!input || input.disabled) return;
+  const today = new Date();
+  let cur = input.value ? new Date(input.value + 'T00:00:00') : today;
+  if (isNaN(cur)) cur = today;
+  let viewY = cur.getFullYear(), viewM = cur.getMonth();
+  const pop = document.createElement('div');
+  pop.className = 'dp-pop';
+  _dpPop = pop;
+  document.body.appendChild(pop);
+
+  function render(){
+    const first = new Date(viewY, viewM, 1);
+    const start = first.getDay();
+    const daysInMonth = new Date(viewY, viewM + 1, 0).getDate();
+    const prevDays = new Date(viewY, viewM, 0).getDate();
+    const cells = [];
+    for (let i = 0; i < start; i++) {
+      cells.push({ d: prevDays - start + 1 + i, other: true, y: viewM === 0 ? viewY - 1 : viewY, m: viewM === 0 ? 11 : viewM - 1 });
+    }
+    for (let d = 1; d <= daysInMonth; d++) {
+      cells.push({ d, other: false, y: viewY, m: viewM });
+    }
+    let nextD = 1;
+    while (cells.length % 7 !== 0 || cells.length < 42) {
+      cells.push({ d: nextD++, other: true, y: viewM === 11 ? viewY + 1 : viewY, m: viewM === 11 ? 0 : viewM + 1 });
+      if (cells.length >= 42) break;
+    }
+    const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+    const tY = today.getFullYear(), tM = today.getMonth(), tD = today.getDate();
+    const sel = input.value ? new Date(input.value + 'T00:00:00') : null;
+    const sY = sel ? sel.getFullYear() : -1, sM = sel ? sel.getMonth() : -1, sD = sel ? sel.getDate() : -1;
+    pop.innerHTML = `
+      <div class="dp-head">
+        <div class="dp-nav"><button type="button" data-act="prev" title="이전 달">‹</button></div>
+        <div class="dp-month">${viewY}년 ${monthNames[viewM]}</div>
+        <div class="dp-nav"><button type="button" data-act="next" title="다음 달">›</button></div>
+      </div>
+      <div class="dp-grid">
+        ${['일','월','화','수','목','금','토'].map(d => `<div class="dp-dow">${d}</div>`).join('')}
+        ${cells.map(c => {
+          const isT = c.y === tY && c.m === tM && c.d === tD && !c.other;
+          const isS = c.y === sY && c.m === sM && c.d === sD && !c.other;
+          const cls = ['dp-day'];
+          if (c.other) cls.push('is-other');
+          if (isT) cls.push('is-today');
+          if (isS) cls.push('is-selected');
+          return `<div class="${cls.join(' ')}" data-y="${c.y}" data-m="${c.m}" data-d="${c.d}">${c.d}</div>`;
+        }).join('')}
+      </div>
+      <div class="dp-foot">
+        <button type="button" data-act="today">오늘</button>
+        <button type="button" data-act="clear">지우기</button>
+      </div>`;
+    pop.querySelector('[data-act="prev"]').onclick = () => { if (viewM === 0) { viewM = 11; viewY--; } else { viewM--; } render(); };
+    pop.querySelector('[data-act="next"]').onclick = () => { if (viewM === 11) { viewM = 0; viewY++; } else { viewM++; } render(); };
+    pop.querySelector('[data-act="today"]').onclick = () => { const d = new Date(); _dpSet(input, d.getFullYear(), d.getMonth(), d.getDate()); dpClose(); };
+    pop.querySelector('[data-act="clear"]').onclick = () => { input.value = ''; input.dispatchEvent(new Event('change', { bubbles: true })); dpClose(); };
+    pop.querySelectorAll('.dp-day').forEach(el => {
+      el.onclick = () => { _dpSet(input, +el.dataset.y, +el.dataset.m, +el.dataset.d); dpClose(); };
+    });
+  }
+  render();
+
+  // Anchor the popup under the input (or its .ref-date-wrap parent if present).
+  const anchor = input.closest('.ref-date-wrap') || input;
+  const rect = anchor.getBoundingClientRect();
+  pop.style.top  = (rect.bottom + window.scrollY + 4) + 'px';
+  pop.style.left = (rect.left + window.scrollX) + 'px';
+  const popRect = pop.getBoundingClientRect();
+  if (popRect.right > window.innerWidth - 10) pop.style.left = (window.innerWidth - popRect.width - 10) + 'px';
+  if (popRect.bottom > window.innerHeight - 10) pop.style.top = (rect.top + window.scrollY - popRect.height - 4) + 'px';
+
+  setTimeout(() => {
+    document.addEventListener('mousedown', _dpOutsideClick, true);
+    window.addEventListener('resize', dpClose);
+    window.addEventListener('scroll', dpClose, true);
+  }, 0);
+}
+// Event delegation: any click on a native date input, or on a .ref-date-wrap or its
+// blue calendar icon, opens the custom popup. Re-entry into the same input toggles it.
+document.addEventListener('mousedown', function(e){
+  const input = e.target.closest('input.dp-input');
+  const wrap  = e.target.closest('.ref-date-wrap');
+  if (input) {
+    e.preventDefault();
+    setTimeout(()=> dpOpen(input), 0);
+    return;
+  }
+  if (wrap) {
+    const i = wrap.querySelector('input.dp-input');
+    if (i) { e.preventDefault(); setTimeout(()=> dpOpen(i), 0); }
+  }
+}, true);
 
 // ═══════════════════════════════════════════════════
 // Excel 내보내기
