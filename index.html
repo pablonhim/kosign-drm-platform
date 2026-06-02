@@ -736,6 +736,65 @@ tr.row-resigned .av{filter:grayscale(100%) brightness(.92);}
 .dk{font-size:0.875rem;line-height:1.45;color:var(--text3);white-space:nowrap;flex-shrink:0;}
 .dv{font-size:0.875rem;line-height:1.45;font-weight:500;text-align:right;color:var(--text);word-break:break-word;}
 .dnote{font-size:0.875rem;line-height:1.5;color:var(--orange);padding:6px 0;}
+/* ─── Notion-style drawer sections ────────────────────────────────────────
+   Used by the 기본정보 tab. Each section gets a bracket-tag caption ([기본정보]
+   etc.) with a left accent bar, then either .drow rows, a bullet list, or
+   file-attachment rows. Visual treatment matches the Notion page layout. */
+.dnt-section{margin-bottom:20px;}
+.dnt-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:800;
+  color:var(--accent);
+  background:rgba(26,115,232,.08);
+  border:1px solid rgba(26,115,232,.22);
+  border-radius:6px;
+  padding:3px 9px 3px 8px;
+  margin-bottom:10px;
+  letter-spacing:.2px;
+}
+.dnt-tag::before{content:'';display:inline-block;width:3px;height:11px;background:var(--accent);border-radius:2px;}
+.dnt-bullets{
+  list-style:none;padding:0;margin:0;
+  display:flex;flex-direction:column;gap:6px;
+}
+.dnt-bullets li{
+  position:relative;
+  padding:6px 0 6px 18px;
+  font-size:0.875rem;line-height:1.5;
+  color:var(--text);
+  border-bottom:1px solid var(--border);
+}
+.dnt-bullets li:last-child{border-bottom:none;}
+.dnt-bullets li::before{
+  content:'';position:absolute;left:4px;top:14px;
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent);
+}
+/* File-attachment row — clickable; the arrow on the right reads as "open". */
+.dnt-file{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:8px;
+  text-decoration:none;color:var(--text);
+  margin-bottom:6px;
+  font-size:0.8125rem;font-weight:600;
+}
+.dnt-file:last-child{margin-bottom:0;}
+.dnt-file:hover{background:var(--bg3);border-color:var(--accent);}
+.dnt-file-ico{font-size:18px;flex-shrink:0;line-height:1;}
+.dnt-file-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dnt-file-arrow{color:var(--text3);font-weight:700;flex-shrink:0;}
+.dnt-file:hover .dnt-file-arrow{color:var(--accent);}
+/* Inline loading placeholder while Notion fetch is in flight. */
+.dnt-loading{
+  font-size:11px;color:var(--text3);
+  padding:8px 0;text-align:center;
+  font-family:"JetBrains Mono",monospace;
+}
+/* Drawer header photo (replaces initials avatar when Notion ships photoUrl). */
+.davlg.dav-photo{object-fit:cover;border:1px solid var(--border2);}
 /* Sidebar foot action buttons — inline horizontal, natural width (NOT stretched). */
 .dact{display:inline-flex;gap:8px;align-items:center;}
 /* Dark theme override: row border darker so it reads on the bg2 surface. */
@@ -3103,9 +3162,54 @@ function renderOrgChart(){
   document.getElementById('ow-chart').innerHTML = h;
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// NOTION INTEGRATION (employee profile enrichment)
+//
+// The detail drawer's 기본정보 tab pulls supplemental fields (photo, university,
+// languages, certificates, tech experience bullets, resume files) from Notion,
+// keyed by emp_id (e.g. EMP-048). Two data sources, same shape:
+//
+//   • Mock JSON     — ./mock_notion_employees.json (default, local-only)
+//   • Apps Script   — set NOTION_PROXY_URL to your deployed Web App URL.
+//                     See docs/notion-proxy.gs for the proxy that flattens
+//                     Notion's response into the same shape as the mock.
+//
+// The fetch is non-blocking: the drawer opens immediately with Supabase data,
+// then re-renders when Notion data lands. Per-emp caching means re-opening the
+// same employee is instant.
+// ═══════════════════════════════════════════════════════════════════════════
+const NOTION_PROXY_URL = '';  // ← Paste your Apps Script /exec URL here to go live.
+const _notionCache = new Map();
+async function fetchEmployeeNotion(empId){
+  if(!empId) return null;
+  if(_notionCache.has(empId)) return _notionCache.get(empId);
+  try {
+    let data;
+    if (NOTION_PROXY_URL) {
+      // Proxy mode — the Apps Script returns { employee: {...} } or { employee: null }.
+      const r = await fetch(`${NOTION_PROXY_URL}?empId=${encodeURIComponent(empId)}`, { cache: 'no-store' });
+      if(!r.ok) throw new Error('proxy HTTP '+r.status);
+      data = (await r.json())?.employee || null;
+    } else {
+      // Mock mode — the JSON ships with the static site, no CORS issues.
+      const r = await fetch('./mock_notion_employees.json', { cache: 'no-store' });
+      if(!r.ok) throw new Error('mock HTTP '+r.status);
+      const body = await r.json();
+      data = (body.employees || []).find(x => x.id === empId) || null;
+    }
+    _notionCache.set(empId, data);
+    return data;
+  } catch(err) {
+    console.warn('[Notion] fetch failed for', empId, '—', err.message);
+    _notionCache.set(empId, null);  // negative-cache so we don't retry the same miss every click
+    return null;
+  }
+}
+
 function openDet(idx){
   const e=emps[idx];if(!e)return;
   window._detIdx=idx;
+  window._detTab = 'basic';
   // Render the permanent header + tab bar + foot ONCE per openDet call. Subsequent tab clicks only
   // swap the .dpanel-body content, so the profile header stays static across tabs.
   renderDetHead(e);
@@ -3113,12 +3217,29 @@ function openDet(idx){
   renderDetFoot(e);
   renderDetTab(e,'basic');
   document.getElementById("dov").style.display="flex";
+  // Background-enrich with Notion data. Cached after first fetch so re-opens are instant.
+  if (e.empId && !e._notion) {
+    fetchEmployeeNotion(e.empId).then(notion => {
+      if (!notion) return;
+      e._notion = notion;
+      // Only re-render if the drawer is still open on THIS employee AND on the basic tab.
+      if (window._detIdx === idx) {
+        renderDetHead(e);
+        if (window._detTab === 'basic') renderDetTab(e, 'basic');
+      }
+    });
+  }
 }
 function renderDetHead(e){
+  // If Notion shipped a real photo, render it inside the avatar slot. Otherwise keep the initials.
+  const photo = e._notion?.photoUrl;
+  const avatarHtml = photo
+    ? `<img class="davlg dav-photo" src="${escAttr(photo)}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'davlg av${e.gender||'_'}',textContent:'${escAttr((e.nick||e.name||'?')[0])}'}))">`
+    : `<div class="davlg av${e.gender||"_"}">${escHtml((e.nick||e.name||"?")[0])}</div>`;
   document.getElementById("dpanel-head").innerHTML = `
     <div style="display:flex;justify-content:flex-end"><span class="dclose" onclick="closeDet()">✕</span></div>
     <div class="dhdr" style="margin-top:4px">
-      <div class="davlg av${e.gender||"_"}">${escHtml((e.nick||e.name||"?")[0])}</div>
+      ${avatarHtml}
       <div>
         <div class="dname">${escHtml(e.nick||"-")}</div>
         <div class="dsub">${escHtml(e.name||"")} ${e.jikchak?"· "+escHtml(e.jikchak):""}</div>
@@ -3127,6 +3248,7 @@ function renderDetHead(e){
     </div>`;
 }
 function renderDetTabs(e,tab){
+  window._detTab = tab;   // tracked so Notion re-render only fires when basic is still active
   const idx=emps.indexOf(e);
   const labels={basic:'기본정보',dispatch:'파견정보',history:'변경이력'};
   document.getElementById("dpanel-tabs").innerHTML = ['basic','dispatch','history']
@@ -3155,16 +3277,80 @@ function renderDetTab(e,tab){
 
   let body='';
   if(tab==='basic'){
-    body=`
-    <div class="dsec"><div class="dsect">조직</div>${dr("부문",e.bumun)}${dr("센터",e.center)}${dr("부/실",e.bu)}${dr("팀",e.team)}</div>
-    <div class="dsec"><div class="dsect">직급/직무</div>${dr("등급",e.grade)}${dr("K등급",e.kgrade)}${dr("직책",e.jikchak)}${dr("직무",e.jikmu)}</div>
-    <div class="dsec"><div class="dsect">인적 정보</div>${dr("성별",e.gender==="F"?"여성":"남성")}${dr("입사일자",e.join)}${dr("연차",e.join?calcYeon(e.join)+"년":"")}</div>
-    <div class="dsec"><div class="dsect">매니저</div>${dr("현지매니저",e.localMgr)}${dr("업무지시자",e.director)}${dr("부서장",e.deptHead)}</div>
-    <div class="dsec"><div class="dsect">고용/소속</div>
-      <div class="drow"><span class="dk">고용형태</span><span class="dv">${tt}</span></div>
-      ${dr("원가부서",e.wonka)}${dr("재직상태",e.status||"재직")}
-    </div>
-    ${e.note?`<div class="dsec"><div class="dsect">비고</div><div class="dnote">${escHtml(e.note)}</div></div>`:""}`;
+    // n = Notion enrichment payload (null until fetchEmployeeNotion resolves the first time).
+    // The Supabase-sourced organisation / manager / employment sections always render; the
+    // Notion-sourced sections (기본정보, 기술경력, 첨부파일) appear only when their data is present.
+    const n = e._notion || {};
+    const fileIco = (type) => {
+      const t = (type||'').toLowerCase();
+      if (t === 'pdf')   return '📄';
+      if (t === 'doc' || t === 'docx') return '📝';
+      if (t === 'xls' || t === 'xlsx') return '📊';
+      if (t === 'img' || t === 'png' || t === 'jpg' || t === 'jpeg') return '🖼️';
+      return '📎';
+    };
+    body = `
+      ${n.name || n.email || n.gender || n.university ? `
+      <div class="dnt-section">
+        <div class="dnt-tag">기본정보</div>
+        ${dr('본명',     n.name        || e.name)}
+        ${dr('성별',     n.gender      || (e.gender==='F'?'여성':e.gender==='M'?'남성':''))}
+        ${dr('학력',     n.university)}
+        ${dr('이메일',   n.email)}
+        ${Array.isArray(n.languages) && n.languages.length ?
+          `<div class="drow"><span class="dk">언어</span><span class="dv">${n.languages.map(escHtml).join(' · ')}</span></div>` : ''}
+        ${Array.isArray(n.certificates) && n.certificates.length ?
+          `<div class="drow"><span class="dk">자격증</span><span class="dv">${n.certificates.map(escHtml).join(', ')}</span></div>` : ''}
+      </div>` : ''}
+
+      <div class="dnt-section">
+        <div class="dnt-tag">조직</div>
+        ${dr('부문', e.bumun)}${dr('센터', e.center)}${dr('부/실', e.bu)}${dr('팀', e.team)}
+      </div>
+
+      <div class="dnt-section">
+        <div class="dnt-tag">직급/직무</div>
+        ${dr('등급', e.grade)}${dr('K등급', e.kgrade)}${dr('직책', e.jikchak)}${dr('직무', e.jikmu)}
+      </div>
+
+      <div class="dnt-section">
+        <div class="dnt-tag">인적 정보</div>
+        ${dr('입사일자', e.join)}${dr('연차', e.join?calcYeon(e.join)+'년':'')}
+      </div>
+
+      <div class="dnt-section">
+        <div class="dnt-tag">매니저</div>
+        ${dr('현지매니저', e.localMgr)}${dr('업무지시자', e.director)}${dr('부서장', e.deptHead)}
+      </div>
+
+      <div class="dnt-section">
+        <div class="dnt-tag">고용/소속</div>
+        <div class="drow"><span class="dk">고용형태</span><span class="dv">${tt}</span></div>
+        ${dr('원가부서', e.wonka)}${dr('재직상태', e.status||'재직')}
+      </div>
+
+      ${Array.isArray(n.techExperience) && n.techExperience.length ? `
+      <div class="dnt-section">
+        <div class="dnt-tag">기술경력</div>
+        <ul class="dnt-bullets">
+          ${n.techExperience.map(t => `<li>${escHtml(t)}</li>`).join('')}
+        </ul>
+      </div>` : ''}
+
+      ${Array.isArray(n.files) && n.files.length ? `
+      <div class="dnt-section">
+        <div class="dnt-tag">첨부파일</div>
+        ${n.files.map(f => `
+          <a class="dnt-file" href="${escAttr(f.url||'#')}" target="_blank" rel="noopener">
+            <span class="dnt-file-ico">${fileIco(f.type)}</span>
+            <span class="dnt-file-name">${escHtml(f.name||'(파일)')}</span>
+            <span class="dnt-file-arrow">→</span>
+          </a>`).join('')}
+      </div>` : ''}
+
+      ${e.note ? `<div class="dnt-section"><div class="dnt-tag">비고</div><div class="dnote">${escHtml(e.note)}</div></div>` : ''}
+
+      ${!e._notion && e.empId ? `<div class="dnt-loading">Notion 데이터 로드 중…</div>` : ''}`;
   } else if(tab==='dispatch'){
     const dday=(end)=>{
       if(!end)return "-";

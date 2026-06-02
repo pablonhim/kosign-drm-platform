@@ -1,0 +1,101 @@
+{
+  "_comment": "Mock Notion-shape employee dataset. Match the shape your Apps Script proxy returns so the same fetchEmployeeNotion() consumer code works for both. Keys are flat; the proxy's job is to flatten Notion's nested page properties down to this shape.",
+  "_schema": {
+    "id":             "EMP-XXX — matches employees.emp_id in Supabase; used as the lookup key.",
+    "photoUrl":       "Direct URL to a Notion-hosted or S3-hosted photo. null = use initials avatar.",
+    "name":           "Korean legal name.",
+    "nick":           "English/preferred name.",
+    "gender":         "남성 | 여성.",
+    "university":     "Highest-degree school + major.",
+    "email":          "Primary work email.",
+    "languages":      "Array of strings, each '언어 (수준)'.",
+    "certificates":   "Array of certificate names.",
+    "techExperience": "Array of bullet strings — show as <ul> in the drawer.",
+    "files":          "Array of {name, url, type} — resume/diploma/etc."
+  },
+  "employees": [
+    {
+      "id": "EMP-048",
+      "photoUrl": null,
+      "name": "김도현",
+      "nick": "Kim Dohyun",
+      "gender": "남성",
+      "university": "서울대학교 컴퓨터공학과 학사",
+      "email": "dohyun.kim@kosign.com.kh",
+      "languages": [
+        "한국어 (모국어)",
+        "영어 (비즈니스)",
+        "크메르어 (기초)"
+      ],
+      "certificates": [
+        "AWS Solutions Architect Associate",
+        "정보처리기사",
+        "PMP"
+      ],
+      "techExperience": [
+        "Node.js / Express — 5년+",
+        "React / Next.js — 3년+",
+        "AWS Lambda + DynamoDB — 4년+",
+        "PostgreSQL / Supabase — 2년+",
+        "Docker / Kubernetes 운영 경험"
+      ],
+      "files": [
+        { "name": "김도현_이력서_2026.pdf", "url": "#", "type": "pdf" },
+        { "name": "AWS_SAA_certificate.pdf", "url": "#", "type": "pdf" }
+      ]
+    },
+    {
+      "id": "EMP-012",
+      "photoUrl": null,
+      "name": "박지영",
+      "nick": "Park Jiyoung",
+      "gender": "여성",
+      "university": "KAIST 전산학부 석사",
+      "email": "jiyoung.park@kosign.com.kh",
+      "languages": [
+        "한국어 (모국어)",
+        "영어 (유창)"
+      ],
+      "certificates": [
+        "AWS DevOps Engineer Professional",
+        "Kubernetes CKA"
+      ],
+      "techExperience": [
+        "Go / gRPC — 6년+",
+        "Kubernetes / Istio — 4년+",
+        "Terraform / Pulumi — 3년+",
+        "CI/CD 파이프라인 설계 — 5년+"
+      ],
+      "files": [
+        { "name": "박지영_이력서_2026.pdf", "url": "#", "type": "pdf" }
+      ]
+    },
+    {
+      "id": "EMP-001",
+      "photoUrl": null,
+      "name": "이수민",
+      "nick": "Lee Sumin",
+      "gender": "여성",
+      "university": "연세대학교 산업공학과 학사",
+      "email": "sumin.lee@kosign.com.kh",
+      "languages": [
+        "한국어 (모국어)",
+        "영어 (비즈니스)",
+        "일본어 (회화)"
+      ],
+      "certificates": [
+        "Scrum Master (CSM)",
+        "정보처리기사"
+      ],
+      "techExperience": [
+        "프로젝트 매니지먼트 — 8년+",
+        "BA / 요구사항 분석 — 6년+",
+        "JIRA / Confluence 운영 — 7년+"
+      ],
+      "files": [
+        { "name": "이수민_이력서_2026.pdf", "url": "#", "type": "pdf" },
+        { "name": "이수민_PM자격증.pdf", "url": "#", "type": "pdf" }
+      ]
+    }
+  ]
+}
