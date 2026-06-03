@@ -22,18 +22,18 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 
 <!-- Three publicly-licensed webfonts, all from Google Fonts:
-       Plus Jakarta Sans  →  Latin glyphs (clean, geometric, Google-Sans-adjacent)
+       IBM Plex Sans      →  Latin glyphs (IBM corporate humanist sans, very readable at small sizes)
        Noto Sans KR       →  Korean (Hangul) glyphs
        Kantumruy          →  Khmer glyphs
      The browser picks the right family per glyph via the font-family stack
-     below — Plus Jakarta Sans is listed first, but it has no Hangul/Khmer,
+     below — IBM Plex Sans is listed first, but it has no Hangul/Khmer,
      so the browser falls through to the next family that does.
      SRI hashes are NOT used here because Google Fonts ships variable CSS
      that changes byte-for-byte based on User-Agent (woff2 vs ttf, hinting,
      etc.) — adding a hash would break loading for some browsers. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700;800&family=Kantumruy:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700;800&family=Kantumruy:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <!-- Supabase JS 2.39.7 — pinned to a specific patch + SRI. The previous
      "@2" floating-major-version reference would auto-upgrade on every page
      load, making a malicious patch in the npm package an immediate site-wide
@@ -124,7 +124,7 @@
 /* Custom @font-face scoped to digit characters only (U+0030–0039). The browser
    selects fonts per-glyph by unicode-range, so EVERY digit in the entire app
    renders in JetBrains Mono — including inline "5명", page-title pills, table
-   counts — while letters fall through to Plus Jakarta Sans / Noto Sans KR /
+   counts — while letters fall through to IBM Plex Sans / Noto Sans KR /
    Kantumruy. The woff2 is served by jsDelivr's @fontsource mirror (pinned). */
 @font-face{
   font-family:'JetBrains Mono Digits';
@@ -134,7 +134,7 @@
   src:url('https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.0.21/files/jetbrains-mono-latin-400-normal.woff2') format('woff2');
   unicode-range:U+0030-0039;
 }
-body{font-family:'JetBrains Mono Digits',"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;}
+body{font-family:'JetBrains Mono Digits',"IBM Plex Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;}
 /* LOGIN */
 #LP{min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding-top:14vh;background:var(--bg);position:relative;overflow:hidden;}
 .lbox{width:300px;max-width:90vw;position:relative;z-index:1;animation:fu .4s ease;}
@@ -180,7 +180,7 @@ input[type=checkbox]:indeterminate{background:var(--accent);border-color:var(--a
 input[type=checkbox]:indeterminate::after{
   content:'';position:absolute;left:3px;top:7px;width:10px;height:2px;background:#fff;border:none;transform:none;
 }
-.li{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:11px 14px;color:var(--text);font-size:14px;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;outline:none;transition:border-color .15s,box-shadow .15s;width:100%;}
+.li{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:11px 14px;color:var(--text);font-size:14px;font-family:"IBM Plex Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;outline:none;transition:border-color .15s,box-shadow .15s;width:100%;}
 .li:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,115,232,.14);}
 .lpw-wrap{position:relative;}
 .lpw-wrap > input{padding-right:42px;}
@@ -191,7 +191,7 @@ input[type=checkbox]:indeterminate::after{
 .lerr.show{display:block;}
 /* Supabase primary login button: solid emerald, deep-charcoal text, sharp 1px
    border, no gradient. Hover: switch to the lighter accent2 swatch. */
-.lbtn{background:var(--accent);color:#0e0e10;border:1px solid var(--accent);border-radius:8px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .15s,border-color .15s;margin-top:18px;}
+.lbtn{background:var(--accent);color:#0e0e10;border:1px solid var(--accent);border-radius:8px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:"IBM Plex Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .15s,border-color .15s;margin-top:18px;}
 .lbtn:hover{background:var(--accent2);border-color:var(--accent2);}
 .lbtn:hover{opacity:.92;}
 /* Platform version label, anchored bottom-center of the screen. Auto-updated from APP_VERSION in JS. */
@@ -267,7 +267,7 @@ input[type=checkbox]:indeterminate::after{
   line-height:1.05;
   padding:0 4px;
   color:var(--bg, #1a2240);
-  font-family:"Inter","Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-family:"Inter","IBM Plex Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   letter-spacing:-0.2px;
   /* Slightly stronger shadow so white discs read against a white backdrop. */
   box-shadow:0 6px 18px rgba(40,60,120,.16), 0 1px 3px rgba(0,0,0,.08);
@@ -368,8 +368,8 @@ input[type=checkbox]:indeterminate::after{
 .navi-ic{width:17px;height:17px;flex-shrink:0;}                     /* outlined SVG icon, inherits color via stroke=currentColor */
 .navc{margin-left:auto;background:var(--bg4);border-radius:10px;padding:1px 7px;font-size:10px;font-family:"JetBrains Mono",monospace;color:var(--text3);}
 .navi.active .navc{background:rgba(26,115,232,.2);color:var(--accent);}
-.sum-tbl{width:100%;border-collapse:collapse;}.sum-tbl th{padding:9px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border2);background:var(--bg3);white-space:nowrap;}.sum-tbl th.tc{text-align:center;}.sum-tbl td{padding:10px 14px;font-size:12px;color:var(--text2);border-bottom:0.5px solid var(--border);vertical-align:middle;}.sum-tbl td.tc{text-align:center;}.sum-tbl .co-cell{background:var(--bg3);border-right:1px solid var(--border);border-left:3px solid var(--accent);vertical-align:middle;font-size:13px;font-weight:700;color:var(--text);}.sum-tbl tr.grp-mid td{border-bottom:0.5px dashed var(--border);}.sum-tbl tr.grp-end td{border-bottom:1px solid var(--border2);}.sum-tbl tr.grp-sub td{background:var(--bg3);}.sum-tbl tr.grp-sub .co-cell{background:var(--bg3);}.sum-tbl tr.sum-total td{background:var(--bg3);font-weight:700;font-size:13px;border-top:2px solid var(--border2);}.ref-date-wrap{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;height:var(--ctl-h);padding:0 12px;font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap;box-sizing:border-box;}.ref-date-wrap input[type=date],.ref-date-wrap input.dp-input{background:none;border:none;outline:none;font-size:12px;color:var(--text);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer;padding:0;}.sbfoot{padding:10px;border-top:1px solid var(--border);}
-.synbtn{width:100%;padding:9px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);border-radius:8px;color:var(--green);font-size:12px;font-weight:600;cursor:pointer;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .12s;display:flex;align-items:center;justify-content:center;gap:7px;}
+.sum-tbl{width:100%;border-collapse:collapse;}.sum-tbl th{padding:9px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border2);background:var(--bg3);white-space:nowrap;}.sum-tbl th.tc{text-align:center;}.sum-tbl td{padding:10px 14px;font-size:12px;color:var(--text2);border-bottom:0.5px solid var(--border);vertical-align:middle;}.sum-tbl td.tc{text-align:center;}.sum-tbl .co-cell{background:var(--bg3);border-right:1px solid var(--border);border-left:3px solid var(--accent);vertical-align:middle;font-size:13px;font-weight:700;color:var(--text);}.sum-tbl tr.grp-mid td{border-bottom:0.5px dashed var(--border);}.sum-tbl tr.grp-end td{border-bottom:1px solid var(--border2);}.sum-tbl tr.grp-sub td{background:var(--bg3);}.sum-tbl tr.grp-sub .co-cell{background:var(--bg3);}.sum-tbl tr.sum-total td{background:var(--bg3);font-weight:700;font-size:13px;border-top:2px solid var(--border2);}.ref-date-wrap{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;height:var(--ctl-h);padding:0 12px;font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap;box-sizing:border-box;}.ref-date-wrap input[type=date],.ref-date-wrap input.dp-input{background:none;border:none;outline:none;font-size:12px;color:var(--text);font-family:"IBM Plex Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer;padding:0;}.sbfoot{padding:10px;border-top:1px solid var(--border);}
+.synbtn{width:100%;padding:9px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);border-radius:8px;color:var(--green);font-size:12px;font-weight:600;cursor:pointer;font-family:"IBM Plex Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .12s;display:flex;align-items:center;justify-content:center;gap:7px;}
 .synbtn:hover{background:rgba(34,197,94,.14);}
 body{overflow:hidden;}
 .main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
@@ -420,7 +420,7 @@ body{overflow:hidden;}
 tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 /* Custom multi-select dropdown (replaces native <select> filters). */
 .ms-wrap{position:relative;display:inline-block;}
-.ms-btn{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:0 32px 0 14px;font-size:12px;color:var(--text);cursor:pointer;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;display:inline-flex;align-items:center;min-width:140px;max-width:240px;height:var(--ctl-h);position:relative;transition:border-color .15s,background .15s,box-shadow .15s;line-height:1;}
+.ms-btn{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:0 32px 0 14px;font-size:12px;color:var(--text);cursor:pointer;font-family:"IBM Plex Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;display:inline-flex;align-items:center;min-width:140px;max-width:240px;height:var(--ctl-h);position:relative;transition:border-color .15s,background .15s,box-shadow .15s;line-height:1;}
 .ms-btn:hover{background:var(--bg3);border-color:var(--accent2);}
 /* .is-open / focus state — handled centrally by the unified .filter-row focus rule above so all controls match. */
 .ms-btn .ms-label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;}
@@ -477,7 +477,7 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 .donut-wrap{position:relative;}
 .donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;width:100%;}
 .donut-num{font-size:30px;font-weight:800;color:var(--text);font-family:"JetBrains Mono",monospace;line-height:1;}
-.donut-unit{font-size:11px;color:var(--text3);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;margin-top:4px;}
+.donut-unit{font-size:11px;color:var(--text3);font-family:"IBM Plex Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;margin-top:4px;}
 /* Respect users who prefer reduced motion — instant final state for skill bars; donut handled in JS. */
 @media (prefers-reduced-motion: reduce){
   .skill-bar,.skill-count{animation:none !important;}
@@ -503,8 +503,8 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 .filter-row > input.dp-input{height:var(--ctl-h);box-sizing:border-box;transition:border-color .15s,box-shadow .15s;}
 .filter-row > .ref-date-wrap{padding:0 14px;}
 .filter-row > input[type="date"],
-.filter-row > input.dp-input{padding:0 12px;border:1px solid var(--border2);border-radius:6px;background:var(--bg2);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;color:var(--text);}
-.filter-row > select{padding:0 32px 0 12px;border:1px solid var(--border2);border-radius:6px;background:var(--bg2);font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;color:var(--text);}
+.filter-row > input.dp-input{padding:0 12px;border:1px solid var(--border2);border-radius:6px;background:var(--bg2);font-family:"IBM Plex Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;color:var(--text);}
+.filter-row > select{padding:0 32px 0 12px;border:1px solid var(--border2);border-radius:6px;background:var(--bg2);font-family:"IBM Plex Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;color:var(--text);}
 /* Crisp focus state — 1px solid deep-blue border + 2px even outer glow.
    The outline is killed entirely; box-shadow with no inset paints a perfectly uniform halo
    on all four sides, following border-radius automatically. No content reflow (border stays 1px). */
@@ -525,9 +525,9 @@ tr.row-resigned td,tr.row-resigned td .n1{color:var(--text3) !important;}
 .filter-row > input[type="date"]:focus,
 .filter-row > input.dp-input:focus,
 .filter-row > select:focus{outline:none;}
-.srch input{background:none;border:none;outline:none;color:var(--text);font-size:13px;width:190px;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+.srch input{background:none;border:none;outline:none;color:var(--text);font-size:13px;width:190px;font-family:"IBM Plex Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
 .srch input::placeholder{color:var(--text3);}
-select{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;color:var(--text);font-size:12px;outline:none;cursor:pointer;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+select{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;color:var(--text);font-size:12px;outline:none;cursor:pointer;font-family:"IBM Plex Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
 select:focus{border-color:var(--accent);}
 /* Standardized control height — inputs, selects, buttons all align at 38px so they line up perfectly in form rows. .btnsm opts out for compact in-row actions. */
 /* --ctl-h now lives in the main :root block at the top of this file alongside
@@ -538,7 +538,7 @@ select:focus{border-color:var(--accent);}
    maths matches .fi exactly. Specific button variants below just swap the
    border colour without changing geometry — heights line up perfectly.
    Padding 0 10px and font 13px per the high-density spec. */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:var(--ctl-h);padding:0 10px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid transparent;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .12s,color .12s,border-color .12s,box-shadow .12s,opacity .12s;white-space:nowrap;line-height:1;box-sizing:border-box;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:var(--ctl-h);padding:0 10px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid transparent;font-family:"IBM Plex Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .12s,color .12s,border-color .12s,box-shadow .12s,opacity .12s;white-space:nowrap;line-height:1;box-sizing:border-box;}
 /* Disabled state — overrides all .btn variants. Used for the dirty-check on
    the org editor's save buttons (팀명 / 부/실명 / 센터명 저장). */
 /* Disabled state — soft light gray. Label uses a dark slate so the text
@@ -736,10 +736,143 @@ tr.row-resigned .av{filter:grayscale(100%) brightness(.92);}
 .dk{font-size:0.875rem;line-height:1.45;color:var(--text3);white-space:nowrap;flex-shrink:0;}
 .dv{font-size:0.875rem;line-height:1.45;font-weight:500;text-align:right;color:var(--text);word-break:break-word;}
 .dnote{font-size:0.875rem;line-height:1.5;color:var(--orange);padding:6px 0;}
+/* ─── Big profile card (top of 기본정보 tab) ──────────────────────────────
+   Photo card with overlaid name/role line, mirrors the Notion workspace profile
+   block. When no photo URL is available, the .is-fallback variant kicks in:
+   a gradient background with large initials. */
+.dnt-card-big{
+  position:relative;
+  width:100%;
+  aspect-ratio:4 / 3;
+  border-radius:12px;
+  overflow:hidden;
+  margin-bottom:18px;
+  background:linear-gradient(135deg, rgba(26,115,232,.18), rgba(157,114,245,.18));
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+.dnt-card-big.is-fallback{
+  background:linear-gradient(135deg, var(--accent), var(--purple));
+}
+.dnt-photo-big{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  display:block;
+}
+.dnt-photo-fallback{
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:72px; font-weight:900;
+  color:#fff;
+  background:transparent !important;   /* overrides .av_/.avM/.avF bg — the parent card holds the gradient */
+  border:none !important;
+  letter-spacing:-2px;
+}
+.dnt-card-overlay{
+  position:absolute; left:0; right:0; bottom:0;
+  padding:18px 20px 16px;
+  color:#fff;
+  background:linear-gradient(to bottom, transparent 0%, rgba(0,0,0,.55) 60%, rgba(0,0,0,.78) 100%);
+}
+.dnt-card-name{
+  font-size:1.25rem;
+  font-weight:800;
+  line-height:1.25;
+  letter-spacing:-.2px;
+}
+.dnt-card-paren{
+  font-size:0.875rem;
+  font-weight:600;
+  opacity:.88;
+  margin-left:6px;
+}
+.dnt-card-role{
+  margin-top:4px;
+  font-size:0.8125rem;
+  font-weight:500;
+  opacity:.92;
+}
+/* (.dnt-card-slash was removed — profile role now sits on its own line below the name) */
+
+/* ─── Notion-paragraph mode (basic tab only) ──────────────────────────────
+   Wrapped in <div class="dnt-plain"> so the dispatch tab keeps the badge style.
+   Goal: a clean Notion-workspace look — bold bracket-headers, plain paragraph
+   flow for [기본정보] fields, native disc bullets for [기술경력], and a chrome-
+   free attachment row for [이력서]. */
+.dnt-plain .dnt-section{margin-bottom:26px;}
+.dnt-plain .dnt-section:last-child{margin-bottom:0;}
+/* Plain bold bracket-header — overrides the badge style outside this wrapper. */
+.dnt-plain .dnt-tag{
+  display:block;
+  background:transparent;
+  border:none;
+  color:var(--text);
+  font-size:1.0625rem;
+  font-weight:800;
+  letter-spacing:-.1px;
+  padding:0;
+  margin-bottom:10px;
+  border-radius:0;
+}
+.dnt-plain .dnt-tag::before{display:none;}
+/* Paragraph-flow field: "성명 : 땅 무이쨍(Tang Mouycheng)" — label same color as value, just slightly
+   weightier so the eye still picks it out without resorting to a key/value grid. */
+.dnt-plain .dnt-para{
+  margin:0 0 6px 0;
+  font-size:0.875rem;
+  line-height:1.7;
+  color:var(--text2);
+}
+.dnt-plain .dnt-para:last-child{margin-bottom:0;}
+.dnt-plain .dnt-label{color:var(--text);font-weight:500;}
+/* Native disc bullets — no per-row borders, no custom dots. */
+.dnt-plain .dnt-bullets{
+  list-style:disc;
+  padding-left:22px;
+  margin:0;
+  display:block;
+}
+.dnt-plain .dnt-bullets li{
+  border-bottom:none;
+  padding:3px 0;
+  font-size:0.875rem;
+  line-height:1.6;
+  color:var(--text);
+}
+.dnt-plain .dnt-bullets li::before{content:none;}
+/* File row — text-style, no card. Filename + lighter-color size on one line. */
+.dnt-plain .dnt-file{
+  background:transparent;
+  border:none;
+  padding:4px 0;
+  margin:0;
+  gap:8px;
+  font-size:0.875rem;
+  font-weight:500;
+}
+.dnt-plain .dnt-file + .dnt-file{margin-top:2px;}
+.dnt-plain .dnt-file:hover{background:transparent;border:none;color:var(--accent);}
+.dnt-plain .dnt-file:hover .dnt-file-name{text-decoration:underline;}
+.dnt-plain .dnt-file .dnt-file-ico{font-size:15px;}
+.dnt-plain .dnt-file .dnt-file-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:0 1 auto;}
+.dnt-plain .dnt-file .dnt-file-size{font-size:11px;color:var(--text3);font-weight:500;font-family:"JetBrains Mono",monospace;flex-shrink:0;margin-left:auto;}
+/* "Notion 데이터를 찾을 수 없습니다" empty state. */
+.dnt-empty{
+  margin-top:18px;
+  padding:18px;
+  background:var(--bg3);
+  border:1px dashed var(--border);
+  border-radius:8px;
+  text-align:center;
+  font-size:0.8125rem;
+  color:var(--text3);
+  line-height:1.6;
+}
+
 /* ─── Notion-style drawer sections ────────────────────────────────────────
-   Used by the 기본정보 tab. Each section gets a bracket-tag caption ([기본정보]
-   etc.) with a left accent bar, then either .drow rows, a bullet list, or
-   file-attachment rows. Visual treatment matches the Notion page layout. */
+   Used by the 기본정보 + 파견정보 tabs. Each section gets a bracket-tag caption
+   ([기본정보] etc.) with a left accent bar, then either .drow rows, a bullet
+   list, or file-attachment rows. Visual treatment matches the Notion page. */
 .dnt-section{margin-bottom:20px;}
 .dnt-tag{
   display:inline-flex;align-items:center;gap:6px;
@@ -784,7 +917,9 @@ tr.row-resigned .av{filter:grayscale(100%) brightness(.92);}
 .dnt-file:last-child{margin-bottom:0;}
 .dnt-file:hover{background:var(--bg3);border-color:var(--accent);}
 .dnt-file-ico{font-size:18px;flex-shrink:0;line-height:1;}
-.dnt-file-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dnt-file-meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+.dnt-file-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dnt-file-size{font-size:11px;color:var(--text3);font-weight:500;font-family:"JetBrains Mono",monospace;}
 .dnt-file-arrow{color:var(--text3);font-weight:700;flex-shrink:0;}
 .dnt-file:hover .dnt-file-arrow{color:var(--accent);}
 /* Inline loading placeholder while Notion fetch is in flight. */
@@ -807,7 +942,7 @@ tr.row-resigned .av{filter:grayscale(100%) brightness(.92);}
 /* Field labels: bumped from 10px → 12px and from --text3 (light gray) → --text (near-black) for high-contrast legibility above inputs. */
 .flab{font-size:12px;color:var(--text);font-weight:700;letter-spacing:.3px;text-transform:none;margin-bottom:4px;}
 /* All form inputs/selects share --ctl-h (38px) — matches .btn so they line up flush in horizontal rows. */
-.fi{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;height:var(--ctl-h);padding:0 10px;color:var(--text);font-size:13px;outline:none;font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;width:100%;transition:border-color .12s,box-shadow .12s;line-height:1;box-sizing:border-box;}
+.fi{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;height:var(--ctl-h);padding:0 10px;color:var(--text);font-size:13px;outline:none;font-family:"IBM Plex Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;width:100%;transition:border-color .12s,box-shadow .12s;line-height:1;box-sizing:border-box;}
 /* Modern chevron — 12×12, stroke 2.5, rounded caps. Apply to EVERY <select> in the app and to the
    .ms-btn multi-select trigger. currentColor in data: URIs doesn't inherit, so the stroke is pinned. */
 select,
@@ -921,7 +1056,7 @@ textarea.qmodal-input{resize:vertical;min-height:56px;}
 .empty{padding:40px;text-align:center;color:var(--text3);}
 
 /* ─── 조직도 차트뷰 ─── */
-.och-wrap{font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:4px 0;width:100%;box-sizing:border-box;}
+.och-wrap{font-family:"IBM Plex Sans","Noto Sans KR","Kantumruy",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:4px 0;width:100%;box-sizing:border-box;}
 .och-title-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
 .och-title{font-size:clamp(13px,1.4vw,17px);font-weight:900;color:var(--text1);}
 .och-total-num{font-size:clamp(15px,1.6vw,20px);font-weight:900;color:var(--accent);}
@@ -1030,7 +1165,7 @@ input.dp-input:not(.ref-date-wrap input){
   box-shadow:0 12px 32px rgba(0,0,0,.18);
   padding:12px;
   user-select:none;
-  font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,sans-serif;
+  font-family:"IBM Plex Sans","Noto Sans KR","Kantumruy",-apple-system,sans-serif;
   animation: dpFadeIn .15s ease-out;
 }
 @keyframes dpFadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
@@ -1130,7 +1265,7 @@ tr:hover .table-action-btn{
   font-size:12px;font-weight:700;
   color:var(--text);
   cursor:pointer;
-  font-family:"Plus Jakarta Sans","Noto Sans KR","Kantumruy",-apple-system,sans-serif;
+  font-family:"IBM Plex Sans","Noto Sans KR","Kantumruy",-apple-system,sans-serif;
   white-space:nowrap;
 }
 .row-actions .action-btn svg,
@@ -2963,31 +3098,39 @@ function renderOrgChart(){
 // ═══════════════════════════════════════════════════════════════════════════
 const NOTION_PROXY_URL = '';  // ← Paste your Apps Script /exec URL here to go live.
 const _notionCache = new Map();
-async function fetchEmployeeNotion(empId){
-  if(!empId) return null;
-  if(_notionCache.has(empId)) return _notionCache.get(empId);
+// Public name per spec. Triggered the instant a row is clicked (via openDet → background fetch).
+// Returns the flat employee shape (see mock_notion_employees.json `_schema`) or null on miss/error.
+// Resilient to: empty empId, CORS failure (try/catch), 404 from proxy, malformed JSON.
+async function fetchNotionEmployeeData(employeeId){
+  if(!employeeId) return null;
+  if(_notionCache.has(employeeId)) return _notionCache.get(employeeId);
   try {
     let data;
     if (NOTION_PROXY_URL) {
       // Proxy mode — the Apps Script returns { employee: {...} } or { employee: null }.
-      const r = await fetch(`${NOTION_PROXY_URL}?empId=${encodeURIComponent(empId)}`, { cache: 'no-store' });
+      const r = await fetch(`${NOTION_PROXY_URL}?empId=${encodeURIComponent(employeeId)}`, { cache: 'no-store' });
       if(!r.ok) throw new Error('proxy HTTP '+r.status);
       data = (await r.json())?.employee || null;
     } else {
-      // Mock mode — the JSON ships with the static site, no CORS issues.
+      // Mock fallback — the JSON ships with the static site, no CORS issues. Also the path the
+      // graceful-degradation lane lands on when a CORS-blocked proxy throws.
       const r = await fetch('./mock_notion_employees.json', { cache: 'no-store' });
       if(!r.ok) throw new Error('mock HTTP '+r.status);
       const body = await r.json();
-      data = (body.employees || []).find(x => x.id === empId) || null;
+      data = (body.employees || []).find(x => x.id === employeeId) || null;
     }
-    _notionCache.set(empId, data);
+    _notionCache.set(employeeId, data);
     return data;
   } catch(err) {
-    console.warn('[Notion] fetch failed for', empId, '—', err.message);
-    _notionCache.set(empId, null);  // negative-cache so we don't retry the same miss every click
+    // Graceful degradation path: log, negative-cache the miss, return null so the UI shows
+    // the Supabase-only view. The drawer's basic tab handles `n = {}` cleanly.
+    console.warn('[Notion] fetch failed for', employeeId, '—', err.message, '(falling back to local)');
+    _notionCache.set(employeeId, null);
     return null;
   }
 }
+// Back-compat alias — older call sites use this name. Same implementation.
+const fetchEmployeeNotion = fetchNotionEmployeeData;
 
 function openDet(idx){
   const e=emps[idx];if(!e)return;
@@ -3039,13 +3182,10 @@ function renderDetTabs(e,tab){
     .join('');
 }
 function renderDetFoot(e){
-  const idx=emps.indexOf(e);
-  const ce=CU?.canEdit;
-  document.getElementById("dpanel-foot").innerHTML = ce ? `
-    <div class="dact">
-      <button class="btn btng" onclick="closeDet();openEdit(${idx})">✏️ 수정</button>
-      <button class="btn btnd" onclick="closeDet();delEmp(${idx})">삭제</button>
-    </div>` : '';
+  // Footer hidden per spec — 수정 / 삭제 inline buttons are intentionally suppressed for now.
+  // The foot's CSS rule `.dpanel-foot:empty{display:none;}` collapses the slot to zero height,
+  // which also gives the body scroll mask room to breathe at the bottom.
+  document.getElementById("dpanel-foot").innerHTML = '';
 }
 function renderDetTab(e,tab){
   // dr() is the row-renderer used throughout the detail panel — it produces a `${label}: ${value}` row.
@@ -3060,9 +3200,13 @@ function renderDetTab(e,tab){
 
   let body='';
   if(tab==='basic'){
-    // n = Notion enrichment payload (null until fetchEmployeeNotion resolves the first time).
-    // The Supabase-sourced organisation / manager / employment sections always render; the
-    // Notion-sourced sections (기본정보, 기술경력, 첨부파일) appear only when their data is present.
+    // ── BASIC TAB — Notion-only content ─────────────────────────────────────────
+    // Per latest spec the basic tab is now a pure Notion workspace view:
+    //   1. Big profile card  — large photo (or gradient fallback) + nick / name / role
+    //   2. [기본정보] block  — 성명, 성별, 학력, 이메일, 언어, 자격증
+    //   3. [기술경력] block  — bullet list of tech/clients/years
+    //   4. [이력서]   block  — clickable file rows with type icon, filename, size
+    // Supabase-sourced org / 직급 / 매니저 / 고용 sections moved to the dispatch tab.
     const n = e._notion || {};
     const fileIco = (type) => {
       const t = (type||'').toLowerCase();
@@ -3072,20 +3216,90 @@ function renderDetTab(e,tab){
       if (t === 'img' || t === 'png' || t === 'jpg' || t === 'jpeg') return '🖼️';
       return '📎';
     };
-    body = `
-      ${n.name || n.email || n.gender || n.university ? `
-      <div class="dnt-section">
-        <div class="dnt-tag">기본정보</div>
-        ${dr('본명',     n.name        || e.name)}
-        ${dr('성별',     n.gender      || (e.gender==='F'?'여성':e.gender==='M'?'남성':''))}
-        ${dr('학력',     n.university)}
-        ${dr('이메일',   n.email)}
-        ${Array.isArray(n.languages) && n.languages.length ?
-          `<div class="drow"><span class="dk">언어</span><span class="dv">${n.languages.map(escHtml).join(' · ')}</span></div>` : ''}
-        ${Array.isArray(n.certificates) && n.certificates.length ?
-          `<div class="drow"><span class="dk">자격증</span><span class="dv">${n.certificates.map(escHtml).join(', ')}</span></div>` : ''}
-      </div>` : ''}
 
+    // Profile-card text: line 1 = `nick(name)`, line 2 = role.  No slash — matches the Notion
+    // screenshot. Falls back to Supabase fields when Notion is missing pieces so even non-Notion
+    // employees render a sensible header.
+    const headNick = n.nick  || e.nick  || '';
+    const headName = n.name  || e.name  || '';
+    const headRole = n.role  || e.jikchak || e.jikmu || e.type || '';
+    const headLine1 = headNick
+      ? `${escHtml(headNick)}${headName ? `<span class="dnt-card-paren">(${escHtml(headName)})</span>` : ''}`
+      : escHtml(headName || '-');
+
+    const initials = ((headNick || headName || '?')[0] || '?').toUpperCase();
+    const photoBlock = n.photoUrl
+      ? `<img class="dnt-photo-big" src="${escAttr(n.photoUrl)}" alt="" onerror="this.parentNode.classList.add('is-fallback');this.remove();">`
+      : `<div class="dnt-photo-fallback av${e.gender||'_'}">${escHtml(initials)}</div>`;
+
+    // 성명 line: full bilingual string ("땅 무이쨍(Tang Mouycheng)"). Falls back to nick(name) for
+    // employees without an explicit fullName.
+    const sungmyeong = n.fullName
+      || (n.nick && n.name ? `${n.nick}(${n.name})` : (n.name || e.name || ''));
+
+    // pr(): paragraph-flow row — "${label} : ${value}" rendered as a plain <p>. Used inside the
+    // .dnt-plain wrapper so it doesn't pick up the .drow two-column key/value styling.
+    const pr = (k, v) => v
+      ? `<p class="dnt-para"><span class="dnt-label">${escHtml(k)}</span> : ${escHtml(v)}</p>`
+      : '';
+
+    body = `
+      <div class="dnt-plain">
+
+        <div class="dnt-card-big ${n.photoUrl ? '' : 'is-fallback'}">
+          ${photoBlock}
+          <div class="dnt-card-overlay">
+            <div class="dnt-card-name">${headLine1}</div>
+            ${headRole ? `<div class="dnt-card-role">${escHtml(headRole)}</div>` : ''}
+          </div>
+        </div>
+
+        ${(n.fullName || n.name || n.gender || n.email || n.university || (n.languages?.length) || (n.certificates?.length)) ? `
+        <div class="dnt-section">
+          <div class="dnt-tag">[기본정보]</div>
+          ${pr('성명',   sungmyeong)}
+          ${pr('성별',   n.gender || (e.gender==='F'?'여':e.gender==='M'?'남':''))}
+          ${pr('학력',   n.university)}
+          ${pr('이메일', n.email)}
+          ${Array.isArray(n.languages)   && n.languages.length   ? pr('언어',   n.languages.join(', '))   : ''}
+          ${Array.isArray(n.certificates) && n.certificates.length ? pr('자격증', n.certificates.join(', ')) : ''}
+        </div>` : ''}
+
+        ${Array.isArray(n.techExperience) && n.techExperience.length ? `
+        <div class="dnt-section">
+          <div class="dnt-tag">[기술경력]</div>
+          <ul class="dnt-bullets">
+            ${n.techExperience.map(t => `<li>${escHtml(t)}</li>`).join('')}
+          </ul>
+        </div>` : ''}
+
+        ${Array.isArray(n.files) && n.files.length ? `
+        <div class="dnt-section">
+          <div class="dnt-tag">[이력서]</div>
+          ${n.files.map(f => `
+            <a class="dnt-file" href="${escAttr(f.url||'#')}" target="_blank" rel="noopener" download="${escAttr(f.name||'')}">
+              <span class="dnt-file-ico">${fileIco(f.type)}</span>
+              <span class="dnt-file-name">${escHtml(f.name||'(파일)')}</span>
+              ${f.size ? `<span class="dnt-file-size">${escHtml(f.size)}</span>` : ''}
+            </a>`).join('')}
+        </div>` : ''}
+
+        ${!e._notion && e.empId ? `<div class="dnt-loading">Notion 데이터 로드 중…</div>` : ''}
+        ${e._notion === null || (e._notion && !n.fullName && !n.name && !n.email && !(n.techExperience?.length) && !(n.files?.length)) ?
+          `<div class="dnt-empty">이 직원의 Notion 데이터를 찾을 수 없습니다.<br><span style="opacity:.7">EMP ID: ${escHtml(e.empId||'-')}</span></div>` : ''}
+
+      </div>`;
+
+  } else if(tab==='dispatch'){
+    // ── DISPATCH TAB — absorbs the org/등급/매니저/고용/비고 sections that used to live in basic
+    //    plus the original 파견 정보 + 상태 변경 sections.
+    const dday=(end)=>{
+      if(!end)return "-";
+      const d=Math.ceil((new Date(end)-new Date())/86400000);
+      const c=d<=30?"var(--red)":d<=60?"var(--orange)":"var(--green)";
+      return `<span style="color:${c};font-weight:700;font-family:'JetBrains Mono',monospace">${d>0?"D-"+d:"만료"}</span>`;
+    };
+    body = `
       <div class="dnt-section">
         <div class="dnt-tag">조직</div>
         ${dr('부문', e.bumun)}${dr('센터', e.center)}${dr('부/실', e.bu)}${dr('팀', e.team)}
@@ -3098,7 +3312,9 @@ function renderDetTab(e,tab){
 
       <div class="dnt-section">
         <div class="dnt-tag">인적 정보</div>
-        ${dr('입사일자', e.join)}${dr('연차', e.join?calcYeon(e.join)+'년':'')}
+        ${dr('성별', e.gender==='F'?'여성':e.gender==='M'?'남성':'')}
+        ${dr('입사일자', e.join)}
+        ${dr('연차', e.join?calcYeon(e.join)+'년':'')}
       </div>
 
       <div class="dnt-section">
@@ -3112,53 +3328,28 @@ function renderDetTab(e,tab){
         ${dr('원가부서', e.wonka)}${dr('재직상태', e.status||'재직')}
       </div>
 
-      ${Array.isArray(n.techExperience) && n.techExperience.length ? `
+      ${(e.dispatchStart||e.dispatchEnd||e.dispatchCity) ? `
       <div class="dnt-section">
-        <div class="dnt-tag">기술경력</div>
-        <ul class="dnt-bullets">
-          ${n.techExperience.map(t => `<li>${escHtml(t)}</li>`).join('')}
-        </ul>
+        <div class="dnt-tag">파견 정보</div>
+        ${dr('파견 고객사', e.dispatchClient)}
+        ${dr('파견 도시',   e.dispatchCity)}
+        ${dr('파견 시작',   e.dispatchStart)}
+        ${dr('파견 종료',   e.dispatchEnd)}
+        <div class="drow"><span class="dk">D-Day</span><span class="dv">${dday(e.dispatchEnd)}</span></div>
+        ${dr('연장 가능', e.dispatchExtendable?'가능':'미정')}
       </div>` : ''}
 
-      ${Array.isArray(n.files) && n.files.length ? `
+      ${ce && ['파견','파견준비'].includes(e.type) ? `
       <div class="dnt-section">
-        <div class="dnt-tag">첨부파일</div>
-        ${n.files.map(f => `
-          <a class="dnt-file" href="${escAttr(f.url||'#')}" target="_blank" rel="noopener">
-            <span class="dnt-file-ico">${fileIco(f.type)}</span>
-            <span class="dnt-file-name">${escHtml(f.name||'(파일)')}</span>
-            <span class="dnt-file-arrow">→</span>
-          </a>`).join('')}
+        <div class="dnt-tag">상태 변경</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+          ${e.type==='파견준비' ? `<button class="btn btnp btnsm" onclick="changeDispatchStatus(${idx},'파견')">✈️ 파견 시작</button>` : ''}
+          ${e.type==='파견' ? `<button class="btn btnsm" style="background:rgba(34,197,94,.1);color:var(--green);border-color:rgba(34,197,94,.3)" onclick="changeDispatchStatus(${idx},'복귀')">🏠 복귀 처리</button>` : ''}
+          ${e.type==='파견' ? `<button class="btn btnsm" style="background:rgba(26,115,232,.1);color:var(--accent);border-color:rgba(26,115,232,.3)" onclick="extendDispatch(${idx})">🔄 연장 처리</button>` : ''}
+        </div>
       </div>` : ''}
 
-      ${e.note ? `<div class="dnt-section"><div class="dnt-tag">비고</div><div class="dnote">${escHtml(e.note)}</div></div>` : ''}
-
-      ${!e._notion && e.empId ? `<div class="dnt-loading">Notion 데이터 로드 중…</div>` : ''}`;
-  } else if(tab==='dispatch'){
-    const dday=(end)=>{
-      if(!end)return "-";
-      const d=Math.ceil((new Date(end)-new Date())/86400000);
-      const c=d<=30?"var(--red)":d<=60?"var(--orange)":"var(--green)";
-      return `<span style="color:${c};font-weight:700;font-family:'JetBrains Mono',monospace">${d>0?"D-"+d:"만료"}</span>`;
-    };
-    body=`
-    ${(e.dispatchStart||e.dispatchEnd||e.dispatchCity)?`
-    <div class="dsec"><div class="dsect">파견 정보</div>
-      ${dr("파견 고객사",e.dispatchClient)}
-      ${dr("파견 도시",e.dispatchCity)}
-      ${dr("파견 시작",e.dispatchStart)}
-      ${dr("파견 종료",e.dispatchEnd)}
-      <div class="drow"><span class="dk">D-Day</span><span class="dv">${dday(e.dispatchEnd)}</span></div>
-      ${dr("연장 가능",e.dispatchExtendable?"가능":"미정")}
-    </div>`:`<div style="color:var(--text3);font-size:12px;padding:20px 0;text-align:center">파견 정보가 없습니다</div>`}
-    ${ce&&['파견','파견준비'].includes(e.type)?`
-    <div class="dsec"><div class="dsect">상태 변경</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-        ${e.type==='파견준비'?`<button class="btn btnp btnsm" onclick="changeDispatchStatus(${idx},'파견')">✈️ 파견 시작</button>`:""}
-        ${e.type==='파견'?`<button class="btn btnsm" style="background:rgba(34,197,94,.1);color:var(--green);border-color:rgba(34,197,94,.3)" onclick="changeDispatchStatus(${idx},'복귀')">🏠 복귀 처리</button>`:""}
-        ${e.type==='파견'?`<button class="btn btnsm" style="background:rgba(26,115,232,.1);color:var(--accent);border-color:rgba(26,115,232,.3)" onclick="extendDispatch(${idx})">🔄 연장 처리</button>`:""}
-      </div>
-    </div>`:""}`;
+      ${e.note ? `<div class="dnt-section"><div class="dnt-tag">비고</div><div class="dnote">${escHtml(e.note)}</div></div>` : ''}`;
   } else {
     const hist=(e.statusHistory||[]).slice().reverse();
     body=`
